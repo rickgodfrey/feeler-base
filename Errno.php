@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: rickguo
- * Date: 2019-02-15
- * Time: 00:58
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Base;

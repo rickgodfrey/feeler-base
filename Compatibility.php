@@ -7,11 +7,6 @@
 
 namespace Feeler\Base;
 
-class Webview extends View{
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
+class Compatibility extends BaseClass{
 
 }

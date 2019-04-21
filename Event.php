@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-class Webview extends View{
+class Event extends BaseClass{
     public function __construct()
     {
         parent::__construct();

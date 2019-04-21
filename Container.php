@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: rickguo
- * Date: 2019-03-01
- * Time: 23:42
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Base;
@@ -26,7 +25,7 @@ class Container extends BaseClass{
      * @param $type
      * @return string
      */
-    protected function getDependentModelName($type){
+    protected function getDependentModelName(int $type): string{
         $dict = [
             self::TYPE_CLASS => "CLASS",
             self::TYPE_OBJ => "OBJECT",
@@ -36,7 +35,7 @@ class Container extends BaseClass{
         return $dict[$type];
     }
 
-    protected function getDependencyDictStruct($type){
+    protected function getDependencyDictStruct(int $type): array{
         return [
             "type" => $type,
             "model_name" => $this->getDependentModelName($type),
@@ -55,9 +54,8 @@ class Container extends BaseClass{
      * @param $type
      * @throws \Feeler\Exceptions\InvalidDataTypeException
      */
-    protected function setDependenciesMap($class, $dependency, $params, $type){
+    protected function setDependenciesMap(string $class, $dependency, array $params, int $type): void{
         $dependencyDict = $this->getDependencyDictStruct($type);
-        $params = (is_array($params)) ? $params : [];
 
         if($type == self::TYPE_OBJ){
             $dependencyDict["dependency"] = $dependency;
@@ -85,18 +83,18 @@ class Container extends BaseClass{
             $dependencyDict["is_initialized"] = false;
         }
 
-        Assistant::setDict($class, $dependencyDict, $this->dependenciesMap);
+        self::setDict($class, $dependencyDict, $this->dependenciesMap);
     }
 
     /**
-     * @param $class
+     * @param string $class
      * @param $dependency
      * @param array $params
      * @throws InvalidClassException
-     * @throws \Feeler\Exceptions\InvalidDataTypeException
      * @throws InvalidDataDomainException
+     * @throws \Feeler\Exceptions\InvalidDataTypeException
      */
-    public function registerDependency($class, $dependency, $params = []): void{
+    public function registerDependency(string $class, $dependency, array $params = []): void{
         if(!class_exists($class)){
             throw new InvalidClassException("Non-existent Class");
         }
@@ -107,7 +105,7 @@ class Container extends BaseClass{
         else if(is_object($dependency)){
             $this->setDependenciesMap($class, $dependency, $params, self::TYPE_OBJ);
         }
-        else if(Assistant::isClousure($dependency)){
+        else if(self::isClosure($dependency)){
             $this->setDependenciesMap($class, $dependency, $params, self::TYPE_CALLBACK);
         }
         else{
@@ -122,13 +120,13 @@ class Container extends BaseClass{
      * @throws InvalidDataDomainException
      * @throws \ReflectionException
      */
-    public function genPreparedObj($class): object {
+    public function genPreparedObj(string $class): object {
         if(!class_exists($class)){
             throw new InvalidClassException("Non-existent Class in the dependencies tree");
         }
 
         if(!isset($this->dependenciesMap[$class])){
-            throw new InvalidDataDomainException("A Class has not registered a dependency in the dependencies tree");
+            throw new InvalidDataDomainException("One or more Classes have not registered a dependency in the dependencies tree");
         }
 
         $dependencyDict = &$this->dependenciesMap[$class];

@@ -5,13 +5,8 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Base;
+namespace Feeler\Base\Interfaces;
 
-class Webview extends View{
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-
+interface IConfig{
+    public function bindConfig(&$configData);
 }

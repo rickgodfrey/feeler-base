@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: rickguo
- * Date: 2019-01-10
- * Time: 00:59
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Exceptions;
@@ -30,12 +29,6 @@ class LogicException extends Exception {
  * Exception thrown if not a valid class.
  */
 class InvalidClassException extends LogicException{
-}
-
-/**
- * Exception thrown if not a valid Reflection.
- */
-class InvalidReflectionException extends InvalidClassException{
 }
 
 /**
@@ -87,13 +80,13 @@ class InvalidLengthException extends LogicException {
 }
 
 /**
- * Exceptions of System for base.
+ * Exceptions about System.
  */
 class SystemException extends LogicException {
 }
 
 /**
- * Exceptions of Business for base.
+ * Exceptions about Business.
  */
 class BusinessException extends LogicException {
 }

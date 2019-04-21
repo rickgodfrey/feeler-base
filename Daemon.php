@@ -1,14 +1,13 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: rickguo
- * Date: 2019-03-29
- * Time: 22:13
+ * @link http://www.feeler.top/
+ * @copyright Copyright (c) 2019 Rick Guo
+ * @license http://www.feeler.top/license/
  */
 
 namespace Feeler\Base;
 
-class Daemon extends Command {
+class Daemon extends Controller {
     public function __construct()
     {
         parent::__construct();
