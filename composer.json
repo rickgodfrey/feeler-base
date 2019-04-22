@@ -1,6 +1,6 @@
 {
     "name": "feeler/base",
-    "description": "feeler - foundation library",
+    "description": "Feeler Base Library",
     "homepage": "https://github.com/rickguo/feeler-base",
     "type": "base-library",
     "minimum-stability": "dev",
