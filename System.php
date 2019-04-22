@@ -7,8 +7,6 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Interfaces\IConfig;
-
 class System extends Singleton implements IConfig {
     const EOL = PHP_EOL;
 
