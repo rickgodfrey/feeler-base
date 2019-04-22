@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Base\Traits;
+namespace Feeler\Base;
 
 use Feeler\Exceptions\InvalidDataTypeException;
 

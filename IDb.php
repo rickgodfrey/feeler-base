@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Base\Interfaces;
+namespace Feeler\Base;
 
 interface IDb{
     public function connect($dsn, $username, $password, $options = null);
