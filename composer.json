@@ -1,0 +1,33 @@
+{
+    "name": "feeler/base",
+    "description": "feeler - foundation library",
+    "homepage": "https://github.com/rickguo/feeler-base",
+    "type": "base-library",
+    "minimum-stability": "dev",
+    "keywords": [
+        "feeler", "base", "feeler base"
+    ],
+    "require": {
+        "php": ">=7.3",
+        "mb_substring": "*",
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "rickguo",
+            "email": "rickguo@feeler.top"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "feeler\\fl\\": "/"
+        }
+    },
+    "autoload-dev": {
+    },
+    "extra": {
+        "branch-alias": {
+            "dev": "1.0.0-dev"
+        }
+    }
+}
