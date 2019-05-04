@@ -7,11 +7,9 @@
 
 namespace Feeler\Base;
 
-class Webview extends View{
+class LogProxy extends BaseClass{
     public function __construct()
     {
-        parent::__construct();
+        
     }
-
-
 }
