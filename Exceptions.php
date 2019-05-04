@@ -5,10 +5,9 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Exceptions;
+namespace Feeler\Base;
 
 use \Throwable;
-use Feeler\Base\Errno;
 
 class Exception extends \Exception {
     public function __construct($message = "", $code = Errno::NOERR, Throwable $previous = null)
@@ -83,6 +82,12 @@ class InvalidLengthException extends LogicException {
  * Exceptions about System.
  */
 class SystemException extends LogicException {
+}
+
+/**
+ * Exceptions about Network.
+ */
+class NetworkException extends SystemException {
 }
 
 /**

@@ -20,8 +20,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "feeler\\fl\\": "/"
-        }
+            "Feeler\\Base\\": "/"
+        },
+        "files": [
+            "Exceptions.php"
+        ]
     },
     "autoload-dev": {
     },
