@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Exceptions\{
+use Feeler\Base\Exception\{
     InvalidClassException,
     InvalidMethodException,
     InvalidDataTypeException,
@@ -17,8 +17,6 @@ use Feeler\Exceptions\{
 class BaseClass
 {
     use TCommon;
-
-    const CLASS_NAME = __CLASS__;
 
     protected $dependencies = [];
     protected static $calledClassName;
@@ -33,7 +31,7 @@ class BaseClass
 
     }
 
-    public static function constructorName(): string{
+    protected static function constructorName(): string{
         return "__construct";
     }
 
@@ -62,7 +60,7 @@ class BaseClass
             $reflectionParamClassObj = $reflectionParam->getClass();
 
             if (!is_object($reflectionParamClassObj)) {
-                throw new \ReflectionException("The Dependencies Tree of ".self::CLASS_NAME." Has Non-object Param");
+                throw new \ReflectionException("The Dependencies Tree of ".__CLASS__." Has Non-object Param");
             }
 
             $reflectionParamClassName = $reflectionParamClassObj->getName();
@@ -92,31 +90,25 @@ class BaseClass
      * @return string
      * @throws InvalidClassException
      */
-    public static function calledClassName(): string
+    protected static function className(): string
     {
-        if(self::$calledClassName !== null){
-            return self::$calledClassName;
+        if(static::$calledClassName !== null){
+            return static::$calledClassName;
         }
 
-        self::$calledClassName = get_called_class();
+        static::$calledClassName = get_called_class();
 
-        if(self::$calledClassName === false){
+        if(static::$calledClassName === false){
             throw new InvalidClassException("Cannot get the class name of the object");
         }
 
-        return self::$calledClassName;
-    }
-
-    /**
-     * @return string
-     */
-    public static function className(): string{
-        return __CLASS__;
+        return static::$calledClassName;
     }
 
     /**
      * @param $propertyName
      * @return mixed
+     * @throws InvalidClassException
      * @throws InvalidMethodException
      * @throws InvalidPropertyException
      */
@@ -148,6 +140,7 @@ class BaseClass
 
     /**
      * @param $propertyName
+     * @throws InvalidClassException
      * @throws InvalidMethodException
      */
     public function __unset($propertyName)
@@ -166,6 +159,7 @@ class BaseClass
     /**
      * @param $methodName
      * @param $params
+     * @throws InvalidClassException
      * @throws InvalidMethodException
      */
     public function __call($methodName, $params)
@@ -181,25 +175,25 @@ class BaseClass
      */
     public static function __callStatic($methodName, $params)
     {
-        throw new InvalidMethodException("Calling invalid method: " . self::calledClassName() . "::{$methodName}()");
+        throw new InvalidMethodException("Calling invalid method: " . static::className() . "::{$methodName}()");
     }
 
-    public function hasProperty(string $propertyName, bool $checkVars = true): bool
+    protected function hasProperty(string $propertyName, bool $checkVars = true): bool
     {
         return $this->enableToGetProperty($propertyName, $checkVars) || $this->enableToSetProperty($propertyName, false);
     }
 
-    public function hasMethod(string $methodName): bool
+    protected function hasMethod(string $methodName): bool
     {
         return method_exists($this, $methodName);
     }
 
-    public function enableToGetProperty(string $propertyName, bool $checkVars = true): bool
+    protected function enableToGetProperty(string $propertyName, bool $checkVars = true): bool
     {
         return method_exists($this, "get" . ucfirst($propertyName)) || $checkVars && property_exists($this, $propertyName);
     }
 
-    public function enableToSetProperty(string $propertyName, bool $checkVars = true): bool
+    protected function enableToSetProperty(string $propertyName, bool $checkVars = true): bool
     {
         return method_exists($this, "set" . ucfirst($propertyName)) || $checkVars && property_exists($this, $propertyName);
     }
@@ -232,5 +226,13 @@ class BaseClass
     {
         $this->setProperty($objName, $dependency, $force);
         $this->dependencies[$objName] = $dependency;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected static function getCalledClassName()
+    {
+        return self::$calledClassName;
     }
 }

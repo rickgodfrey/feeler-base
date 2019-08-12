@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Exceptions\InvalidDataDomainException;
+use Feeler\Base\Exception\InvalidDataDomainException;
 
 class Arr extends BaseClass {
     const SORT_ASC = SORT_ASC;
@@ -23,15 +23,20 @@ class Arr extends BaseClass {
         return null;
     }
 
-    //Array of keys to delete and restore to incrementing key
-    public static function tidy(array &$array = []): bool{
-        if(self::isAvailable($array)){
-            $array = array_values($array);
+    public static function isArray($value, $strict = false)
+    {
+        return parent::isArray($value, $strict);
+    }
 
-            return true;
+    //Array of keys to delete and restore to incrementing key
+    public static function tidy(array $array = []): array{
+        if(!self::isAvailable($array)){
+            return [];
         }
 
-        return false;
+        $array = array_values($array);
+
+        return $array;
     }
 
     public static function sort(array &$array, $order = self::SORT_ASC, $type = self::SORT_NATURAL, bool $keepKey = true): bool{
@@ -117,7 +122,51 @@ class Arr extends BaseClass {
         return array_slice($array, $offset, $length, $keepKey);
     }
 
+    //merge multi array
     public static function merge(array $array): array{
+        $params = func_get_args();
+
+        if(isset($params[1])){
+            self::tidy($array);
+            unset($params[0]);
+
+            foreach($params as $param){
+                if(!self::isAvailable($param)){
+                    continue;
+                }
+
+                foreach($param as $val){
+                    if(in_array($val, $array, true)){
+                        continue;
+                    }
+
+                    $array[] = $val;
+                }
+            }
+        }
+
+        return $array;
+    }
+
+    //merge multi array and don't check the values are unique or not
+    public static function mergeAll(array $array): array{
+        $params = func_get_args();
+
+        if(isset($params[1])){
+            self::tidy($array);
+            unset($params[0]);
+
+            foreach($params as $param){
+                foreach($param as $val){
+                    $array[] = $val;
+                }
+            }
+        }
+
+        return $array;
+    }
+
+    public static function mergeByKey(array $array): array{
         $params = func_get_args();
         return call_user_func_array("array_merge", $params);
     }
@@ -143,7 +192,7 @@ class Arr extends BaseClass {
     }
 
     //array to object conversion
-    public static function toObj(array $arr, bool $force = false){
+    public static function toObj($arr, bool $force = false){
         if($force){
             return (object)$arr;
         }
@@ -153,7 +202,7 @@ class Arr extends BaseClass {
         }
 
         foreach($arr as $k => $v){
-            if(strripos($k, "_array") === (strlen($k) - 6)){
+            if(strripos($k, "_array") === (strlen($k) - 6) || (strripos($k, "_list") === (strlen($k) - 5))){
                 $v = (array)$v;
             }
             else if(is_array($v) && is_string($k) && (strripos($k, "_object") === (strlen($k) - 7) || !preg_match("/^(?:.*(?:es|[^s]s)|(?:es|[^s]s)_[^_]*)$/i", $k))){
@@ -237,7 +286,7 @@ class Arr extends BaseClass {
         return $array;
     }
 
-    public static function getVal(array $rs, $rsKey, bool $tinyMode = false, bool $withKey = false){
+    public static function getVal($rs, $rsKey, bool $tinyMode = false, bool $withKey = false, &$result = true){
         if(empty($rsKey) || (!is_string($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
             return $rsKey;
         }
@@ -282,6 +331,7 @@ class Arr extends BaseClass {
 
             if($data === null || $data === ""){
                 $data = $defaultValue;
+                $result = false;
             }
 
             if ($type && $data !== null) {
@@ -417,7 +467,7 @@ class Arr extends BaseClass {
 
     public static function get(string $key, array $array, $defaultValue = null): array{
         if(is_null($key) || $key === "") {
-            return $array;
+            return null;
         }
 
         if(array_key_exists($key, $array)) {
@@ -454,7 +504,7 @@ class Arr extends BaseClass {
         return array_splice($array, $position, 0, $value);
     }
 
-    public static function rm($key, array $array): bool{
+    public static function rm($key, array &$array): bool{
         if(!self::isAvailable($array) || !isset($array[$key])){
             return false;
         }
@@ -487,7 +537,7 @@ class Arr extends BaseClass {
      * @param string $pattern
      * @param array $array
      * @return array|mixed|null
-     * @throws \Feeler\Exceptions\InvalidDataTypeException
+     * @throws \Feeler\Base\Exception\InvalidDataTypeException
      */
     public static function getByPattern(string $pattern, array $array){
         if(!$array || !Str::isAvailable($pattern)){
@@ -538,7 +588,7 @@ class Arr extends BaseClass {
      * @param callable $callback
      * @param array $array
      * @return bool
-     * @throws \Feeler\Exceptions\InvalidDataTypeException
+     * @throws \Feeler\Base\Exception\InvalidDataTypeException
      */
     public static function setByPatternCallback(string $pattern, callable $callback, array &$array){
         if(!$array || !Str::isAvailable($pattern)){
@@ -555,7 +605,7 @@ class Arr extends BaseClass {
      * @param $value
      * @param array $array
      * @return bool
-     * @throws \Feeler\Exceptions\InvalidDataTypeException
+     * @throws \Feeler\Base\Exception\InvalidDataTypeException
      */
     public static function setByPattern(string $pattern, $value, array &$array){
         if(!$array || !Str::isAvailable($pattern)){
@@ -565,5 +615,9 @@ class Arr extends BaseClass {
         $keysList = (array)Obj::parsePattern($pattern, Obj::PATTERN_ARRAY);
 
         return self::setByKeysListCallback($keysList, function() use($value){return $value;},$array);
+    }
+
+    public static function recurseCallback(){
+        array_walk_recursive();
     }
 }

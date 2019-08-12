@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Exceptions\InvalidDataTypeException;
+use Feeler\Base\Exception\InvalidDataTypeException;
 
 class ConfigProxy extends ArrayAccess implements IConfig {
     protected $rootPath;
@@ -49,7 +49,7 @@ class ConfigProxy extends ArrayAccess implements IConfig {
             return Arr::setByPattern($toObjExp, $array,$this->configData);
         }
         else{
-            $this->configData = Arr::merge($this->configData, $array);
+            $this->configData = Arr::mergeByKey($this->configData, $array);
 
             return true;
         }
@@ -61,7 +61,7 @@ class ConfigProxy extends ArrayAccess implements IConfig {
      * @param string|null $toObjExp
      * @return bool
      * @throws InvalidDataTypeException
-     * @throws \Feeler\Exceptions\InvalidDataDomainException
+     * @throws \Feeler\Base\Exception\InvalidDataDomainException
      */
     public function addFromFile(string $file, string $fromObjExp = null, string $toObjExp = null){
         $data = Arr::getFromFile($file);

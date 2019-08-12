@@ -162,22 +162,4 @@ class Table extends Arr{
 
         return $array;
     }
-
-    //merge multi array and don't check the values are unique or not
-    public static function mergeAll(array $array): array{
-        $params = func_get_args();
-
-        if(isset($params[1])){
-            self::tidy($array);
-            unset($params[0]);
-
-            foreach($params as $param){
-                foreach($param as $val){
-                    $array[] = $val;
-                }
-            }
-        }
-
-        return $array;
-    }
 }

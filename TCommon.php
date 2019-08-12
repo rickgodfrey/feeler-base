@@ -7,10 +7,10 @@
 
 namespace Feeler\Base;
 
-use Feeler\Exceptions\InvalidDataTypeException;
+use Feeler\Base\Exception\InvalidDataTypeException;
 
 trait TCommon{
-    public static function isCallable($target){
+    protected static function isCallable($target){
         return is_callable($target) ? true : false;
     }
 
@@ -18,11 +18,11 @@ trait TCommon{
      * @param $target
      * @return mixed
      */
-    public static function getCallableName($target){
+    protected static function getCallableName($target){
         return is_callable($target, false, $callableName) ? $callableName : false;
     }
 
-    public static function isClosure($target): bool{
+    protected static function isClosure($target): bool{
         $callableName = null;
 
         if(is_string($target) && function_exists($target)){
@@ -54,11 +54,11 @@ trait TCommon{
         $dict[$key] = $value;
     }
 
-    public static function isAssoc($value) {
+    protected static function isAssoc($value) {
         return is_array($value) && array_keys($value) !== range(0, count($value) - 1);
     }
 
-    public static function isArray($value, $strict = false){
+    protected static function isArray($value, $strict = false){
         if(!$strict){
             return is_array($value);
         }

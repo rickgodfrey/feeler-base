@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Exceptions\InvalidDataDomainException;
+use Feeler\Base\Exception\InvalidDataDomainException;
 
 class File extends BaseClass{
     const MODE_R = 1;
@@ -17,6 +17,9 @@ class File extends BaseClass{
     const POINTER_HEAD = 1;
     const POINTER_END = 2;
 
+    const AM_FILE = 1;
+    const AM_URL_FILE = 2;
+
     const AVAILABLE = true;
     const NOT_AVAILABLE = false;
 
@@ -24,7 +27,7 @@ class File extends BaseClass{
     public $allowUrlFile = true;
 
     protected $whatAmI;
-    protected $state = true;
+    protected static $state = true;
     protected $position = 0;
     protected $handle;
     protected $fileSize;
@@ -125,10 +128,10 @@ class File extends BaseClass{
      */
     public function init(string $file, int $mode, int $pointer, bool $override): void{
         if(is_file($file)){
-            $this->whatAmI = "FILE";
+            $this->whatAmI = self::AM_FILE;
         }
         else if(@get_headers($file, 1)){
-            $this->whatAmI = "URL_FILE";
+            $this->whatAmI = self::AM_URL_FILE;
         }
         else{
             $this->state = false;
@@ -145,14 +148,14 @@ class File extends BaseClass{
 
         $this->handle = fopen($file, $modeParam);
 
-        if($this->whatAmI == 1){
+        if($this->whatAmI == self::AM_FILE){
             if($this->lock($lockMode))
                 $this->fileSize = filesize($this->file);
             else{
                 $this->state = false;
             }
         }
-        else if($this->whatAmI == 2){
+        else if($this->whatAmI == self::AM_URL_FILE){
             $this->fileSize = self::NOT_AVAILABLE;
         }
     }
@@ -235,7 +238,7 @@ class File extends BaseClass{
     }
 
     public function write($data, $length = -1){
-        if(!$this->state || !$data){
+        if(!static::$state || !$data){
             return false;
         }
 
@@ -270,7 +273,7 @@ class File extends BaseClass{
      * @throws InvalidDataDomainException
      */
     public static function saveAs($file, $content, $length = -1){
-        $fileObj = new self($file, "w", null, true);
+        $fileObj = new self($file, self::MODE_W, self::POINTER_HEAD, true);
         $rs = $fileObj->write($content, $length);
 
         return is_file($file) ? true : false;
@@ -520,5 +523,13 @@ class File extends BaseClass{
             case "tb":
                 return (string)($capacityNumber * 1099511627776);
         }
+    }
+
+    public static function move($oldPath, $newPath){
+        if(!file_exists($oldPath)){
+            return false;
+        }
+
+        return rename($oldPath, $newPath);
     }
 }

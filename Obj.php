@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Exceptions\InvalidDataTypeException;
+use Feeler\Base\Exception\InvalidDataTypeException;
 
 class Obj extends BaseClass {
     const PATTERN_ARRAY = 1;
@@ -55,14 +55,19 @@ class Obj extends BaseClass {
      * @param null $rObj
      * @return bool
      * @throws InvalidDataTypeException
+     * @throws \ReflectionException
      */
-    public static function hasMethodItsOwn($obj, $methodName, &$rObj = null){
+    public static function hasItsOwnMethod($obj, $methodName, &$rObj = null){
         if(!is_object($obj)){
             throw new InvalidDataTypeException("Param 1 is not a object");
         }
 
+        if($rObj === null){
+            $rObj = new \ReflectionClass($obj);
+        }
+
         if(!($rObj instanceof \ReflectionClass)){
-            throw new InvalidDataTypeException("Param 3 is not a reflection object");
+            throw new InvalidDataTypeException("Invalid reflection object");
         }
 
         if(!Str::isAvailable($methodName)){

@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Exceptions\InvalidDataTypeException;
+use Feeler\Base\Exception\InvalidDataTypeException;
 
 class Dependent extends BaseClass {
     /**

@@ -10,10 +10,6 @@ namespace Feeler\Base;
 class Singleton extends BaseClass {
     protected static $instance;
 
-    protected function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * To Prevent The Singleton Cloning Option For Safety
@@ -22,14 +18,14 @@ class Singleton extends BaseClass {
     }
 
     /**
-     * @return mixed
+     * @return static()
      * @throws \ReflectionException
      */
-    public static function &instance(){
+    public static function instance(){
         // if the initialization params has been changed, the singleton instance will be regenerated
-        if(!is_object(static::$instance) || func_num_args() > 0) {
-            $reflectionObj = new \ReflectionClass(static::CLASS_NAME);
-            $params = self::getMethodAfferentObjs($reflectionObj);
+        if(!is_object(static::$instance)) {
+            $reflectionObj = new \ReflectionClass(get_called_class());
+            $params = self::getMethodAfferentObjs($reflectionObj, self::constructorName());
             static::$instance = $reflectionObj->newInstanceArgs($params);
         }
 

@@ -5,8 +5,9 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Base;
+namespace Feeler\Base\Exception;
 
+use Feeler\Base\Errno;
 use \Throwable;
 
 class Exception extends \Exception {
