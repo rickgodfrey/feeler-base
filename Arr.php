@@ -286,13 +286,12 @@ class Arr extends BaseClass {
         return $array;
     }
 
-    public static function getVal($rs, $rsKey, bool $tinyMode = false, bool $withKey = false, &$result = true){
+    public static function getVal($rs, $rsKey, bool $tinyMode = false, bool $withKey = false){
         if(empty($rsKey) || (!is_string($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
             return $rsKey;
         }
 
         $key = $rsKey;
-        $data = null;
 
         if($tinyMode){
             $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?([^\(\)]*)\s*$/i";
@@ -310,7 +309,7 @@ class Arr extends BaseClass {
             $defaultValue = $matches[2];
             $key = $matches[3];
 
-            if($type == "null" || $defaultValue == "null"){
+            if($defaultValue == "null"){
                 $defaultValue = null;
             }
             else if($defaultValue === "[]"){
@@ -319,22 +318,18 @@ class Arr extends BaseClass {
             else if($defaultValue === "{}"){
                 $defaultValue = (new \stdClass());
             }
-            else if($defaultValue === "\[\]"){
-                $defaultValue = "[]";
-            }
-            else if($defaultValue === "\{\}"){
-                $defaultValue = "{}";
-            }
 
-            if (isset($rs[$key]))
+            if (isset($rs[$key])){
                 $data = $rs[$key];
-
-            if($data === null || $data === ""){
+            }
+            else{
                 $data = $defaultValue;
-                $result = false;
             }
 
-            if ($type && $data !== null) {
+            if($data == "" && $defaultValue === null){
+                $data = null;
+            }
+            else{
                 switch ($type) {
                     case "int":
                         $data = (int)$data;
@@ -360,7 +355,9 @@ class Arr extends BaseClass {
                         $data = (object)$data;
                         break;
 
+                    case "void":
                     default:
+                        $data = null;
                         break;
                 }
             }
@@ -446,7 +443,7 @@ class Arr extends BaseClass {
         return array_keys($array) !== range(0, count($array) - 1);
     }
 
-    public static function explode(string $delimiter, string $string, int $limit = -1): array{
+    public static function explode(string $delimiter, $string, int $limit = -1): array{
         if(!$string){
             return [null];
         }

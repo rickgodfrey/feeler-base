@@ -8,7 +8,7 @@
         "feeler", "base", "feeler-base"
     ],
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.3",
         "ext-mbstring": "*"
     },
     "license": "MIT",

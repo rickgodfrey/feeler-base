@@ -43,7 +43,7 @@ class BaseClass
      */
     final protected static function getMethodAfferentObjs(\ReflectionClass $reflectionObj, string $methodName = __METHOD__): array {
         $objs = [];
-
+        
         if (!$reflectionObj->hasMethod($methodName)) {
             return $objs;
         }
@@ -74,12 +74,16 @@ class BaseClass
     }
 
     /**
-     * @param $thisReflectionObj
-     * @param $obj
+     * @param \ReflectionClass $reflectionObj
+     * @param object $obj
      * @throws InvalidDataTypeException
      */
-    final protected function overrideThisObj(\ReflectionClass $thisReflectionObj, object $obj): void{
-        $properties = $thisReflectionObj->getProperties();
+    final protected function selfOverride(\ReflectionClass $reflectionObj = null, object $obj = null): void{
+        if(!is_object($reflectionObj) || !is_object($obj)){
+            return;
+        }
+
+        $properties = $reflectionObj->getProperties();
         foreach($properties as $property){
             $propertyName = $property->name;
             $this->setProperty($propertyName, $obj->$propertyName, true);
@@ -164,7 +168,7 @@ class BaseClass
      */
     public function __call($methodName, $params)
     {
-        throw new InvalidMethodException("Calling invalid method: " . $this->className() . "::{$methodName}()");
+
     }
 
     /**

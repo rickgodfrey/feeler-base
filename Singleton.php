@@ -10,7 +10,6 @@ namespace Feeler\Base;
 class Singleton extends BaseClass {
     protected static $instance;
 
-
     /**
      * To Prevent The Singleton Cloning Option For Safety
      */
