@@ -23,7 +23,7 @@
             "Feeler\\Base\\": "/"
         },
         "files": [
-            "Exceptions.php"
+
         ]
     },
     "autoload-dev": {
