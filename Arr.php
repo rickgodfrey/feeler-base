@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Exception\InvalidDataDomainException;
+use Feeler\Base\Exceptions\InvalidDataDomainException;
 
 class Arr extends BaseClass {
     const SORT_ASC = SORT_ASC;
@@ -534,7 +534,7 @@ class Arr extends BaseClass {
      * @param string $pattern
      * @param array $array
      * @return array|mixed|null
-     * @throws \Feeler\Base\Exception\InvalidDataTypeException
+     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
      */
     public static function getByPattern(string $pattern, array $array){
         if(!$array || !Str::isAvailable($pattern)){
@@ -585,7 +585,7 @@ class Arr extends BaseClass {
      * @param callable $callback
      * @param array $array
      * @return bool
-     * @throws \Feeler\Base\Exception\InvalidDataTypeException
+     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
      */
     public static function setByPatternCallback(string $pattern, callable $callback, array &$array){
         if(!$array || !Str::isAvailable($pattern)){
@@ -602,7 +602,7 @@ class Arr extends BaseClass {
      * @param $value
      * @param array $array
      * @return bool
-     * @throws \Feeler\Base\Exception\InvalidDataTypeException
+     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
      */
     public static function setByPattern(string $pattern, $value, array &$array){
         if(!$array || !Str::isAvailable($pattern)){

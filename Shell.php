@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Exception\InvalidCallException;
+use Feeler\Base\Exceptions\InvalidCallException;
 
 class Shell extends Controller {
     /**

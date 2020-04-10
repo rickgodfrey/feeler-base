@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Exception\InvalidDataDomainException;
+use Feeler\Base\Exceptions\InvalidDataDomainException;
 
 class File extends BaseClass{
     const MODE_R = 1;

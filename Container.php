@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Exception\{InvalidClassException, InvalidDataDomainException};
+use Feeler\Base\Exceptions\{InvalidClassException, InvalidDataDomainException};
 
 class Container extends BaseClass{
     const TYPE_CLASS = 1;
@@ -52,7 +52,7 @@ class Container extends BaseClass{
      * @param $dependency
      * @param $params
      * @param $type
-     * @throws \Feeler\Base\Exception\InvalidDataTypeException
+     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
      */
     protected function setDependenciesMap(string $class, $dependency, array $params, int $type): void{
         $dependencyDict = $this->getDependencyDictStruct($type);
@@ -92,7 +92,7 @@ class Container extends BaseClass{
      * @param array $params
      * @throws InvalidClassException
      * @throws InvalidDataDomainException
-     * @throws \Feeler\Base\Exception\InvalidDataTypeException
+     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
      */
     public function registerDependency(string $class, $dependency, array $params = []): void{
         if(!class_exists($class)){

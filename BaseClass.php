@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Exception\{
+use Feeler\Base\Exceptions\{
     InvalidClassException,
     InvalidMethodException,
     InvalidDataTypeException,

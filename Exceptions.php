@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Base\Exception;
+namespace Feeler\Base\Exceptions;
 
 use Feeler\Base\Errno;
 use \Throwable;
