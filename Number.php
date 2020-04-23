@@ -108,7 +108,7 @@ class Number extends BaseClass {
         return true;
     }
 
-    public static function isNumeric($number){
+    public static function isNumeric(&$number){
         return is_numeric($number) ? true : (Str::isAvailable($number) ? is_numeric($number) : false);
     }
 
