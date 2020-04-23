@@ -17,7 +17,7 @@ class Number extends BaseClass {
     }
 
     public static function isInteric($number){
-        if(!is_numeric($number)){
+        if(!self::isNumeric($number)){
             return false;
         }
 
@@ -29,7 +29,7 @@ class Number extends BaseClass {
     }
 
     public static function isFloaric($number){
-        if(!is_numeric($number)){
+        if(!self::isNumeric($number)){
             return false;
         }
 
@@ -109,7 +109,7 @@ class Number extends BaseClass {
     }
 
     public static function isNumeric($number){
-        return is_numeric($number);
+        return is_numeric($number) ? true : (Str::isAvailable($number) ? is_numeric($number) : false);
     }
 
     public static function isMinusNumeric($number){
