@@ -43,7 +43,7 @@ class BaseClass
      */
     final protected static function getMethodAfferentObjs(\ReflectionClass $reflectionObj, string $methodName = __METHOD__): array {
         $objs = [];
-        
+
         if (!$reflectionObj->hasMethod($methodName)) {
             return $objs;
         }
@@ -94,7 +94,7 @@ class BaseClass
      * @return string
      * @throws InvalidClassException
      */
-    protected static function className(): string
+    protected function classNameStatic(): string
     {
         if(static::$calledClassName !== null){
             return static::$calledClassName;
@@ -107,6 +107,14 @@ class BaseClass
         }
 
         return static::$calledClassName;
+    }
+
+    /**
+     * @return string
+     * @throws InvalidClassException
+     */
+    protected static function className(): string {
+        return self::classNameStatic();
     }
 
     /**
@@ -179,7 +187,7 @@ class BaseClass
      */
     public static function __callStatic($methodName, $params)
     {
-        throw new InvalidMethodException("Calling invalid method: " . static::className() . "::{$methodName}()");
+        throw new InvalidMethodException("Calling invalid method: " . static::classNameStatic() . "::{$methodName}()");
     }
 
     protected function hasProperty(string $propertyName, bool $checkVars = true): bool
@@ -230,13 +238,5 @@ class BaseClass
     {
         $this->setProperty($objName, $dependency, $force);
         $this->dependencies[$objName] = $dependency;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected static function getCalledClassName()
-    {
-        return self::$calledClassName;
     }
 }
