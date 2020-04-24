@@ -94,7 +94,7 @@ class BaseClass
      * @return string
      * @throws InvalidClassException
      */
-    protected function classNameStatic(): string
+    protected static function classNameStatic(): string
     {
         if(static::$calledClassName !== null){
             return static::$calledClassName;
@@ -113,7 +113,7 @@ class BaseClass
      * @return string
      * @throws InvalidClassException
      */
-    protected static function className(): string {
+    protected function className(): string {
         return self::classNameStatic();
     }
 
