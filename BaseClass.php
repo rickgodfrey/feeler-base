@@ -118,6 +118,14 @@ class BaseClass
     }
 
     /**
+     * @return mixed
+     */
+    protected static function getCalledClassName()
+    {
+        return self::$calledClassName;
+    }
+
+    /**
      * @param $propertyName
      * @return mixed
      * @throws InvalidClassException
