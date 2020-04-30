@@ -7,8 +7,15 @@
 
 namespace Feeler\Base\Exceptions;
 
+use Feeler\Base\Errno;
+use Throwable;
+
 /**
  * Exception thrown when you add an element into a full container.
  */
 class OverflowException extends RuntimeException {
+    public function __construct($message = "", $code = Errno::NOERR, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }

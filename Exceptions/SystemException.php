@@ -7,8 +7,15 @@
 
 namespace Feeler\Base\Exceptions;
 
+use Feeler\Base\Errno;
+use Throwable;
+
 /**
  * Exceptions about System.
  */
 class SystemException extends LogicException {
+    public function __construct($message = "", $code = Errno::NOERR, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }
