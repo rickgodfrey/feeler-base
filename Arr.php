@@ -231,35 +231,37 @@ class Arr extends BaseClass {
         return false;
     }
 
-    public static function isAvailable($arr, $key = null, bool $strict = true): bool{
+    public static function isAvailable($arr, $key = null, bool $strict = false): bool{
         if(!is_array($arr))
             return false;
 
-        if(!$key)
+        if($key === null){
             return $arr ? true : false;
+        }
 
         if(is_array($key)){
             foreach($key as $k){
-                if($matches = self::_matchKeyWithType($k)){
-                    $verifiedRs = self::_verify($matches[1], $matches[0]);
-                    if(!$verifiedRs && $strict)
-                        return false;
-                    else if($verifiedRs)
-                        return true;
-                }
-                else if(!isset($arr[$k]) && $strict)
+                $val = self::getVal($arr, $k,$dataKey, $dataType);
+
+                if($dataKey === null){
                     return false;
-                else if(isset($arr[$k]))
-                    return true;
+                }
+
+                if($strict && $dataType !== gettype($val)){
+                    return false;
+                }
             }
         }
         else{
-            if($matches = self::_matchKeyWithType($key)){
-                if(!self::_verify($matches[1], $matches[0]))
-                    return false;
-            }
-            else if(!isset($arr[$key]))
+            $val = self::getVal($arr, $key,$dataKey, $dataType);
+
+            if($dataKey === null){
                 return false;
+            }
+
+            if($strict && $dataType !== gettype($val)){
+                return false;
+            }
         }
 
         return true;
@@ -286,19 +288,21 @@ class Arr extends BaseClass {
         return $array;
     }
 
-    public static function getVal($rs, $rsKey, bool $tinyMode = false, bool $withKey = false){
-        if(empty($rsKey) || (!is_string($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
-            return $rsKey;
+    public static function getVal($rs, $rsKey, &$dataKey = null, &$dataType = null){
+        if(empty($rsKey) || (!Str::isAvailable($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
+            return null;
         }
 
         $key = $rsKey;
 
-        if($tinyMode){
-            $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?([^\(\)]*)\s*$/i";
+        if(isset($rs[$key])){
+            $dataKey = $key;
+            $dataType = gettype($rs[$key]);
+
+            return $rs[$key];
         }
-        else{
-            $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/i";
-        }
+
+        $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/i";
 
         if(self::isClosure($rsKey)){
             $data = call_user_func($rsKey);
@@ -308,6 +312,7 @@ class Arr extends BaseClass {
             $type = strtolower($type);
             $defaultValue = $matches[2];
             $key = $matches[3];
+            $dataKey = $key;
 
             if($defaultValue == "null"){
                 $defaultValue = null;
@@ -366,7 +371,9 @@ class Arr extends BaseClass {
             $data = $rsKey;
         }
 
-        return $withKey ? [$key => $data] : $data;
+        $dataType = gettype($data);
+
+        return $data;
     }
 
     public static function build($mappings){
@@ -415,21 +422,6 @@ class Arr extends BaseClass {
 
         foreach($mappings as $newKey => $key){
             $vals[$newKey] = self::getVal($array, $key);
-        }
-
-        return $vals;
-    }
-
-    public static function getVals($array, $keys = []){
-        if(!self::isAvailable($array) || !self::isAvailable($keys)){
-            return [];
-        }
-
-        $vals = [];
-
-        foreach($keys as $key){
-            $val = self::getVal($array, $key, true, true);
-            $vals[key($val)] = current($val);
         }
 
         return $vals;
