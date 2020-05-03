@@ -303,12 +303,7 @@ class Arr extends BaseClass {
             return $rs[$key];
         }
 
-        if($tinyMode){
-            $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?([^\(\)]*)\s*$/i";
-        }
-        else{
-            $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/i";
-        }
+        $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/i";
 
         if(self::isClosure($rsKey)){
             $data = call_user_func($rsKey);
