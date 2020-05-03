@@ -288,21 +288,27 @@ class Arr extends BaseClass {
         return $array;
     }
 
-    public static function getVal($rs, $rsKey, &$dataKey = null, &$dataType = null){
-        if(empty($rsKey) || (!Str::isAvailable($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
+    public static function getVal($rs, $rsKey, &$dataKey = null, &$dataType = null, $tinyMode = false){
+        if($rsKey == null || (!Str::isAvailable($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
             return null;
         }
 
         $key = $rsKey;
+        $data = null;
 
-        if(isset($rs[$key])){
+        if($tinyMode && isset($rs[$key])){
             $dataKey = $key;
             $dataType = gettype($rs[$key]);
 
             return $rs[$key];
         }
 
-        $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/i";
+        if($tinyMode){
+            $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?([^\(\)]*)\s*$/i";
+        }
+        else{
+            $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/i";
+        }
 
         if(self::isClosure($rsKey)){
             $data = call_user_func($rsKey);
@@ -312,7 +318,6 @@ class Arr extends BaseClass {
             $type = strtolower($type);
             $defaultValue = $matches[2];
             $key = $matches[3];
-            $dataKey = $key;
 
             if($defaultValue == "null"){
                 $defaultValue = null;
@@ -371,6 +376,7 @@ class Arr extends BaseClass {
             $data = $rsKey;
         }
 
+        $dataKey = $key;
         $dataType = gettype($data);
 
         return $data;
