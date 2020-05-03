@@ -289,8 +289,8 @@ class Arr extends BaseClass {
     }
 
     public static function getVal($rs, $rsKey, &$dataKey = null, &$dataType = null, $tinyMode = false){
-        if($rsKey == null || (!Str::isAvailable($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
-            return null;
+        if(empty($rsKey) || (!Str::isAvailable($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
+            return $rsKey;
         }
 
         $key = $rsKey;
