@@ -13,7 +13,7 @@ use Feeler\Base\Str;
 use \Throwable;
 
 class Exception extends \Exception {
-    public function __construct($message = "", $code = Errno::NOERR, Throwable $previous = null)
+    public function __construct($code = Errno::NOERR, $message = "", Throwable $previous = null)
     {
         if(Number::isInteric($code)){
             $code = (int)$code;
