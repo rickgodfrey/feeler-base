@@ -9,6 +9,7 @@ namespace Feeler\Base;
 
 class Errno{
     const NOERR = 0;
+    const UNSPECIFIED = 1;
     const RUNTIME_ERR = 1001;
     const LOGIC_ERR = 2001;
     const SYSTEM_ERR = 10001;
