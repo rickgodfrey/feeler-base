@@ -8,13 +8,12 @@
 namespace Feeler\Base\Exceptions;
 
 use Feeler\Base\Errno;
-use Throwable;
 
 /**
  * Exceptions about Network.
  */
 class NetworkException extends SystemException {
-    public function __construct($message = "", $code = Errno::NOERR, Throwable $previous = null)
+    public function __construct($message = "", $code = Errno::UNSPECIFIED, \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
