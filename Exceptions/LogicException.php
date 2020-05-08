@@ -14,7 +14,7 @@ use Feeler\Base\Errno;
  * exceptions should directly lead to a fix in your code.
  * @link https://php.net/manual/en/class.logicexception.php
  */
-class LogicException extends Exception {
+class LogicException extends BaseException {
     public function __construct($message = "", $code = Errno::UNSPECIFIED, \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);

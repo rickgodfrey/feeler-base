@@ -11,7 +11,7 @@ use Feeler\Base\Errno;
 use Feeler\Base\Number;
 use Feeler\Base\Str;
 
-class Exception extends \Exception {
+class BaseException extends \Exception {
     public function __construct($message = "", $code = Errno::UNSPECIFIED, \Throwable $previous = null)
     {
         if(Number::isInteric($code)){
