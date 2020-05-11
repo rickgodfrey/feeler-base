@@ -14,15 +14,12 @@ use Feeler\Base\Str;
 class BaseException extends \Exception {
     public function __construct($message = "", $code = Errno::UNSPECIFIED, \Throwable $previous = null)
     {
-        if(Number::isInteric($code)){
-            $code = (int)$code;
+        if(!Number::isInteric($code) || !Str::isAvailable($message)){
+            $code = Errno::UNKNOWN;
+            $message = "UNKNOWN_ERROR";
         }
         else{
-            $code = Errno::UNKNOWN;
-        }
-
-        if(!Str::isAvailable($message)){
-            $message = "UNKNOWN_ERROR";
+            $code = (int)$code;
         }
 
         parent::__construct($message, $code, $previous);
