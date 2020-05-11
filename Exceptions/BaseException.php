@@ -18,11 +18,11 @@ class BaseException extends \Exception {
             $code = (int)$code;
         }
         else{
-            $code = Errno::UNSPECIFIED;
+            $code = Errno::UNKNOWN;
         }
 
         if(!Str::isAvailable($message)){
-            $message = "";
+            $message = "UNKNOWN_ERROR";
         }
 
         parent::__construct($message, $code, $previous);
