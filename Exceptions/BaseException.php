@@ -21,7 +21,7 @@ class BaseException extends \Exception {
             $code = Errno::UNSPECIFIED;
         }
 
-        if(Str::isAvailable($message)){
+        if(!Str::isAvailable($message)){
             $message = "";
         }
 
