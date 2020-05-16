@@ -7,6 +7,8 @@
 
 namespace Feeler\Base;
 
+use Feeler\Base\Exceptions\InvalidDataDomainException;
+
 trait TFactory {
     protected static $instances;
     protected static $usingInstance;
@@ -28,12 +30,23 @@ trait TFactory {
         }
     }
 
-    public static function setInstance(string $instanceName, object $instance){
+    public static function setInstance(string $instanceName, object &$instance, $force = true){
         if(!Str::isAvailable($instanceName) || !is_object($instance)){
             return false;
         }
 
-        static::$instances[$instanceName] = $instance;
+        if(!isset(static::$instances[$instanceName]) || $force){
+            static::$instances[$instanceName] = &$instance;
+        }
+    }
+
+    public static function setUsingInstance(string $instanceName, object &$instance){
+        if(!Str::isAvailable($instanceName) || !is_object($instance)){
+            return false;
+        }
+
+        static::$usingInstance = &$instance;
+        static::$usingInstanceName = $instanceName;
     }
 
     /**
@@ -54,16 +67,21 @@ trait TFactory {
         }
 
         if(Str::isAvailable($instanceName) && isset(static::$instances[$instanceName]) && is_object(static::$instances[$instanceName])){
-            static::$usingInstance = static::$instances[$instanceName];
-            static::$usingInstanceName = $instanceName;
+            $instance = static::$instances[$instanceName];
+        }
+        else if(!is_object(static::$usingInstance) && is_callable($callback)) {
+            $instance = call_user_func($callback);
+        }
+        else{
+            $instance = null;
         }
 
-        if(!is_object(static::$usingInstance) || $force) {
-            if(is_callable($callback)){
-                static::$usingInstance = call_user_func($callback);
-                static::$usingInstanceName = $instanceName;
-            }
+        if(!is_object($instance)){
+            throw new InvalidDataDomainException("InvalidDataDomainException");
         }
+
+        static::setUsingInstance($instanceName, $instance);
+        static::setInstance($instanceName, $instance, $force);
 
         return static::$usingInstance;
     }
