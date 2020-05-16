@@ -7,8 +7,9 @@
 
 namespace Feeler\Base;
 
-trait TSingleton {
-    protected static $instance;
+trait TFactory {
+    protected static $instances;
+    protected static $usingInstance;
 
     /**
      * To Prevent The Singleton Cloning Option For Safety
@@ -20,14 +21,17 @@ trait TSingleton {
      * @return static()
      * @throws \ReflectionException
      */
-    public static function instance(){
+    public static function &instance($instanceName = null){
         // if the initialization params has been changed, the singleton instance will be regenerated
-        if(!is_object(static::$instance)) {
-            $reflectionObj = new \ReflectionClass(get_called_class());
-            $params = func_get_args();
-            static::$instance = $reflectionObj->newInstanceArgs($params);
+        if(Str::isAvailable($instanceName) && isset(static::$instances[$instanceName]) && is_object(static::$instances[$instanceName])){
+            static::$usingInstance = static::$instances[$instanceName];
         }
 
-        return static::$instance;
+        if(!is_object(static::$usingInstance)) {
+            $reflectionObj = new \ReflectionClass(get_called_class());
+            static::$usingInstance = $reflectionObj->newInstance();
+        }
+
+        return static::$usingInstance;
     }
 }
