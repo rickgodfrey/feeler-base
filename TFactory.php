@@ -51,11 +51,12 @@ trait TFactory {
 
     /**
      * @param string $instanceName
-     * @param callable $callback
+     * @param callable|null $callback
      * @param bool $force
      * @return static()
+     * @throws InvalidDataDomainException
      */
-    public static function &instance(string $instanceName = "", callable $callback = null, bool $force = false){
+    public static function &instance(string $instanceName = "", callable $callback = null, bool $force = false) {
         // if the initialization params has been changed, the singleton instance will be regenerated
         if($instanceName === ""){
             if(Str::isAvailable(static::$usingInstanceName)){
