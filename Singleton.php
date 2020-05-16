@@ -13,8 +13,7 @@ class Singleton extends BaseClass {
     /**
      * To Prevent The Singleton Cloning Option For Safety
      */
-    protected function __clone(){
-    }
+    protected function __clone(){}
 
     /**
      * @return static()

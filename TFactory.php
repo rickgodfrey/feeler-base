@@ -12,6 +12,11 @@ trait TFactory {
     protected static $usingInstance;
     protected static $usingInstanceName;
 
+    /**
+     * To Prevent The Singleton Cloning Option For Safety
+     */
+    protected function __clone(){}
+
     protected static function recycle($instanceName = null){
         if(!Str::isAvailable($instanceName)){
             static::$instances = null;
