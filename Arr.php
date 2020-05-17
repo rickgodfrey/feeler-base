@@ -215,6 +215,25 @@ class Arr extends BaseClass {
         return $arr;
     }
 
+    public static function toXml($arr, $level = 1)
+    {
+        $s = $level == 1 ? "<xml>" : '';
+        foreach ($arr as $tagname => $value) {
+            if (is_numeric($tagname)) {
+                $tagname = $value['TagName'];
+                unset($value['TagName']);
+            }
+            if (!is_array($value)) {
+                $s .= "<{$tagname}>" . (!is_numeric($value) ? '<![CDATA[' : '') . $value . (!is_numeric($value) ? ']]>' : '') . "</{$tagname}>";
+            }
+            else {
+                $s .= "<{$tagname}>" . self::toXml($value, $level + 1) . "</{$tagname}>";
+            }
+        }
+        $s = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", ' ', $s);
+        return $level == 1 ? $s . "</xml>" : $s;
+    }
+
     private static function _match(string $regex, string $data): array{
         preg_match($regex, $data, $matches);
         return $matches;

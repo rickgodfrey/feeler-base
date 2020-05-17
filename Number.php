@@ -205,4 +205,62 @@ class Number extends BaseClass {
 
         return $number;
     }
+
+    public static function format($number, $decimalPlaceLen = 2, $round = true, $fixedDecimalPlace = false, $showThousandsSep = false){
+        if(!self::isNumeric($number) || $number == 0 || !self::isInt($decimalPlaceLen) || $decimalPlaceLen < 0){
+            if($fixedDecimalPlace && self::isPosiInteric($decimalPlaceLen)){
+                return "0.".str_repeat("0", $decimalPlaceLen);
+            }
+            else{
+                return 0;
+            }
+        }
+
+        if($showThousandsSep){
+            $thousandsSep = ",";
+        }
+        else{
+            $thousandsSep = "";
+        }
+
+        if($round){
+            $number = sprintf("%.{$decimalPlaceLen}f", number_format($number, $decimalPlaceLen, ".", $thousandsSep));
+        }
+        else{
+            if($decimalPlaceLen == 0){
+                $number = floor($number);
+            }
+            else{
+                $digit = $decimalPlaceLen + 1;
+                $number = sprintf("%.{$digit}f", number_format($number, $digit, ".", $thousandsSep));
+                if(self::isFloaric($number)){
+                    $numberParts = explode(".", $number);
+                    $decimalLen = strlen($numberParts[1]);
+                    if($decimalLen > $decimalPlaceLen){
+                        $numberParts[1] = substr($numberParts[1], 0, ($decimalLen - ($decimalLen - $decimalPlaceLen)));
+                        $number = $numberParts[0].".".$numberParts[1];
+                    }
+                }
+            }
+        }
+
+        if($fixedDecimalPlace && self::isPosiInteric($decimalPlaceLen)){
+            $numberParts = explode(".", (string)$number, 2);
+
+            if(isset($numberParts[1])){
+                if(($len = strlen($numberParts[1])) < $decimalPlaceLen){
+                    $difference = $decimalPlaceLen - $len;
+                    $number = $numberParts[0].".{$numberParts[1]}".str_repeat("0", $difference);
+                }
+            }
+            else{
+                $number = $number.".".str_repeat("0", $decimalPlaceLen);
+            }
+        }
+        else{
+            $number = (float)$number;
+        }
+
+        return $number;
+    }
 }
