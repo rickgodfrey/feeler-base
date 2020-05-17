@@ -455,41 +455,6 @@ class Arr extends BaseClass {
         return call_user_func("implode", $delimiter, $array);
     }
 
-    public static function get(string $key, array $array, $defaultValue = null): array{
-        if(is_null($key) || $key === "") {
-            return null;
-        }
-
-        if(array_key_exists($key, $array)) {
-            return $array[$key];
-        }
-
-        foreach(explode('.', $key) as $segment){
-            if(is_array($array) && array_key_exists($segment, $array)){
-                $array = $array[$segment];
-            }
-            else{
-                return $defaultValue;
-            }
-        }
-
-        return $array;
-    }
-
-    public static function set($key, $value, array &$array): bool{
-        if(!self::isAvailable($array)){
-            return false;
-        }
-
-        if(!Str::isAvailable($array) && Number::isInt($key)) {
-            return false;
-        }
-
-        $array[$key] = $value;
-
-        return true;
-    }
-
     public static function insert($value, int $position, array &$array): array{
         return array_splice($array, $position, 0, $value);
     }
