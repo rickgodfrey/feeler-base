@@ -83,11 +83,26 @@ class BaseClass
             return;
         }
 
+        $className = get_class($obj);
         $properties = $reflectionObj->getProperties();
-        foreach($properties as $property){
+        $staticProperties = $reflectionObj->getStaticProperties();
+        $staticPropertiesNames = [];
+
+        foreach($staticProperties as $propertyName => &$value){
+            static::setStaticProperty($propertyName, $className::$$propertyName, true);
+            Arr::addToBottom($propertyName, $staticPropertiesNames);
+        }
+        unset($value);
+
+        foreach($properties as &$property){
             $propertyName = $property->name;
+            if(in_array($propertyName, $staticPropertiesNames)){
+                continue;
+            }
+
             $this->setProperty($propertyName, $obj->$propertyName, true);
         }
+        unset($property);
     }
 
     /**
@@ -233,7 +248,25 @@ class BaseClass
             return;
         }
 
-        $this->$propertyName = $value;
+        $this->$propertyName = &$value;
+    }
+
+    /**
+     * @param string $propertyName
+     * @param $value
+     * @param bool $force
+     * @throws InvalidDataTypeException
+     */
+    public static function setStaticProperty(string $propertyName, &$value, bool $force = false): void{
+        if(is_null($propertyName)){
+            throw new InvalidDataTypeException("Illegal static property setting");
+        }
+
+        if(isset(static::$$propertyName) && !is_null(static::$$propertyName) && !$force){
+            return;
+        }
+
+        static::$$propertyName = &$value;
     }
 
     /**
