@@ -65,8 +65,8 @@ class BaseClass
 
             $reflectionParamClassName = $reflectionParamClassObj->getName();
 
-            $reflectionConstructionObj = new \ReflectionClass(self::constructorName());
-            $reflectionParamClassParams = self::getMethodAfferentObjs($reflectionConstructionObj, $reflectionParamClassName);
+            $reflectionConstructionObj = new \ReflectionClass(static::constructorName());
+            $reflectionParamClassParams = static::getMethodAfferentObjs($reflectionConstructionObj, $reflectionParamClassName);
             $objs[] = (new \ReflectionClass($reflectionParamClassObj->getName()))->newInstanceArgs($reflectionParamClassParams);
         }
 
@@ -114,7 +114,7 @@ class BaseClass
      * @throws InvalidClassException
      */
     protected function className(): string {
-        return self::classNameStatic();
+        return static::classNameStatic();
     }
 
     /**
@@ -122,7 +122,7 @@ class BaseClass
      */
     protected static function getCalledClassName()
     {
-        return self::$calledClassName;
+        return static::$calledClassName;
     }
 
     /**
