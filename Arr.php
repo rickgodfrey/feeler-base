@@ -29,7 +29,7 @@ class Arr extends BaseClass {
     }
 
     //Array of keys to delete and restore to incrementing key
-    public static function tidy(array $array = []): array{
+    public static function tidy($array = []): array{
         if(!self::isAvailable($array)){
             return [];
         }
@@ -39,43 +39,54 @@ class Arr extends BaseClass {
         return $array;
     }
 
-    public static function sort(array &$array, int $order = self::SORT_ASC, int $type = self::SORT_NATURAL, bool $keepKey = true): bool{
-        if(!$array)
-            return false;
+    public static function inArray($value, array $array, bool $strict = false) : bool{
+        return in_array($value, $array, $strict);
+    }
 
-        if($type == self::SORT_NATURAL){
-            if($order == self::SORT_ASC){
+    public static function sort(&$array, int $order = self::SORT_ASC, int $type = self::SORT_NATURAL, bool $keepKey = true): bool{
+        if(!self::isAvailable($array)){
+            return false;
+        }
+
+        if($type === self::SORT_NATURAL){
+            if($order === self::SORT_ASC){
                 natsort($array);
             }
-            else if($order == self::SORT_DESC){
+            else if($order === self::SORT_DESC){
                 natsort($array);
                 $array = array_reverse($array, true);
             }
-            else
+            else{
                 return false;
+            }
         }
         else{
-            if(!in_array($type, [self::SORT_NUMERIC, self::SORT_REGULAR, self::SORT_STRING, self::SORT_LOCALE_STRING])){
+            if(!in_array($type, [self::SORT_NUMERIC, self::SORT_REGULAR, self::SORT_STRING, self::SORT_LOCALE_STRING], true)){
                 return false;
             }
 
-            if($order === self::SORT_ASC)
+            if($order === self::SORT_ASC){
                 asort($array, $type);
-            else if($order === self::SORT_DESC)
+            }
+            else if($order === self::SORT_DESC){
                 arsort($array, $type);
-            else
+            }
+            else{
                 return false;
+            }
         }
 
-        if(!$keepKey)
+        if(!$keepKey){
             self::tidy($array);
+        }
 
         return true;
     }
 
-    public static function ksort(array &$array, int $order = self::SORT_ASC, int $type = self::SORT_NATURAL): bool{
-        if(!is_array($array) || !$array)
+    public static function ksort(&$array, int $order = self::SORT_ASC, int $type = self::SORT_NATURAL): bool{
+        if(!self::isAvailable($array)){
             return false;
+        }
 
         if($type == self::SORT_NATURAL){
             $keys = array_keys($array);
@@ -87,8 +98,9 @@ class Arr extends BaseClass {
                 natsort($keys);
                 $keys = array_reverse($keys, true);
             }
-            else
+            else{
                 return false;
+            }
 
             $arr1 = [];
             foreach($keys as $key){
@@ -107,12 +119,15 @@ class Arr extends BaseClass {
                 return false;
             }
 
-            if($order === self::SORT_ASC)
+            if($order === self::SORT_ASC){
                 ksort($array, $type);
-            else if($order === self::SORT_DESC)
+            }
+            else if($order === self::SORT_DESC){
                 krsort($array, $type);
-            else
+            }
+            else{
                 return false;
+            }
 
             return true;
         }
@@ -191,77 +206,35 @@ class Arr extends BaseClass {
         return array_unique($array);
     }
 
-    //array to object conversion
-    public static function toObj($arr, bool $force = false){
-        if($force){
-            return (object)$arr;
-        }
-
-        if(gettype($arr) != "array"){
-            return $arr;
-        }
-
-        foreach($arr as $k => $v){
-            if(strripos($k, "_array") === (strlen($k) - 6) || (strripos($k, "_list") === (strlen($k) - 5))){
-                $v = (array)$v;
-            }
-            else if(is_array($v) && is_string($k) && (strripos($k, "_object") === (strlen($k) - 7) || !preg_match("/^(?:.*(?:es|[^s]s)|(?:es|[^s]s)_[^_]*)$/i", $k))){
-                $v = (object)$v;
-            }
-
-            $arr[$k] = self::toObj($v);
-        }
-
-        return $arr;
+    public static function flip(array $array) : array{
+        return array_flip($array);
     }
 
-    public static function toXml($arr, $level = 1)
-    {
-        $s = $level == 1 ? "<xml>" : '';
-        foreach ($arr as $tagname => $value) {
-            if (is_numeric($tagname)) {
-                $tagname = $value['TagName'];
-                unset($value['TagName']);
-            }
-            if (!is_array($value)) {
-                $s .= "<{$tagname}>" . (!is_numeric($value) ? '<![CDATA[' : '') . $value . (!is_numeric($value) ? ']]>' : '') . "</{$tagname}>";
-            }
-            else {
-                $s .= "<{$tagname}>" . self::toXml($value, $level + 1) . "</{$tagname}>";
-            }
-        }
-        $s = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", ' ', $s);
-        return $level == 1 ? $s . "</xml>" : $s;
-    }
-
-    private static function _match(string $regex, string $data): array{
-        preg_match($regex, $data, $matches);
-        return $matches;
-    }
-
-    private static function _matchKeyWithType(string $data): array{
-        return self::_match("/^\s*?\((.*?)\)\s*?(.*?)\s*$/", $data);
-    }
-
-    private static function _verify($data, string $type): bool{
-        if(strtolower((string)gettype($data)) === $type)
-            return true;
-
-        return false;
-    }
-
-    public static function isAvailable($arr, $key = null, bool $strict = false): bool{
-        if(!is_array($arr))
+    /**
+     * @param $arr
+     * @param null $key
+     * @param bool $strict
+     * @return bool
+     */
+    public static function isAvailable($arr, $key = null, bool $strict = false): bool {
+        $isArray = is_array($arr);
+        if($isArray === false){
             return false;
+        }
+
+        $isAvailable = ($isArray === true && $arr !== []) ? true : false;
 
         if($key === null){
-            return $arr ? true : false;
+            return $isAvailable;
         }
 
-        if(is_array($key)){
+        if(self::isArray($key)){
+            if(self::isAssoc($key)){
+                $key = self::flip($key);
+            }
+
             foreach($key as $k){
                 $val = self::getVal($arr, $k,$dataKey, $dataType);
-
                 if($dataKey === null){
                     return false;
                 }
@@ -287,47 +260,58 @@ class Arr extends BaseClass {
     }
 
     public static function current($arr){
-        if(self::isAvailable($arr))
+        if(self::isAvailable($arr)){
             $arr = current($arr);
-        else
+        }
+        else{
             $arr = null;
+        }
 
         return $arr;
     }
 
-    public static function rmVal($array, $value){
-        if(self::isAvailable($array) && $value){
-            foreach($array as $key => $val){
-                if($val === $value){
-                    unset($array[$key]);
-                }
-            }
+    public static function rmVal(&$array, bool $keepKey = true) :bool {
+        $params = func_get_args();
+        if(!self::isAvailable($array) || !isset($params[1])){
+            return false;
         }
 
-        return $array;
+        $value = $params[1];
+
+        if(($index = array_search($value, $array)) === false || !isset($array[$index])){
+            return false;
+        }
+
+        unset($array[$index]);
+
+        if(!$keepKey){
+            $array = self::tidy($array);
+        }
+
+        return true;
     }
 
-    public static function getVal($rs, $rsKey, &$dataKey = null, &$dataType = null, $tinyMode = false){
-        if(empty($rsKey) || (!Str::isAvailable($rsKey) && !is_int($rsKey) && !is_callable($rsKey))){
+    public static function getVal($rs, $rsKey, &$dataKey = null, &$dataType = null){
+        if((empty($rsKey) || (!Str::isAvailable($rsKey))) && !Number::isInt($rsKey) && !($isClosure = self::isClosure($rsKey))){
             return $rsKey;
         }
 
-        $key = $rsKey;
         $data = null;
 
-        if($tinyMode && isset($rs[$key])){
-            $dataKey = $key;
-            $dataType = gettype($rs[$key]);
+        if(isset($rs[$rsKey])){
+            $dataKey = $rsKey;
+            $dataType = gettype($rs[$rsKey]);
 
-            return $rs[$key];
+            return $rs[$rsKey];
         }
 
-        $regex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/i";
+        $tinyRegex = "/^\s*([^\{\}]*)\s*$/";
+        $completeRegex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/";
 
-        if(self::isClosure($rsKey)){
+        if($isClosure){
             $data = call_user_func($rsKey);
         }
-        else if(preg_match($regex, $rsKey, $matches)) {
+        else if(preg_match($completeRegex, $rsKey, $matches) || preg_match($tinyRegex, $rsKey, $matches)) {
             $type = $matches[1];
             $type = strtolower($type);
             $defaultValue = $matches[2];
@@ -445,14 +429,6 @@ class Arr extends BaseClass {
         }
 
         return $vals;
-    }
-
-    public static function isAssoc($array): bool{
-        if(!self::isAvailable($array)){
-            return false;
-        }
-
-        return array_keys($array) !== range(0, count($array) - 1);
     }
 
     public static function explode(string $delimiter, $string, int $limit = -1): array{
@@ -591,7 +567,48 @@ class Arr extends BaseClass {
         return self::setByKeysListCallback($keysList, function() use($value){return $value;},$array);
     }
 
-    public static function recurseCallback(){
-        array_walk_recursive();
+    //array to object conversion
+    public static function toObj($arr, bool $force = false){
+        if($force){
+            return (object)$arr;
+        }
+
+        if(gettype($arr) != "array"){
+            return $arr;
+        }
+
+        foreach($arr as $k => $v){
+            if(strripos($k, "_array") === (strlen($k) - 6) || (strripos($k, "_list") === (strlen($k) - 5))){
+                $v = (array)$v;
+            }
+            else if(is_array($v) && is_string($k) && (strripos($k, "_object") === (strlen($k) - 7) || !preg_match("/^(?:.*(?:es|[^s]s)|(?:es|[^s]s)_[^_]*)$/i", $k))){
+                $v = (object)$v;
+            }
+
+            $arr[$k] = self::toObj($v);
+        }
+
+        return $arr;
     }
+
+    public static function toXml($arr, $level = 1)
+    {
+        $s = $level == 1 ? "<xml>" : '';
+        foreach ($arr as $tagname => $value) {
+            if (is_numeric($tagname)) {
+                $tagname = $value['TagName'];
+                unset($value['TagName']);
+            }
+            if (!is_array($value)) {
+                $s .= "<{$tagname}>" . (!is_numeric($value) ? '<![CDATA[' : '') . $value . (!is_numeric($value) ? ']]>' : '') . "</{$tagname}>";
+            }
+            else {
+                $s .= "<{$tagname}>" . self::toXml($value, $level + 1) . "</{$tagname}>";
+            }
+        }
+        $s = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", ' ', $s);
+        return $level == 1 ? $s . "</xml>" : $s;
+    }
+
+    public static function recurseCallback(){}
 }

@@ -115,8 +115,9 @@ trait TCommon{
 
     /**
      * @param string $constName
+     * @return mixed|null
      */
     protected static function constValue(string $constName){
-        static::defined($constName) ? constant(static::class."::{$constName}") : null;
+        return static::defined($constName) ? constant(static::class."::{$constName}") : null;
     }
 }

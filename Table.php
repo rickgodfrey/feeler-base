@@ -8,23 +8,17 @@
 namespace Feeler\Base;
 
 class Table extends Arr{
-    const SORT_ASC = SORT_ASC;
-    const SORT_DESC = SORT_DESC;
-    const SORT_NATURAL = SORT_NATURAL;
-    const SORT_NUMERIC = SORT_NUMERIC;
-    const SORT_STRING = SORT_STRING;
-    const SORT_REGULAR = SORT_REGULAR;
-    const SORT_LOCALE_STRING = SORT_LOCALE_STRING;
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    const SORT_ASC = parent::SORT_ASC;
+    const SORT_DESC = parent::SORT_DESC;
+    const SORT_NATURAL = parent::SORT_NATURAL;
+    const SORT_NUMERIC = parent::SORT_NUMERIC;
+    const SORT_STRING = parent::SORT_STRING;
+    const SORT_REGULAR = parent::SORT_REGULAR;
+    const SORT_LOCALE_STRING = parent::SORT_LOCALE_STRING;
 
     //Sort the 2D array by the 2nd dimension value, according is the 2nd dimension key
     public static function sortByField(&$array, $field, int $order = self::SORT_ASC, int $type = self::SORT_NATURAL, $keepKey = false) : bool{
-        if(Arr::isAvailable($array) || !Str::isAvailable($field)){
-            $array = [];
+        if(!Arr::isAvailable($array) || !Str::isAvailable($field)){
             return false;
         }
 

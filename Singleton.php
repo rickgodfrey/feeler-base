@@ -22,8 +22,8 @@ class Singleton extends BaseClass {
     public static function &instance(){
         // if the initialization params has been changed, the singleton instance will be regenerated
         if(!is_object(static::$instance)) {
-            $reflectionObj = new \ReflectionClass(get_called_class());
-            $params = self::getMethodAfferentObjs($reflectionObj, self::constructorName());
+            $reflectionObj = new \ReflectionClass(static::class);
+            $params = self::getMethodAfferentObjs($reflectionObj, static::constructorName());
             static::$instance = $reflectionObj->newInstanceArgs($params);
         }
 

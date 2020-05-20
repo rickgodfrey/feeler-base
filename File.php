@@ -20,9 +20,6 @@ class File extends BaseClass{
     const AM_FILE = "AM_FILE";
     const AM_URL_FILE = "AM_URL_FILE";
 
-    const AVAILABLE = "AVAILABLE";
-    const NOT_AVAILABLE = "NOT_AVAILABLE";
-
     public $segLength = 524288; //to read and write slice in segments, this set every segment's length
     public $allowUrlFile = true;
 
@@ -140,42 +137,49 @@ class File extends BaseClass{
 
         $modeParam = $this->_convertModeParams($mode, $pointer, $override);
 
-        if($modeParam != "r")
+        if($modeParam != "r"){
             $lockMode = LOCK_EX;
+        }
 
         $this->handle = fopen($file, $modeParam);
 
         if($this->whatAmI == self::AM_FILE){
-            if($this->lock($lockMode))
+            if($this->lock($lockMode)){
                 $this->fileSize = filesize($this->file);
+            }
             else{
                 $this->state = false;
             }
         }
         else if($this->whatAmI == self::AM_URL_FILE){
-            $this->fileSize = self::NOT_AVAILABLE;
+            $this->fileSize = false;
         }
     }
 
     public function getData(int $length = -1, int $position = null){
-        if($position === null)
+        if($position === null){
             $position = 0;
+        }
 
-        if(!$this->state || $position < 0)
+        if(!$this->state || $position < 0){
             return false;
+        }
 
-        if($length === -1)
+        if($length === -1){
             $length = $this->fileSize;
+        }
 
         $originalPosition = $this->position;
         $this->seek($position);
         $data = null;
 
         while($dataSize = (strlen($data)) < $length){
-            if(($remain = $length - $dataSize) < $this->segLength)
+            if(($remain = $length - $dataSize) < $this->segLength){
                 $data .= fread($this->handle, $remain);
-            else
+            }
+            else{
                 $data .= fread($this->handle, $this->segLength);
+            }
         }
 
         $this->seek($originalPosition);
@@ -189,13 +193,13 @@ class File extends BaseClass{
         }
 
         if($length === -1){
-            $length = $this->fileSize;
+            $length = false;
         }
 
         $originalPosition = $this->position;
         $this->seek($position);
 
-        if($this->fileSize === self::NOT_AVAILABLE){
+        if($this->fileSize === false){
             while($data = fread($this->handle, $this->segLength)){
                 $callback($data);
             }
@@ -224,8 +228,9 @@ class File extends BaseClass{
             $position = 0;
         }
 
-        if(!is_int($position) || $position < 0)
+        if(!is_int($position) || $position < 0){
             return false;
+        }
 
         if(@fseek($this->handle, $position) !== 0){
             return false;
@@ -273,7 +278,7 @@ class File extends BaseClass{
      */
     public static function saveAs($file, $content, $length = -1){
         $fileObj = new self($file, self::MODE_W, self::POINTER_HEAD, true);
-        $rs = $fileObj->write($content, $length);
+        $fileObj->write($content, $length);
 
         return is_file($file) ? true : false;
     }
@@ -524,7 +529,7 @@ class File extends BaseClass{
         }
     }
 
-    public static function move($oldPath, $newPath){
+    public static function mv($oldPath, $newPath){
         if(!file_exists($oldPath)){
             return false;
         }
