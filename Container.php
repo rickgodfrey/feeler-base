@@ -10,9 +10,9 @@ namespace Feeler\Base;
 use Feeler\Base\Exceptions\{InvalidClassException, InvalidDataDomainException};
 
 class Container extends BaseClass{
-    const TYPE_CLASS = 1;
-    const TYPE_OBJ = 2;
-    const TYPE_CALLBACK = 3;
+    const TYPE_CLASS = "TYPE_CLASS";
+    const TYPE_OBJ = "TYPE_OBJ";
+    const TYPE_CALLBACK = "TYPE_CALLBACK";
 
     protected $dependenciesMap = [];
 
@@ -21,24 +21,14 @@ class Container extends BaseClass{
         parent::__construct();
     }
 
-    /**
-     * @param $type
-     * @return string
-     */
-    protected function getDependentModelName(int $type): string{
-        $dict = [
-            self::TYPE_CLASS => "CLASS",
-            self::TYPE_OBJ => "OBJECT",
-            self::TYPE_CALLBACK => "CALLBACK",
-        ];
+    protected function getDependencyDictStruct(string $type): array{
+        if(!self::defined($type)){
+            throw new InvalidDataDomainException("Undefined dependency type");
+        }
 
-        return $dict[$type];
-    }
-
-    protected function getDependencyDictStruct(int $type): array{
         return [
             "type" => $type,
-            "model_name" => $this->getDependentModelName($type),
+            "model_name" => $type,
             "sign" => null,
             "dependency" => null,
             "dependency_class" => null,
@@ -48,13 +38,14 @@ class Container extends BaseClass{
     }
 
     /**
-     * @param $class
+     * @param string $class
      * @param $dependency
-     * @param $params
-     * @param $type
-     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
+     * @param array $params
+     * @param string $type
+     * @throws Exceptions\InvalidDataTypeException
+     * @throws InvalidDataDomainException
      */
-    protected function setDependenciesMap(string $class, $dependency, array $params, int $type): void{
+    protected function setDependenciesMap(string $class, $dependency, array $params, string $type): void{
         $dependencyDict = $this->getDependencyDictStruct($type);
 
         if($type == self::TYPE_OBJ){

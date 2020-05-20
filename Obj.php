@@ -10,8 +10,8 @@ namespace Feeler\Base;
 use Feeler\Base\Exceptions\InvalidDataTypeException;
 
 class Obj extends BaseClass {
-    const PATTERN_ARRAY = 1;
-    const PATTERN_CALLABLE_NAME = 2;
+    const PATTERN_ARRAY = "PATTERN_ARRAY";
+    const PATTERN_CALLABLE_NAME = "PATTERN_CALLABLE_NAME";
 
     public static function toArr($obj, $inBranch = false){
         if(!is_object($obj)){

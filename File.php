@@ -10,18 +10,18 @@ namespace Feeler\Base;
 use Feeler\Base\Exceptions\InvalidDataDomainException;
 
 class File extends BaseClass{
-    const MODE_R = 1;
-    const MODE_W = 2;
-    const MODE_RW = 3;
+    const MODE_R = "MODE_R";
+    const MODE_W = "MODE_W";
+    const MODE_RW = "MODE_RW";
 
-    const POINTER_HEAD = 1;
-    const POINTER_END = 2;
+    const POINTER_HEAD = "POINTER_HEAD";
+    const POINTER_END = "POINTER_END";
 
-    const AM_FILE = 1;
-    const AM_URL_FILE = 2;
+    const AM_FILE = "AM_FILE";
+    const AM_URL_FILE = "AM_URL_FILE";
 
-    const AVAILABLE = true;
-    const NOT_AVAILABLE = false;
+    const AVAILABLE = "AVAILABLE";
+    const NOT_AVAILABLE = "NOT_AVAILABLE";
 
     public $segLength = 524288; //to read and write slice in segments, this set every segment's length
     public $allowUrlFile = true;
@@ -41,7 +41,7 @@ class File extends BaseClass{
      * @param bool $override
      * @throws InvalidDataDomainException
      */
-    public function __construct(string $file, int $mode = self::MODE_R, int $pointer = self::POINTER_HEAD, bool $override = false){
+    public function __construct(string $file, string $mode = self::MODE_R, string $pointer = self::POINTER_HEAD, bool $override = false){
         parent::__construct();
 
         $this->init($file, $mode, $pointer, $override);
@@ -60,12 +60,9 @@ class File extends BaseClass{
      * @return string|null
      * @throws InvalidDataDomainException
      */
-    private function _convertModeParams(int $mode, int $pointer = self::POINTER_HEAD, bool $override = false): string{
-        $modeDict = [self::MODE_R, self::MODE_W, self::MODE_RW];
-        $pointerDict = [self::POINTER_HEAD, self::POINTER_END];
-
-        if(!in_array($mode, $modeDict, true) || !in_array($pointer, $pointerDict, true)){
-            throw new InvalidDataDomainException("Invalid Afferent Param");
+    private function _convertModeParams(string $mode, string $pointer = self::POINTER_HEAD, bool $override = false): string{
+        if(!self::defined($mode) || !self::defined($pointer)){
+            throw new InvalidDataDomainException("Invalid afferent param");
         }
 
         $modeParam = null;
@@ -126,7 +123,7 @@ class File extends BaseClass{
      * @param $override
      * @throws InvalidDataDomainException
      */
-    public function init(string $file, int $mode, int $pointer, bool $override): void{
+    public function init(string $file, string $mode, string $pointer, bool $override): void{
         if(is_file($file)){
             $this->whatAmI = self::AM_FILE;
         }
@@ -186,12 +183,14 @@ class File extends BaseClass{
         return $data;
     }
 
-    public function getDataCallback($callback, int $position = 0, $length = -1){
-        if(!$this->state || !is_int($position) || $position < 0 || !is_callable($callback))
+    public function getDataCallback(callable $callback, int $position = 0, int $length = -1){
+        if(!$this->state || !is_int($position) || $position < 0 || !is_callable($callback)){
             return false;
+        }
 
-        if($length === -1)
+        if($length === -1){
             $length = $this->fileSize;
+        }
 
         $originalPosition = $this->position;
         $this->seek($position);

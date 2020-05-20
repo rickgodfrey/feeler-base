@@ -7,9 +7,47 @@
 
 namespace Feeler\Base;
 
+use Feeler\Base\Exceptions\InvalidClassException;
 use Feeler\Base\Exceptions\InvalidDataTypeException;
 
 trait TCommon{
+    protected static $calledClassName;
+
+    /**
+     * @return string
+     * @throws InvalidClassException
+     */
+    protected static function classNameStatic(): string
+    {
+        if(static::$calledClassName !== null){
+            return static::$calledClassName;
+        }
+
+        static::$calledClassName = get_called_class();
+
+        if(static::$calledClassName === false){
+            throw new InvalidClassException("Cannot get the class name of the object");
+        }
+
+        return static::$calledClassName;
+    }
+
+    /**
+     * @return string
+     * @throws InvalidClassException
+     */
+    protected function className(): string {
+        return static::classNameStatic();
+    }
+
+    /**
+     * @return mixed
+     */
+    protected static function getCalledClassName()
+    {
+        return static::$calledClassName;
+    }
+
     protected static function isCallable($target){
         return is_callable($target) ? true : false;
     }
@@ -65,5 +103,20 @@ trait TCommon{
         else{
             return is_array($value) && !self::isAssoc($value);
         }
+    }
+
+    protected static function defined(string $constName){
+        return defined(static::class."::{$constName}") ? true : false;
+    }
+
+    protected static function constName(string $constName){
+        return static::defined($constName) ? static::class."::{$constName}" : null;
+    }
+
+    /**
+     * @param string $constName
+     */
+    protected static function constValue(string $constName){
+        static::defined($constName) ? constant(static::class."::{$constName}") : null;
     }
 }

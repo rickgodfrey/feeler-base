@@ -39,7 +39,7 @@ class Arr extends BaseClass {
         return $array;
     }
 
-    public static function sort(array &$array, $order = self::SORT_ASC, $type = self::SORT_NATURAL, bool $keepKey = true): bool{
+    public static function sort(array &$array, int $order = self::SORT_ASC, int $type = self::SORT_NATURAL, bool $keepKey = true): bool{
         if(!$array)
             return false;
 
@@ -73,7 +73,7 @@ class Arr extends BaseClass {
         return true;
     }
 
-    public static function ksort(array &$array, $order = self::SORT_ASC, $type = self::SORT_NATURAL): bool{
+    public static function ksort(array &$array, int $order = self::SORT_ASC, int $type = self::SORT_NATURAL): bool{
         if(!is_array($array) || !$array)
             return false;
 
@@ -456,7 +456,7 @@ class Arr extends BaseClass {
     }
 
     public static function explode(string $delimiter, $string, int $limit = -1): array{
-        if(!$string){
+        if(!Str::isAvailable($string)){
             return [null];
         }
 

@@ -19,7 +19,6 @@ class BaseClass
     use TCommon;
 
     protected $dependencies = [];
-    protected static $calledClassName;
 
     public function __construct()
     {
@@ -103,41 +102,6 @@ class BaseClass
             $this->setProperty($propertyName, $obj->$propertyName, true);
         }
         unset($property);
-    }
-
-    /**
-     * @return string
-     * @throws InvalidClassException
-     */
-    protected static function classNameStatic(): string
-    {
-        if(static::$calledClassName !== null){
-            return static::$calledClassName;
-        }
-
-        static::$calledClassName = get_called_class();
-
-        if(static::$calledClassName === false){
-            throw new InvalidClassException("Cannot get the class name of the object");
-        }
-
-        return static::$calledClassName;
-    }
-
-    /**
-     * @return string
-     * @throws InvalidClassException
-     */
-    protected function className(): string {
-        return static::classNameStatic();
-    }
-
-    /**
-     * @return mixed
-     */
-    protected static function getCalledClassName()
-    {
-        return static::$calledClassName;
     }
 
     /**

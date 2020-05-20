@@ -8,10 +8,10 @@
 namespace Feeler\Base;
 
 class Str extends BaseClass {
-    const CASE_UPPER = 1;
-    const CASE_LOWER = 2;
-    const FIRST = 1;
-    const LAST = 2;
+    const CASE_UPPER = "CASE_UPPER";
+    const CASE_LOWER = "CASE_LOWER";
+    const FIRST = "FIRST";
+    const LAST = "LAST";
 
     public static function isAvailable(&$string): bool{
         if(!is_string($string)){
@@ -203,7 +203,7 @@ class Str extends BaseClass {
         return self::isZhString($string, false);
     }
 
-    public static function getZhLetter(string $string, int $posititon = 0, $case = self::CASE_UPPER): string{
+    public static function getZhLetter(string $string, int $posititon = 0, string $case = self::CASE_UPPER): string{
         if(!self::isAvailable($string)){
             return false;
         }

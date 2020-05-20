@@ -22,9 +22,11 @@ class Table extends Arr{
     }
 
     //Sort the 2D array by the 2nd dimension value, according is the 2nd dimension key
-    public static function sortByField(&$array, $field, $order = self::SORT_ASC, $type = self::SORT_NATURAL, $keepKey = false){
-        if(!is_array($array) || !$array || !Str::isAvailable($field))
+    public static function sortByField(&$array, $field, int $order = self::SORT_ASC, int $type = self::SORT_NATURAL, $keepKey = false) : bool{
+        if(Arr::isAvailable($array) || !Str::isAvailable($field)){
+            $array = [];
             return false;
+        }
 
         $arr1 = $arr2 = [];
 
@@ -34,11 +36,11 @@ class Table extends Arr{
             }
         }
 
-        if($type == self::SORT_NATURAL){
-            if($order == self::SORT_ASC){
+        if($type === self::SORT_NATURAL){
+            if($order === self::SORT_ASC){
                 natsort($arr1);
             }
-            else if($order == self::SORT_DESC){
+            else if($order === self::SORT_DESC){
                 natsort($arr1);
                 $arr1 = array_reverse($arr1, true);
             }
@@ -73,7 +75,7 @@ class Table extends Arr{
         return true;
     }
 
-    public static function indexByKey($array, $indexKey, $columns = null, $uniqueItem = false){
+    public static function indexByKey($array, $indexKey, $columns = null, $uniqueItem = false) : array {
         if(!Arr::isAvailable($array) || !Str::isAvailable($indexKey)){
             return [];
         }
