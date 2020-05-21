@@ -29,7 +29,7 @@ trait TCommon{
     }
 
 
-    protected static function getCalledClassName(): string{
+    protected static function getCalledClass(): string{
         return ($calledClass = get_called_class()) ? $calledClass : "";
     }
 

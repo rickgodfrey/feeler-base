@@ -57,12 +57,12 @@ class Obj extends BaseClass {
      * @throws InvalidDataTypeException
      * @throws \ReflectionException
      */
-    public static function hasItsOwnMethod($obj, $methodName, &$rObj = null){
+    public static function hasItsOwnMethod($obj, $methodName, &$rObj = null) : bool{
         if(!is_object($obj)){
             throw new InvalidDataTypeException("Param 1 is not a object");
         }
 
-        if($rObj === null){
+        if(!($rObj instanceof \ReflectionClass)){
             $rObj = new \ReflectionClass($obj);
         }
 
@@ -85,7 +85,7 @@ class Obj extends BaseClass {
             return false;
         }
 
-        return $methodReflectionObj->class == $rObj->getName() ? true : false;
+        return $methodReflectionObj->class === $rObj->getName() ? true : false;
     }
 
     /**

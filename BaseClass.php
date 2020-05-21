@@ -104,6 +104,38 @@ class BaseClass
         unset($property);
     }
 
+    protected static function invoke(object &$reflectionObj = null, array $params = [], string $className = null) : object {
+        if(!Str::isAvailable($className)){
+            $className = static::class;
+        }
+
+        if(!Str::isAvailable($className)){
+            throw new InvalidClassException("Class: {$className} not exists");
+        }
+
+        (($seg2 = strrchr($className, "\\")) !== false
+            and ($seg2 = substr($seg2, 1))
+            and ($seg1 = substr($className, 0, (strlen($className) - strlen($seg2))))
+            and ($className = $seg2) and ($layer = $seg1))
+        or ($layer = "");
+
+        $className = $layer.$className;
+
+        if(!class_exists($className)){
+            throw new InvalidClassException("Class: {$className} not exists");
+        }
+
+        if(!($reflectionObj instanceof \ReflectionClass)){
+            $reflectionObj = new \ReflectionClass($className);
+        }
+
+        return $reflectionObj->newInstanceArgs($params);
+    }
+
+    protected static function invokeMethod() : string {
+        return "invoke";
+    }
+
     /**
      * @param $propertyName
      * @return mixed
