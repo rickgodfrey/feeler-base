@@ -21,7 +21,7 @@ class Str extends BaseClass {
 
     const REPEAT_TIMES_AUTO = "REPEAT_TIMES_AUTO";
 
-    const CASE_MINUSES = [0, 538976288, 2105376, 8224, 32, 536870912, 538968064, 538976256, 2097152, 2105344, 8192];
+    const CASE_MINUSES = [0, 538976288, 2105376, 8224, 32, 536870944, 536870912, 538968064, 538976256, 2097152, 2105344, 8192];
 
     public static function isAvailable(&$string) : bool{
         if(!is_string($string)){
