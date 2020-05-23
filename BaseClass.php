@@ -18,6 +18,8 @@ class BaseClass
 {
     use TCommon;
 
+    const INVOKE = "invoke";
+
     protected $dependencies = [];
 
     public function __construct()
@@ -104,7 +106,7 @@ class BaseClass
         unset($property);
     }
 
-    protected static function invoke(object &$reflectionObj = null, array $params = [], string $className = null) : object {
+    protected static function invoke(object &$reflectionObj = null, array $params = [], string &$className = null) : object {
         if(!Str::isAvailable($className)){
             $className = static::class;
         }
@@ -132,8 +134,8 @@ class BaseClass
         return $reflectionObj->newInstanceArgs($params);
     }
 
-    protected static function invokeMethod() : string {
-        return "invoke";
+    protected static function invokeMethodName() : string {
+        return static::INVOKE;
     }
 
     /**

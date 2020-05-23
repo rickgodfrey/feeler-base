@@ -10,10 +10,20 @@ namespace Feeler\Base;
 class Str extends BaseClass {
     const CASE_UPPER = "CASE_UPPER";
     const CASE_LOWER = "CASE_LOWER";
-    const FIRST = "FIRST";
-    const LAST = "LAST";
+    const CASE_MIXED = "CASE_MIXED";
 
-    public static function isAvailable(&$string): bool{
+    const IS_LETTER = "IS_LETTER";
+    const IS_NON_LETTER = "IS_NON_LETTER";
+
+    const ENCODING_ASCII = "ASCII";
+    const ENCODING_UTF8 = "UTF-8";
+    const ENCODING_UNKNOWN = "ENCODING_UNKNOWN";
+
+    const REPEAT_TIMES_AUTO = "REPEAT_TIMES_AUTO";
+
+    const CASE_MINUSES = [0, 538976288, 2105376, 8224, 32, 536870912, 538968064, 538976256, 2097152, 2105344, 8192];
+
+    public static function isAvailable(&$string) : bool{
         if(!is_string($string)){
             return false;
         }
@@ -135,7 +145,7 @@ class Str extends BaseClass {
     public static function detectEncoding(string $string): string{
         $encoding = mb_detect_encoding($string, self::supportedEncodings());
 
-        return $encoding ? $encoding : "UNKNOWN";
+        return $encoding ? $encoding : self::ENCODING_UNKNOWN;
     }
 
     public static function getChar(string $string, int $position = 0): string{
@@ -208,7 +218,7 @@ class Str extends BaseClass {
             return false;
         }
 
-        if(self::detectEncoding($string) == "ASCII"){
+        if(self::detectEncoding($string) === self::ENCODING_ASCII){
             $letter = ($letter = self::getChar($string, $posititon)) && self::isLetter($letter) ? $letter : false;
             if($letter){
                 return $case === self::CASE_UPPER ? strtoupper($letter) : $letter;
@@ -222,7 +232,7 @@ class Str extends BaseClass {
             return false;
         }
 
-        $char = iconv("UTF-8","gb2312", $char);
+        $char = iconv(self::ENCODING_UTF8,"gb2312", $char);
 
         if (preg_match("/[\x7f-\xff]/", $char))
         {
@@ -291,7 +301,7 @@ class Str extends BaseClass {
         return self::getZhLetter($string, -1, $case);
     }
 
-    public static function hideParts($string, $hideRate = 0.5, $symbol = "*", $symbolRepeatTimes = 4){
+    public static function hideParts($string, $hideRate = 0.5, $symbol = "*", $symbolRepeatTimes = self::REPEAT_TIMES_AUTO){
         if(!self::isAvailable($string) || !is_float($hideRate) || $hideRate <= 0){
             return "";
         }
@@ -309,7 +319,7 @@ class Str extends BaseClass {
         $hideLen = ceil($strLen * $hideRate);
         $showLen = $strLen - $hideLen;
 
-        if($symbolRepeatTimes == "AUTO"){
+        if($symbolRepeatTimes === self::REPEAT_TIMES_AUTO){
             $symbolRepeatTimes = $hideLen;
         }
         else if(!Number::isInteric($symbolRepeatTimes)){
@@ -353,16 +363,149 @@ class Str extends BaseClass {
         return $string;
     }
 
-    public static function mbSplit($string, $len = 1) {
+    public static function mbSlice($string, $len = 1) {
         $start = 0;
         $strlen = mb_strlen($string);
         $array = [];
 
         while ($strlen){
-            $array[] = mb_substr($string, $start, $len,"utf8");
-            $string = mb_substr($string, $len, $strlen,"utf8");
+            $array[] = mb_substr($string, $start, $len, "utf8");
+            $string = mb_substr($string, $len, $strlen, "utf8");
             $strlen = mb_strlen($string);
         }
+
+        return $array;
+    }
+
+    public static function isUpperCase($string) : bool{
+        if(!self::isAvailable($string)){
+            return false;
+        }
+
+        if($string !== strtoupper($string)){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function isLowerCase($string) : bool{
+        if(!self::isAvailable($string)){
+            return false;
+        }
+
+        if($string !== strtolower($string)){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function isMixedCase($string) : bool{
+        if(!self::isAvailable($string)){
+            return false;
+        }
+
+        if(!self::isLowerCase($string) && !self::isUpperCase($string)){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function lettersAggr($string) : array{
+        if(!self::isAvailable($string)){
+            return [];
+        }
+
+        $letters = [];
+        $nonLetters = [];
+        $charsPositions = [];
+        $string = mb_strtolower($string);
+        $chars = str_split($string);
+        $charPosition = 0;
+        foreach($chars as $char){
+            $charCode = (int)(hexdec(bin2hex($char)));
+
+            if($charCode >= 97 && $charCode <= 122){
+                $letters[] = $char;
+                $charsPositions[$charPosition] = self::IS_LETTER;
+            }
+            else{
+                $nonLetters[] = $char;
+                $charsPositions[$charPosition] = self::IS_NON_LETTER;
+            }
+
+            $charPosition++;
+        }
+
+        if(!$letters){
+            return [];
+        }
+
+        $minuses = self::CASE_MINUSES;
+        $lettersSegsCount = 0;
+
+        foreach($letters as $key => $letter) {
+            unset($letters[$key]);
+
+            $index = ceil($rs = ($key + 1) / 4) - 1;
+            if(!isset($letters[$index])){
+                $letters[$index] = "";
+                $lettersSegsCount++;
+            }
+
+            $letters[$index] .= $letter;
+        }
+
+        $letters = Arr::tidy($letters);
+
+        for($i = 0; $i < $lettersSegsCount; $i++){
+            $lettersSeg = $letters[$i];
+            $lettersSegSum = (int)base_convert(bin2hex($lettersSeg), 16, 10);
+            $letters[$i] = [];
+
+            foreach($minuses as $minus){
+                $letters[$i][] = hex2bin(base_convert((string)($lettersSegSum - $minus), 10, 16));
+            }
+        }
+
+        $array = [];
+        for($i = 0; $i < $lettersSegsCount; $i++){
+            if($i === 0){
+                $array = $letters[0];
+                continue;
+            }
+
+            $rs = [];
+            foreach($array as $lettersSegAggr){
+                foreach($letters[$i] as $lettersSeg){
+                    $rs[] = $lettersSegAggr.$lettersSeg;
+                }
+            }
+
+            $array = $rs;
+        }
+
+        foreach($array as &$chars){
+            $chars = str_split($chars);
+            $string = "";
+
+            foreach($charsPositions as $charPosition => $charType){
+                if($charType === self::IS_LETTER){
+                    $string .= Arr::current($chars);
+                    next($chars);
+                }
+                else{
+                    $string .= Arr::current($nonLetters);
+                    next($nonLetters);
+                }
+            }
+
+            reset($nonLetters);
+            $chars = $string;
+        }
+        unset($chars);
 
         return $array;
     }
