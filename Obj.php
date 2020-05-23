@@ -85,7 +85,7 @@ class Obj extends BaseClass {
             return false;
         }
 
-        return $methodReflectionObj->class === $rObj->getName() ? true : false;
+        return ($methodReflectionObj->class === $rObj->getName()) ? true : false;
     }
 
     /**
