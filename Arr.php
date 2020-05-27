@@ -308,7 +308,7 @@ class Arr extends BaseClass {
         $tinyRegex = "/^\s*([^\{\}]*)\s*$/";
         $completeRegex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/";
 
-        if(is_callable($rsKey)){
+        if(self::isClosure($rsKey)){
             $data = call_user_func($rsKey);
         }
         else if(preg_match($completeRegex, $rsKey, $matches) || preg_match($tinyRegex, $rsKey, $matches)) {
