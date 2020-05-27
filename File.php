@@ -24,7 +24,7 @@ class File extends BaseClass{
     public $allowUrlFile = true;
 
     protected $whatAmI;
-    protected static $state = true;
+    protected $state = true;
     protected $position = 0;
     protected $handle;
     protected $fileSize;
@@ -242,7 +242,7 @@ class File extends BaseClass{
     }
 
     public function write($data, $length = -1){
-        if(!static::$state || !$data){
+        if(!$this->state || !$data){
             return false;
         }
 
