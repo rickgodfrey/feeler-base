@@ -79,12 +79,17 @@ class BaseClass
      * @param object $obj
      * @throws InvalidDataTypeException
      */
-    final protected function selfOverride(\ReflectionClass $reflectionObj = null, object $obj = null): void{
-        if(!is_object($reflectionObj) || !is_object($obj)){
+    final protected function selfOverride(object $obj = null, \ReflectionClass $reflectionObj = null): void{
+        if(!is_object($obj)){
             return;
         }
 
         $className = get_class($obj);
+
+        if(!($reflectionObj instanceof \ReflectionClass) || $reflectionObj->name !== $className){
+            $reflectionObj = new \ReflectionClass($obj);
+        }
+
         $properties = $reflectionObj->getProperties();
         $staticProperties = $reflectionObj->getStaticProperties();
         $staticPropertiesNames = [];

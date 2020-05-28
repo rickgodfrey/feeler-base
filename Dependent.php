@@ -21,6 +21,6 @@ class Dependent extends BaseClass {
         $reflectionObj = new \ReflectionClass(self::constructorName());
         $objs = self::getMethodAfferentObjs($reflectionObj);
         $obj = $reflectionObj->newInstanceArgs($objs);
-        $this->selfOverride($reflectionObj, $obj);
+        $this->selfOverride($obj);
     }
 }
