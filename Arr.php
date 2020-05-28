@@ -292,17 +292,20 @@ class Arr extends BaseClass {
     }
 
     public static function getVal($rs, $rsKey, &$dataKey = null, &$dataType = null){
-        if((empty($rsKey) || (!Str::isAvailable($rsKey))) && !Number::isInt($rsKey) && !is_callable($rsKey)){
-            return $rsKey;
+        if($rsKey === null){
+            return null;
         }
 
-        $data = null;
-
-        if(isset($rs[$rsKey])){
+        if((Str::isAvailable($rsKey) || Number::isNumeric($rsKey)) && isset($rs[$rsKey])){
             $dataKey = $rsKey;
             $dataType = gettype($rs[$rsKey]);
 
             return $rs[$rsKey];
+        }
+
+        if(Number::isNumeric($rsKey)){
+            $dataType = gettype($rsKey);
+            return $rsKey;
         }
 
         $tinyRegex = "/^\s*([^\{\}]*)\s*$/";
