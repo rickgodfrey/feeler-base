@@ -308,8 +308,8 @@ class Arr extends BaseClass {
             return $rsKey;
         }
 
-        $tinyRegex = "/^\s*([^\{\}]*)\s*$/";
-        $completeRegex = "/^\s*(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}\s*$/";
+        $tinyRegex = "/^([^\{\}]*)$/";
+        $completeRegex = "/^(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}$/";
 
         if(self::isClosure($rsKey)){
             $data = call_user_func($rsKey);
