@@ -332,6 +332,7 @@ class Arr extends BaseClass {
 
             if (isset($rs[$key])){
                 $data = $rs[$key];
+                $dataKey = $key;
             }
             else{
                 $data = $defaultValue;
@@ -377,7 +378,6 @@ class Arr extends BaseClass {
             $data = $rsKey;
         }
 
-        $dataKey = $key;
         $dataType = gettype($data);
 
         return $data;
