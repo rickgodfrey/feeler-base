@@ -298,7 +298,7 @@ class Arr extends BaseClass {
             return null;
         }
 
-        if((Str::isAvailable($rsKey) || Number::isInteric($rsKey)) && isset($rs[$rsKey])){
+        if((Str::isAvailable($rsKey) || Number::isNumeric($rsKey)) && isset($rs[$rsKey])){
             $dataKey = $rsKey;
             $dataType = gettype($rs[$rsKey]);
 
