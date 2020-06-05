@@ -12,23 +12,19 @@ class ArrayAccess implements \ArrayAccess {
 
     public function __construct(){}
 
-    final public function offsetExists($offset) : bool{
+    public function offsetExists($offset) : bool{
         return isset($this->array_7e1e8d83aade34fbe92c7d0ce43dcfc9[$offset]) ? true : false;
     }
 
-    final public function offsetGet($offset){
+    public function offsetGet($offset){
         return $this->array_7e1e8d83aade34fbe92c7d0ce43dcfc9[$offset]($this);
     }
 
-    final public function offsetSet($offset, $value){
+    public function offsetSet($offset, $value){
         $this->array_7e1e8d83aade34fbe92c7d0ce43dcfc9[$offset] = $value;
     }
 
-    final public function offsetUnset($offset) : bool{
+    public function offsetUnset($offset) : bool{
         unset($this->array_7e1e8d83aade34fbe92c7d0ce43dcfc9[$offset]);
-    }
-
-    final public function bindArray(array &$array) : void{
-        $this->array_7e1e8d83aade34fbe92c7d0ce43dcfc9 = &$array;
     }
 }
