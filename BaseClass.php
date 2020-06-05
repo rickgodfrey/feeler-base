@@ -14,7 +14,7 @@ use Feeler\Base\Exceptions\{
     InvalidPropertyException
 };
 
-class BaseClass
+class BaseClass extends ArrayAccess
 {
     use TCommon;
 
@@ -24,7 +24,7 @@ class BaseClass
 
     public function __construct()
     {
-
+        parent::__construct();
     }
 
     public function __destruct()
