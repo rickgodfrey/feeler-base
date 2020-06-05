@@ -18,7 +18,6 @@ class Arr extends BaseClass {
     const SORT_REGULAR = SORT_REGULAR;
     const SORT_LOCALE_STRING = SORT_LOCALE_STRING;
 
-    const VAL_TINY_REGEX = "/^([^\{\}]*)$/";
     const VAL_COMPLETE_REGEX = "/^(?:\(([^\(\)\:]*)(?:\:([^\(\)\:]*)?)?\))?\{\{([^\{\}]*)\}\}$/";
 
     public function __isset($name)
@@ -311,26 +310,16 @@ class Arr extends BaseClass {
             return $rsKey;
         }
 
-        $tinyRegex = self::VAL_TINY_REGEX;
         $completeRegex = self::VAL_COMPLETE_REGEX;
 
         if(self::isClosure($rsKey)){
             $data = call_user_func($rsKey);
         }
-        else if(($matchedComplete = preg_match($completeRegex, $rsKey, $matches)) || ($matchedTiny = preg_match($tinyRegex, $rsKey, $matches))) {
-            if($matchedComplete){
-                $type = $matches[1];
-                $type = strtolower($type);
-                $defaultValue = $matches[2];
-                $key = $matches[3];
-            }
-            else{
-                $type = gettype($rsKey);
-                $type = strtolower($type);
-                $defaultValue = null;
-                $key = null;
-            }
-
+        else if(preg_match($completeRegex, $rsKey, $matches)) {
+            $type = $matches[1];
+            $type = strtolower($type);
+            $defaultValue = $matches[2];
+            $key = $matches[3];
             $dataKey = $key;
 
             if($defaultValue == "null"){
@@ -345,9 +334,6 @@ class Arr extends BaseClass {
 
             if (isset($rs[$key])){
                 $data = $rs[$key];
-            }
-            else if($matchedTiny && Str::isAvailable($rsKey)){
-                $data = $rsKey;
             }
             else{
                 $data = $defaultValue;
