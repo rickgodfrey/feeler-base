@@ -283,4 +283,81 @@ class BaseClass extends ArrayAccess
         $this->setProperty($objName, $dependency, $force);
         $this->dependencies[$objName] = $dependency;
     }
+
+    public static function arrayAccessStatic($key, string $methodName = __METHOD__){
+        if($key == null || !Str::isAvailable($methodName)){
+            return null;
+        }
+
+        $className = get_called_class();
+        $rObj = new \ReflectionClass($className);
+        if(!$rObj->hasMethod($methodName)){
+            return null;
+        }
+
+        $relectionMethodObj = $rObj->getMethod($methodName);
+        if(!$relectionMethodObj->isStatic()){
+            return null;
+        }
+
+        $paramsCount = $relectionMethodObj->getNumberOfParameters();
+        if($paramsCount < 1){
+            return null;
+        }
+
+        $params = $relectionMethodObj->getParameters();
+        $param = Arr::current($params);
+        if($param == null){
+            return null;
+        }
+
+        if(!Str::isAvailable($param) && !Number::isNumeric($param)){
+            return null;
+        }
+
+        $rs = call_user_func($methodName);
+        if(!Arr::isAvailable($rs) || !isset($rs[$key])){
+            return null;
+        }
+
+        return $rs[$key];
+    }
+
+    public static function arrayAccess($key, object $object, string $methodName = __METHOD__){
+        if($key == null || !Str::isAvailable($methodName)){
+            return null;
+        }
+
+        $rObj = new \ReflectionClass($object);
+        if(!$rObj->hasMethod($methodName)){
+            return null;
+        }
+
+        $relectionMethodObj = $rObj->getMethod($methodName);
+        if($relectionMethodObj->isStatic()){
+            return null;
+        }
+
+        $paramsCount = $relectionMethodObj->getNumberOfParameters();
+        if($paramsCount < 1){
+            return null;
+        }
+
+        $params = $relectionMethodObj->getParameters();
+        $param = Arr::current($params);
+        if($param == null){
+            return null;
+        }
+
+        if(!Str::isAvailable($param) && !Number::isNumeric($param)){
+            return null;
+        }
+
+        $rs = call_user_func([$object, $methodName]);
+        if(!Arr::isAvailable($rs) || !isset($rs[$key])){
+            return null;
+        }
+
+        return $rs[$key];
+    }
 }
