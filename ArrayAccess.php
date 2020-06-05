@@ -12,7 +12,7 @@ class ArrayAccess implements \ArrayAccess {
 
     public function __construct(){}
 
-    public function offsetExists($offset) : bool{
+    public function offsetExists($offset) {
         return isset($this->array_7e1e8d83aade34fbe92c7d0ce43dcfc9[$offset]) ? true : false;
     }
 
@@ -24,7 +24,7 @@ class ArrayAccess implements \ArrayAccess {
         $this->array_7e1e8d83aade34fbe92c7d0ce43dcfc9[$offset] = $value;
     }
 
-    public function offsetUnset($offset) : bool{
+    public function offsetUnset($offset) {
         unset($this->array_7e1e8d83aade34fbe92c7d0ce43dcfc9[$offset]);
     }
 }
