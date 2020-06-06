@@ -18,12 +18,12 @@ class BaseClass
 {
     use TCommon;
 
+    const UNKNOWN = "unknown";
     const INVOKE = "invoke";
 
     protected $dependencies = [];
 
     public function __construct(){}
-
     public function __destruct(){}
 
     protected static function constructorName(): string{
