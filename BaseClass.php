@@ -14,7 +14,7 @@ use Feeler\Base\Exceptions\{
     InvalidPropertyException
 };
 
-class BaseClass extends ArrayAccess
+class BaseClass
 {
     use TCommon;
 
@@ -22,15 +22,9 @@ class BaseClass extends ArrayAccess
 
     protected $dependencies = [];
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    public function __construct(){}
 
-    public function __destruct()
-    {
-
-    }
+    public function __destruct(){}
 
     protected static function constructorName(): string{
         return "__construct";
