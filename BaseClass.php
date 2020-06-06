@@ -283,18 +283,11 @@ class BaseClass
             return null;
         }
 
-        $className = get_called_class();
-        $rObj = new \ReflectionClass($className);
-        if(!$rObj->hasMethod($methodName)){
+        if(!function_exists("static::{$methodName}")){
             return null;
         }
 
-        $relectionMethodObj = $rObj->getMethod($methodName);
-        if(!$relectionMethodObj->isStatic()){
-            return null;
-        }
-
-        $rs = call_user_func($methodName);
+        $rs = call_user_func("static::{$methodName}");
         if(!Arr::isAvailable($rs) || !isset($rs[$key])){
             return null;
         }
