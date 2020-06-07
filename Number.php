@@ -16,7 +16,7 @@ class Number extends BaseClass {
         return true;
     }
 
-    public static function isInteric($number){
+    public static function isInteric(&$number){
         if(!self::isNumeric($number)){
             return false;
         }
@@ -28,7 +28,7 @@ class Number extends BaseClass {
         return true;
     }
 
-    public static function isFloaric($number){
+    public static function isFloaric(&$number){
         if(!self::isNumeric($number)){
             return false;
         }
@@ -48,7 +48,7 @@ class Number extends BaseClass {
         return is_float($number) ? true : false;
     }
 
-    public static function isUnsignedNumeric($number){
+    public static function isUnsignedNumeric(&$number){
         if(!self::isNumeric($number)){
             return false;
         }
@@ -60,7 +60,7 @@ class Number extends BaseClass {
         return true;
     }
 
-    public static function isUnsignedInteric($number){
+    public static function isUnsignedInteric(&$number){
         if(!self::isInteric($number)){
             return false;
         }
@@ -72,7 +72,7 @@ class Number extends BaseClass {
         return true;
     }
 
-    public static function isUnsignedFloaric($number){
+    public static function isUnsignedFloaric(&$number){
         if(!self::isFloaric($number)){
             return false;
         }
@@ -112,7 +112,7 @@ class Number extends BaseClass {
         return is_numeric($number) ? true : (Str::isAvailable($number) ? is_numeric($number) : false);
     }
 
-    public static function isMinusNumeric($number){
+    public static function isMinusNumeric(&$number){
         if(!self::isNumeric($number)){
             return false;
         }
@@ -120,7 +120,7 @@ class Number extends BaseClass {
         return self::isUnsignedNumeric($number) ? false : true;
     }
 
-    public function isMinusInteric($number){
+    public function isMinusInteric(&$number){
         if(!self::isInteric($number)){
             return false;
         }
@@ -128,7 +128,7 @@ class Number extends BaseClass {
         return self::isUnsignedInteric($number) ? false : true;
     }
 
-    public function isMinusFloaric($number){
+    public function isMinusFloaric(&$number){
         if(!self::isFloaric($number)){
             return false;
         }
@@ -152,7 +152,7 @@ class Number extends BaseClass {
         return self::isUnsignedFloat($number) ? false : true;
     }
 
-    public static function isPosiNumeric($number){
+    public static function isPosiNumeric(&$number){
         if(!self::isNumeric($number)){
             return false;
         }
@@ -160,7 +160,7 @@ class Number extends BaseClass {
         return $number > 0 ? true : false;
     }
 
-    public static function isPosiInteric($number){
+    public static function isPosiInteric(&$number){
         if(!self::isInteric($number)){
             return false;
         }
@@ -168,7 +168,7 @@ class Number extends BaseClass {
         return $number > 0 ? true : false;
     }
 
-    public static function isPosiFloaric($number){
+    public static function isPosiFloaric(&$number){
         if(!self::isFloaric($number)){
             return false;
         }
