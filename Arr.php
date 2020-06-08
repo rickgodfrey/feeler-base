@@ -135,6 +135,11 @@ class Arr extends BaseClass {
         }
     }
 
+    public static function shuffle(array $array) : array{
+        shuffle($array);
+        return $array;
+    }
+
     public static function slice(array $array, int $offset, int $length = null, bool $keepKey = true): array{
         return array_slice($array, $offset, $length, $keepKey);
     }
