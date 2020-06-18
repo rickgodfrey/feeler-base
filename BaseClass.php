@@ -20,14 +20,20 @@ class BaseClass
 
     const UNKNOWN = "unknown";
     const INVOKE = "invoke";
+    const INITIALIZE = "initialize";
 
     protected $dependencies = [];
 
     public function __construct(){}
+    public function initialize(){}
     public function __destruct(){}
 
     protected static function constructorName(): string{
         return "__construct";
+    }
+
+    final public function constructor(){
+        return method_exists($this, static::constructorName()) ? @call_user_func_array([$this, static::constructorName()], @func_get_args()) : null;
     }
 
     /**

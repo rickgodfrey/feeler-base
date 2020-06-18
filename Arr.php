@@ -277,27 +277,6 @@ class Arr extends BaseClass {
         return $arr;
     }
 
-    public static function rmVal(&$array, bool $keepKey = true) :bool {
-        $params = func_get_args();
-        if(!self::isAvailable($array) || !isset($params[1])){
-            return false;
-        }
-
-        $value = $params[1];
-
-        if(($index = array_search($value, $array)) === false || !isset($array[$index])){
-            return false;
-        }
-
-        unset($array[$index]);
-
-        if(!$keepKey){
-            $array = self::tidy($array);
-        }
-
-        return true;
-    }
-
     public static function getVal($rs, $rsKey, &$dataKey = null, &$dataType = null){
         if($rsKey === null){
             return null;
@@ -463,13 +442,31 @@ class Arr extends BaseClass {
         return array_splice($array, $position, 0, $value);
     }
 
+    public static function get($key, $array){
+        return (Str::isAvailable($key) && isset($array[$key])) ? $array[$key] : null;
+    }
+
     public static function rm($key, array &$array): bool{
         if(!self::isAvailable($array) || !isset($array[$key])){
             return false;
         }
-
         unset($array[$key]);
+        return true;
+    }
 
+    public static function rmVal(&$array, bool $keepKey = true) :bool {
+        $params = func_get_args();
+        if(!self::isAvailable($array) || !isset($params[1])){
+            return false;
+        }
+        $value = $params[1];
+        if(($index = array_search($value, $array)) === false || !isset($array[$index])){
+            return false;
+        }
+        unset($array[$index]);
+        if(!$keepKey){
+            $array = self::tidy($array);
+        }
         return true;
     }
 
@@ -489,7 +486,7 @@ class Arr extends BaseClass {
             throw new InvalidDataDomainException("Not a Available array file");
         }
 
-        return self::rebuild($array);
+        return $array;
     }
 
     /**
@@ -619,5 +616,7 @@ class Arr extends BaseClass {
         return $level == 1 ? $s . "</xml>" : $s;
     }
 
-    public static function recurseCallback(){}
+    public static function recurse($array, callable $callback) : array {
+        return (self::isClosure($callback) && array_walk_recursive($array, $callback)) ? $array : [];
+    }
 }
