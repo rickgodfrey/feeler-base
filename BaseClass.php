@@ -287,16 +287,13 @@ class BaseClass
         if($key == null || !Str::isAvailable($methodName)){
             return null;
         }
-
-        if(!function_exists("static::{$methodName}")){
+        if(!method_exists(static::classNameStatic(), $methodName)){
             return null;
         }
-
-        $rs = call_user_func("static::{$methodName}");
+        $rs = call_user_func([static::classNameStatic(), $methodName]);
         if(!Arr::isAvailable($rs) || !isset($rs[$key])){
             return null;
         }
-
         return $rs[$key];
     }
 
@@ -304,16 +301,13 @@ class BaseClass
         if($key == null || !Str::isAvailable($methodName)) {
             return null;
         }
-
         if(!method_exists($this, $methodName)){
             return null;
         }
-
         $rs = call_user_func([$this, $methodName]);
         if(!Arr::isAvailable($rs) || !isset($rs[$key])){
             return null;
         }
-
         return $rs[$key];
     }
 }

@@ -8,19 +8,25 @@
 namespace Feeler\Base;
 
 class GlobalAccess extends BaseClass {
-    private static $_varsList = ["GLOBALS", "_SERVER", "_GET", "_POST", "_FILES", "_COOKIE", "_SESSION", "_REQUEST", "_ENV"];
+    protected static function varsList() {
+        return ["GLOBALS" => &$GLOBALS, "_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
+    }
+
+    protected static function var(string $varName){
+        return static::arrayAccessStatic($varName, "varsList");
+    }
 
     private static function _access(string $varName, $key = null, $value = null){
-        if(!in_array($varName, self::$_varsList) || !isset($$varName) || !Arr::isAvailable($$varName)){
+        if(!Arr::isAvailable($var = self::var($varName))){
             return [];
         }
         if($key === null){
-            return $$varName;
+            return $var;
         }
-        if(($rs = Arr::get($key, $$varName)) !== null){
+        if(($rs = Arr::get($key, $var)) !== null){
             return $rs;
         }
-        return Arr::set($key, $value, $$varName);
+        return Arr::set($key, $value, $var);
     }
 
     public static function globals($key = null, $value = null){
