@@ -89,12 +89,11 @@ class Obj extends BaseClass {
     }
 
     /**
-     * @param string $exp
+     * @param $exp
      * @param string $mode
      * @return false|mixed|string|string[]|null
-     * @throws InvalidDataTypeException
      */
-    public static function parsePattern(string $exp, $mode = self::PATTERN_CALLABLE_NAME){
+    public static function parsePattern($exp, $mode = self::PATTERN_CALLABLE_NAME){
         if(!Str::isAvailable($exp) || !preg_match("/^([a-zA-Z_][a-zA-Z_0-9]+)(\.[a-zA-Z_][a-zA-Z_0-9]+)*$/", $exp, $matches)){
             return null;
         }

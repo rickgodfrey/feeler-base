@@ -18,7 +18,7 @@ class GlobalAccess extends BaseClass {
 
     private static function _access(string $varName, $key = null, $value = null){
         if(!Arr::isAvailable($var = self::var($varName))){
-            return [];
+            return $key === null ? [] : null;
         }
         if($key === null){
             return $var;
