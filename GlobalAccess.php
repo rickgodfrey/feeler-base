@@ -27,7 +27,7 @@ class GlobalAccess extends BaseClass {
             return $rs;
         }
         $rs = Arr::set($key, $value, $var);
-        return $value === null ? $rs : null;
+        return $value === null ? null : $rs;
     }
 
     public static function globals($key = null, $value = null){
