@@ -443,15 +443,57 @@ class Arr extends BaseClass {
     }
 
     public static function get($key, $array){
-        return (Str::isAvailable($key) && isset($array[$key])) ? $array[$key] : null;
+        if(!($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY)) || !Arr::isAvailable($array)){
+            return null;
+        }
+        $rs = $array;
+        foreach($keys as $key){
+            if(isset($rs[$key])){
+                $rs = $rs[$key];
+            }
+            else{
+                $rs = null;
+                break;
+            }
+        }
+        return $rs;
+    }
+
+    public static function set($key, $value, array &$array){
+        if(!($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY))){
+            return false;
+        }
+        $rs = $array;
+        $keysCount = count($keys);
+        $i = 0;
+        foreach($keys as $key){
+            $i++;
+            if(!isset($rs[$key])){
+                if($value === null){
+                    break;
+                }
+                else{
+                    if(!isset($rs[$key])){
+                        $rs[$key] = [];
+                    }
+                }
+            }
+            self::set($key, $rs[$key], $rs);
+        }
+        if($i === $keysCount){
+            if($value === null){
+                unset($array[$key]);
+            }
+            else if(isset($rs[$key])){
+                $rs[$key] = $value;
+                $array = $rs;
+            }
+        }
+        return true;
     }
 
     public static function rm($key, array &$array): bool{
-        if(!self::isAvailable($array) || !isset($array[$key])){
-            return false;
-        }
-        unset($array[$key]);
-        return true;
+        return self::set($key, null, $array);
     }
 
     public static function rmVal(&$array, bool $keepKey = true) :bool {
@@ -487,90 +529,6 @@ class Arr extends BaseClass {
         }
 
         return $array;
-    }
-
-    /**
-     * @param string $pattern
-     * @param array $array
-     * @return array|mixed|null
-     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
-     */
-    public static function getByPattern(string $pattern, array $array){
-        if(!$array || !Str::isAvailable($pattern)){
-            return null;
-        }
-
-        $targetArray = Obj::parsePattern($pattern, Obj::PATTERN_ARRAY);
-
-        foreach($targetArray as $key){
-            if(!isset($array[$key])){
-                return null;
-            }
-
-            $array = $array[$key];
-        }
-
-        return $array;
-    }
-
-    public static function setByKeysListCallback(array $keysList, callable $callback, array &$array){
-        if(!$array || !Str::isAvailable($pattern)){
-            return false;
-        }
-
-        $i = 0;
-        $keysListCount = count($keysList);
-
-        foreach($array as $key => &$val){
-            if(!isset($keysList[$i]) || $key != $keysList[$i]){
-                return false;
-            }
-
-            Arr::popTop($keysList);
-            self::setByKeysListCallback($keysList, null, $val);
-
-            $i++;
-
-            if($i == $keysListCount){
-                $val = call_user_func($callback);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $pattern
-     * @param callable $callback
-     * @param array $array
-     * @return bool
-     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
-     */
-    public static function setByPatternCallback(string $pattern, callable $callback, array &$array){
-        if(!$array || !Str::isAvailable($pattern)){
-            return false;
-        }
-
-        $keysList = (array)Obj::parsePattern($pattern, Obj::PATTERN_ARRAY);
-
-        return self::setByKeysListCallback($keysList, $callback,$array);
-    }
-
-    /**
-     * @param string $pattern
-     * @param $value
-     * @param array $array
-     * @return bool
-     * @throws \Feeler\Base\Exceptions\InvalidDataTypeException
-     */
-    public static function setByPattern(string $pattern, $value, array &$array){
-        if(!$array || !Str::isAvailable($pattern)){
-            return false;
-        }
-
-        $keysList = (array)Obj::parsePattern($pattern, Obj::PATTERN_ARRAY);
-
-        return self::setByKeysListCallback($keysList, function() use($value){return $value;},$array);
     }
 
     //array to object conversion

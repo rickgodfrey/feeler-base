@@ -42,11 +42,11 @@ class ConfigProxy extends ArrayAccess implements IConfig {
         }
 
         if($fromObjExp){
-            $array = Arr::getByPattern($fromObjExp, $array);
+            $array = Arr::get($fromObjExp, $array);
         }
 
         if($toObjExp){
-            return Arr::setByPattern($toObjExp, $array,$this->configData);
+            return Arr::set($toObjExp, $array,$this->configData);
         }
         else{
             $this->configData = Arr::mergeByKey($this->configData, $array);

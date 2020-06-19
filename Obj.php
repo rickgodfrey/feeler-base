@@ -90,17 +90,13 @@ class Obj extends BaseClass {
 
     /**
      * @param string $exp
-     * @param int $mode
-     * @return string|null
+     * @param string $mode
+     * @return false|mixed|string|string[]|null
      * @throws InvalidDataTypeException
      */
     public static function parsePattern(string $exp, $mode = self::PATTERN_CALLABLE_NAME){
-        if(!Str::isAvailable($exp)){
-            throw new InvalidDataTypeException("Wrong object expression");
-        }
-
-        if(!preg_match("/([a-z_][a-z_0-9]*)(\.[a-z_][a-z_0-9]*)*/i", $exp, $matches)){
-            throw new InvalidDataTypeException("Wrong object expression");
+        if(!Str::isAvailable($exp) || !preg_match("/^([a-zA-Z_][a-zA-Z_0-9]*)(\.[a-zA-Z_][a-zA-Z_0-9]*)*$/", $exp, $matches)){
+            return null;
         }
 
         $className = null;
@@ -128,12 +124,12 @@ class Obj extends BaseClass {
                 $rs = $className ? "{$className}::{$methodName}" : $methodName;
 
                 if(!self::isCallable($rs)){
-                    throw new InvalidDataTypeException("Wrong object expression");
+                    return null;
                 }
                 break;
 
             case self::PATTERN_ARRAY:
-                $rs = $matches;
+                $rs = explode(".", $exp);
                 break;
 
             default:
