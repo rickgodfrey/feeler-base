@@ -496,22 +496,6 @@ class Arr extends BaseClass {
         return self::set($key, null, $array);
     }
 
-    public static function rmVal(&$array, bool $keepKey = true) :bool {
-        $params = func_get_args();
-        if(!self::isAvailable($array) || !isset($params[1])){
-            return false;
-        }
-        $value = $params[1];
-        if(($index = array_search($value, $array)) === false || !isset($array[$index])){
-            return false;
-        }
-        unset($array[$index]);
-        if(!$keepKey){
-            $array = self::tidy($array);
-        }
-        return true;
-    }
-
     /**
      * @param string $file
      * @return array
