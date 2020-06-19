@@ -25,7 +25,6 @@ class BaseClass
     protected $dependencies = [];
 
     public function __construct(){}
-    public function initialize(){}
     public function __destruct(){}
 
     protected static function constructorName(): string{
