@@ -11,17 +11,17 @@ class Singleton extends BaseClass {
     protected static $instance;
 
     /**
-     * To Prevent The Singleton Cloning Option For Safety
+     * As a safety to prevent the singleton cloning operation
      */
     protected function __clone(){}
 
     /**
      * @return static()
+     * @throws Exceptions\InvalidClassException
      * @throws \ReflectionException
      */
     public static function &instance(){
-        // if the initialization params has been changed, the singleton instance will be regenerated
-        if(!is_object(static::$instance)) {
+        if(!(static::$instance instanceof ($className = static::classNameStatic()))) {
             $reflectionObj = new \ReflectionClass(static::class);
             $params = self::getMethodAfferentObjs($reflectionObj, static::constructorName());
             static::$instance = $reflectionObj->newInstanceArgs($params);
