@@ -21,7 +21,8 @@ class Singleton extends BaseClass {
      * @throws \ReflectionException
      */
     public static function &instance(){
-        if(!(static::$instance instanceof ($className = static::classNameStatic()))) {
+        $className = static::classNameStatic();
+        if(!(static::$instance instanceof $className)) {
             $reflectionObj = new \ReflectionClass(static::class);
             $params = self::getMethodAfferentObjs($reflectionObj, static::constructorName());
             static::$instance = $reflectionObj->newInstanceArgs($params);
