@@ -291,10 +291,10 @@ class BaseClass
             return null;
         }
         $rs = call_user_func([static::classNameStatic(), $methodName]);
-        if(!Arr::isAvailable($rs) || !isset($rs[$key])){
+        if(!Arr::isAvailable($rs)){
             return null;
         }
-        return $rs[$key];
+        return Arr::get($key, $rs);
     }
 
     public function arrayAccess($key, string $methodName){
@@ -305,9 +305,9 @@ class BaseClass
             return null;
         }
         $rs = call_user_func([$this, $methodName]);
-        if(!Arr::isAvailable($rs) || !isset($rs[$key])){
+        if(!Arr::isAvailable($rs)){
             return null;
         }
-        return $rs[$key];
+        return Arr::get($key, $rs);
     }
 }
