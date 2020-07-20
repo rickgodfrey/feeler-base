@@ -97,7 +97,7 @@ class BaseClass
         }
         unset($value);
 
-        foreach($properties as &$property){
+        foreach($properties as $property){
             $propertyName = $property->name;
             if(in_array($propertyName, $staticPropertiesNames)){
                 continue;
@@ -241,7 +241,7 @@ class BaseClass
             throw new InvalidDataTypeException("Illegal property setting");
         }
 
-        if(isset($this->$propertyName) && !is_null($this->$propertyName) && !$force){
+        if(isset($this->$propertyName) && $this->$propertyName !== null && !$force){
             return;
         }
 
