@@ -8,24 +8,26 @@
 namespace Feeler\Base;
 
 class Singleton extends BaseClass {
-    protected static $instance;
+    protected static $instances = [];
 
     /**
      * As a safety to prevent the singleton cloning operation
      */
-    protected function __clone(){}
+    private function __clone(){}
 
     /**
      * @return static()
      * @throws \ReflectionException
      */
-    public static function &instance(){
-        if(!(static::$instance instanceof static)) {
-            $reflectionObj = new \ReflectionClass(static::classNameStatic());
-            $params = self::getMethodAfferentObjs($reflectionObj, self::constructorName());
-            static::$instance = $reflectionObj->newInstanceArgs($params);
+    public static function instance(){
+        $className = static::classNameStatic();
+        $classSign = sha1($className);
+        if(!isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
+            $reflectionObj = new \ReflectionClass($className);
+            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
+            static::$instances[$classSign] = $reflectionObj->newInstanceArgs($params);
         }
 
-        return static::$instance;
+        return static::$instances[$classSign];
     }
 }

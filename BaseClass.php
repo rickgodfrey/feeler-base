@@ -110,7 +110,7 @@ class BaseClass
 
     protected static function invoke(object &$reflectionObj = null, array $params = [], string &$className = null) : object {
         if(!Str::isAvailable($className)){
-            $className = static::class;
+            $className = static::classNameStatic();
         }
 
         if(!Str::isAvailable($className)){
@@ -236,7 +236,7 @@ class BaseClass
      * @param bool $force
      * @throws InvalidDataTypeException
      */
-    public function setProperty(string $propertyName, &$value, bool $force = false): void{
+    public function setProperty(string $propertyName, $value, bool $force = false): void{
         if(is_null($propertyName)){
             throw new InvalidDataTypeException("Illegal property setting");
         }
@@ -254,7 +254,7 @@ class BaseClass
      * @param bool $force
      * @throws InvalidDataTypeException
      */
-    public static function setStaticProperty(string $propertyName, &$value, bool $force = false): void{
+    public static function setStaticProperty(string $propertyName, $value, bool $force = false): void{
         if(is_null($propertyName)){
             throw new InvalidDataTypeException("Illegal static property setting");
         }
@@ -272,7 +272,7 @@ class BaseClass
      * @param bool $force
      * @throws InvalidDataTypeException
      */
-    public function setDependency(string $objName, &$dependency, bool $force = false): void
+    public function setDependency(string $objName, $dependency, bool $force = false): void
     {
         $this->setProperty($objName, $dependency, $force);
         $this->dependencies[$objName] = &$dependency;
