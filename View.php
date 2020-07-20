@@ -10,8 +10,6 @@ namespace Feeler\Base;
 class View extends BaseClass{
     public function __construct()
     {
-        parent::__construct();
+
     }
-
-
 }

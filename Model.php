@@ -10,8 +10,6 @@ namespace Feeler\Base;
 class Model extends BaseClass{
     public function __construct()
     {
-        parent::__construct();
+
     }
-
-
 }

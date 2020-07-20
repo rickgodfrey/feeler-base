@@ -13,7 +13,6 @@ use Feeler\Base\Exceptions\InvalidDataTypeException;
 trait TCommon{
     /**
      * @return string
-     * @throws InvalidClassException
      */
     protected static function classNameStatic(): string
     {
@@ -22,12 +21,10 @@ trait TCommon{
 
     /**
      * @return string
-     * @throws InvalidClassException
      */
     protected function className(): string {
         return static::classNameStatic();
     }
-
 
     protected static function getCalledClass(): string{
         return ($calledClass = get_called_class()) ? $calledClass : "";

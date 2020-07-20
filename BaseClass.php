@@ -24,9 +24,6 @@ class BaseClass
 
     protected $dependencies = [];
 
-    public function __construct(){}
-    public function __destruct(){}
-
     protected static function constructorName(): string{
         return "__construct";
     }
@@ -74,9 +71,10 @@ class BaseClass
     }
 
     /**
-     * @param \ReflectionClass $reflectionObj
-     * @param object $obj
+     * @param object|null $obj
+     * @param \ReflectionClass|null $reflectionObj
      * @throws InvalidDataTypeException
+     * @throws \ReflectionException
      */
     final protected function selfOverride(object $obj = null, \ReflectionClass $reflectionObj = null): void{
         if(!is_object($obj)){
@@ -196,8 +194,6 @@ class BaseClass
     /**
      * @param $methodName
      * @param $params
-     * @throws InvalidClassException
-     * @throws InvalidMethodException
      */
     public function __call($methodName, $params)
     {
@@ -207,7 +203,6 @@ class BaseClass
     /**
      * @param $methodName
      * @param $params
-     * @throws InvalidClassException
      * @throws InvalidMethodException
      */
     public static function __callStatic($methodName, $params)
@@ -280,7 +275,7 @@ class BaseClass
     public function setDependency(string $objName, &$dependency, bool $force = false): void
     {
         $this->setProperty($objName, $dependency, $force);
-        $this->dependencies[$objName] = $dependency;
+        $this->dependencies[$objName] = &$dependency;
     }
 
     public static function arrayAccessStatic($key, string $methodName){

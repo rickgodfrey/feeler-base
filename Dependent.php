@@ -17,7 +17,6 @@ class Dependent extends BaseClass {
      */
     public function __construct()
     {
-        parent::__construct();
         $reflectionObj = new \ReflectionClass(self::constructorName());
         $objs = self::getMethodAfferentObjs($reflectionObj);
         $obj = $reflectionObj->newInstanceArgs($objs);

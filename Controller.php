@@ -10,7 +10,7 @@ namespace Feeler\Base;
 class Controller extends BaseClass{
     public function __construct()
     {
-        parent::__construct();
+
     }
 
     public function bindings(){

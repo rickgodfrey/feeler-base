@@ -39,8 +39,6 @@ class File extends BaseClass{
      * @throws InvalidDataDomainException
      */
     public function __construct(string $file, string $mode = self::MODE_R, string $pointer = self::POINTER_HEAD, bool $override = false){
-        parent::__construct();
-
         $this->init($file, $mode, $pointer, $override);
     }
 

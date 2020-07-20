@@ -10,8 +10,6 @@ namespace Feeler\Base;
 class Event extends BaseClass{
     public function __construct()
     {
-        parent::__construct();
+
     }
-
-
 }
