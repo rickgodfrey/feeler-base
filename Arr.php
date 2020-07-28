@@ -266,14 +266,19 @@ class Arr extends BaseClass {
         return true;
     }
 
-    public static function current($arr){
-        if(self::isAvailable($arr)){
-            $arr = current($arr);
+    public static function key($arr){
+        if(!self::isAvailable($arr)){
+            return null;
         }
-        else{
-            $arr = null;
-        }
+        $key = key($arr);
+        return $key;
+    }
 
+    public static function current($arr){
+        if(!self::isAvailable($arr)){
+            return null;
+        }
+        $arr = current($arr);
         return $arr;
     }
 
