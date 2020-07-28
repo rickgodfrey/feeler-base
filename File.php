@@ -20,6 +20,8 @@ class File extends BaseClass{
     const AM_FILE = "AM_FILE";
     const AM_URL_FILE = "AM_URL_FILE";
 
+    const TEMP_PATH = TEMP_PATH;
+
     public $segLength = 524288; //to read and write slice in segments, this set every segment's length
     public $allowUrlFile = true;
 
@@ -320,7 +322,7 @@ class File extends BaseClass{
     }
 
     public static function tempFile(string $suffix = ""):string {
-        $tempFile = sys_get_temp_dir().sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
+        $tempFile = self::TEMP_PATH.sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
         touch($tempFile);
         return $tempFile;
     }
