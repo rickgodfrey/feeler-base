@@ -280,13 +280,13 @@ class Number extends BaseClass {
         return strlen($number[1]);
     }
 
-    public static function minimum():float{
+    public static function minimum(){
         $params = @func_get_args();
-        return (float)call_user_func_array("min", $params);
+        return call_user_func_array("min", $params);
     }
 
-    public static function maximum():float{
+    public static function maximum(){
         $params = @func_get_args();
-        return (float)call_user_func_array("max", $params);
+        return call_user_func_array("max", $params);
     }
 }
