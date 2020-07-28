@@ -454,7 +454,7 @@ class Arr extends BaseClass {
         $rs = $array;
         foreach($keys as $key){
             if(isset($rs[$key])){
-                $rs = $rs[$key];
+                $rs = is_string($rs[$key]) ? trim($rs[$key]) : $rs[$key];
             }
             else{
                 $rs = null;
