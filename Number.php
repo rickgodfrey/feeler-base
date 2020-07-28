@@ -263,4 +263,26 @@ class Number extends BaseClass {
 
         return $number;
     }
+
+    public static function decimalPlaceLength($number):int{
+        if(!self::isFloaric($number)){
+            return 0;
+        }
+        $number = (string)(float)$number;
+        $number = explode(".", $number, 2);
+        if(!isset($number[1])){
+            return 0;
+        }
+        return strlen($number[1]);
+    }
+
+    public static function minimum():float{
+        $params = @func_get_args();
+        return (float)call_user_func_array("min", $params);
+    }
+
+    public static function maximum():float{
+        $params = @func_get_args();
+        return (float)call_user_func_array("max", $params);
+    }
 }
