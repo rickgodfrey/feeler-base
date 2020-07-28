@@ -8,6 +8,8 @@
 namespace Feeler\Base;
 
 class Number extends BaseClass {
+    const INT_MAXIMUM = (int)9223372036854775807;
+
     public static function isNumber($number){
         if(!is_int($number) && !is_float($number)){
             return false;
