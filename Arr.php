@@ -546,7 +546,7 @@ class Arr extends BaseClass {
 
     public static function toXml($array, bool $isBeginning = true):string{
         if(!self::isAvailable($array)){return "";}
-        $xml = $isBeginning ? '<?xml version="1.0" encoding="UTF-8"?>' : "";
+        $xml = $isBeginning ? '<xml>' : "";
         foreach($array as $key => $val) {
             if (Number::isNumeric($val)){
                 $xml .= "<{$key}>{$val}</{$key}>";
@@ -559,6 +559,7 @@ class Arr extends BaseClass {
             }
         }
         $xml = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", " ", $xml);
+        $xml .= $isBeginning ? '</xml>' : "";
         return $xml;
     }
 
