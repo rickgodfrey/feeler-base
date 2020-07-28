@@ -544,23 +544,22 @@ class Arr extends BaseClass {
         return $arr;
     }
 
-    public static function toXml($arr, $level = 1)
-    {
-        $s = $level == 1 ? "<xml>" : '';
-        foreach ($arr as $tagname => $value) {
-            if (is_numeric($tagname)) {
-                $tagname = $value['TagName'];
-                unset($value['TagName']);
+    public static function toXml($array, bool $isBeginning = true):string{
+        if(!self::isAvailable($array)){return "";}
+        $xml = $isBeginning ? '<?xml version="1.0" encoding="UTF-8"?>' : "";
+        foreach($array as $key => $val) {
+            if (Number::isNumeric($val)){
+                $xml .= "<{$key}>{$val}</{$key}>";
             }
-            if (!is_array($value)) {
-                $s .= "<{$tagname}>" . (!is_numeric($value) ? '<![CDATA[' : '') . $value . (!is_numeric($value) ? ']]>' : '') . "</{$tagname}>";
+            else if(self::isAvailable($val)){
+                $xml .= self::toXml($val, false);
             }
-            else {
-                $s .= "<{$tagname}>" . self::toXml($value, $level + 1) . "</{$tagname}>";
+            else{
+                $xml .= "<{$key}><![CDATA[{$val}]]></{$key}>";
             }
         }
-        $s = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", ' ', $s);
-        return $level == 1 ? $s . "</xml>" : $s;
+        $xml = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", " ", $xml);
+        return $xml;
     }
 
     public static function recurse($array, callable $callback) : array {
