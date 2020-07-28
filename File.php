@@ -320,7 +320,7 @@ class File extends BaseClass{
     }
 
     public static function tempFile(string $suffix = ""):string {
-        $tempFile = self::getPath(sys_get_temp_dir()).sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
+        $tempFile = sys_get_temp_dir().sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
         touch($tempFile);
         return $tempFile;
     }
@@ -384,7 +384,6 @@ class File extends BaseClass{
         if((!$pathInfo = pathinfo($fileName))){
             return null;
         }
-
         return $pathInfo["filename"];
     }
 
@@ -392,7 +391,6 @@ class File extends BaseClass{
         if((!$pathInfo = pathinfo($file))){
             return null;
         }
-
         return $pathInfo["basename"];
     }
 
@@ -400,8 +398,7 @@ class File extends BaseClass{
         if((!$pathInfo = pathinfo($file))){
             return null;
         }
-
-        return "{$pathInfo["dirname"]}/{$pathInfo["basename"]}/";
+        return "{$pathInfo["dirname"]}/";
     }
 
     //get file size
