@@ -294,22 +294,18 @@ class File extends BaseClass{
         if($recursive){
             if(is_dir($target)){
                 $handle = opendir($target);
-
                 while($subTarget = readdir($handle)){
                     if($subTarget !== "." && $subTarget !== ".."){
                         $position = "{$target}/{$subTarget}";
-
                         if(is_dir($position)){
                             self::rm($position);
                         }
                         else{
-                            unlink($position);
+                            @unlink($position);
                         }
                     }
                 }
-
                 closedir($handle);
-
                 if(rmdir($target)){
                     return true;
                 }
@@ -317,10 +313,26 @@ class File extends BaseClass{
         }
 
         if(is_file($target)){
-            return unlink($target);
+            return @unlink($target);
         }
 
         return false;
+    }
+
+    public static function tempFile(string $suffix = ""):string {
+        $tempFile = self::getPath(sys_get_temp_dir()).sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
+        touch($tempFile);
+        return $tempFile;
+    }
+
+    public static function tempFileCallback(callable $callback, string $suffix = ""){
+        if(!self::isClosure($callback)){
+            return false;
+        }
+        $tempFile = self::tempFile($suffix);
+        $rs = call_user_func($callback, $tempFile);
+        File::rm($tempFile);
+        return $rs;
     }
 
     public static function rmdir($dir){
@@ -389,7 +401,7 @@ class File extends BaseClass{
             return null;
         }
 
-        return $pathInfo["dirname"];
+        return "{$pathInfo["dirname"]}/{$pathInfo["basename"]}/";
     }
 
     //get file size
