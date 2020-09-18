@@ -9,7 +9,9 @@
     ],
     "require": {
         "php": ">=7.3",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-curl": "*",
+        "ext-json": "*"
     },
     "license": "MIT",
     "authors": [
