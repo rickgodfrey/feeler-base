@@ -544,22 +544,28 @@ class Arr extends BaseClass {
         return $arr;
     }
 
-    public static function toXml($array, bool $isBeginning = true):string{
+    public static function toXml($array, callable $reprocessingCallback = null, bool $isBeginning = true):string{
         if(!self::isAvailable($array)){return "";}
-        $xml = $isBeginning ? '<xml>' : "";
+        $xml = "";
+        $reprocessingIsClosure = self::isClosure($reprocessingCallback);
+        if($isBeginning && !$reprocessingIsClosure){
+            $xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+        }
         foreach($array as $key => $val) {
             if (Number::isNumeric($val)){
                 $xml .= "<{$key}>{$val}</{$key}>";
             }
             else if(self::isAvailable($val)){
-                $xml .= self::toXml($val, false);
+                $xml .= self::toXml($val, $reprocessingCallback, false);
             }
             else{
                 $xml .= "<{$key}><![CDATA[{$val}]]></{$key}>";
             }
         }
         $xml = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", " ", $xml);
-        $xml .= $isBeginning ? '</xml>' : "";
+        if($reprocessingIsClosure){
+            $xml = call_user_func($reprocessingCallback, $xml);
+        }
         return $xml;
     }
 
