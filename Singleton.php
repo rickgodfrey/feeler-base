@@ -17,15 +17,13 @@ class Singleton extends BaseClass {
 
     /**
      * @return static()
-     * @throws \ReflectionException
+     * @throws Exceptions\InvalidParamException
      */
     public static function instance(){
         $className = static::classNameStatic();
         $classSign = md5($className);
         if(!isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
-            $reflectionObj = new \ReflectionClass($className);
-            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
-            static::$instances[$classSign] = $reflectionObj->newInstanceArgs($params);
+            static::$instances[$classSign] = parent::instance($className);
         }
 
         return static::$instances[$classSign];

@@ -7,12 +7,11 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Exceptions\{
-    InvalidClassException,
+use Feeler\Base\Exceptions\{InvalidClassException,
     InvalidMethodException,
     InvalidDataTypeException,
-    InvalidPropertyException
-};
+    InvalidParamException,
+    InvalidPropertyException};
 
 class BaseClass
 {
@@ -304,5 +303,19 @@ class BaseClass
             return null;
         }
         return Arr::get($key, $rs);
+    }
+
+    public static function instance(){
+        $className = @func_get_arg(0);
+        if(!Str::isAvailable($className)){
+            $className = static::classNameStatic();
+        }
+        if(!class_exists($className)){
+            throw new InvalidParamException("Class not exists");
+        }
+
+        $reflectionObj = new \ReflectionClass($className);
+        $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
+        return $reflectionObj->newInstanceArgs($params);
     }
 }
