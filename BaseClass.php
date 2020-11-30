@@ -305,7 +305,12 @@ class BaseClass
         return Arr::get($key, $rs);
     }
 
-    public static function instance(){
+    /**
+     * @return static()
+     * @throws InvalidParamException
+     * @throws \ReflectionException
+     */
+    public static function instance():object {
         $className = @func_get_arg(0);
         if(!Str::isAvailable($className)){
             $className = static::classNameStatic();

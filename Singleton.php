@@ -18,8 +18,9 @@ class Singleton extends BaseClass {
     /**
      * @return static()
      * @throws Exceptions\InvalidParamException
+     * @throws \ReflectionException
      */
-    public static function instance(){
+    public static function instance():object {
         $className = static::classNameStatic();
         $classSign = md5($className);
         if(!isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
