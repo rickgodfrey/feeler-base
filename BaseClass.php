@@ -304,23 +304,4 @@ class BaseClass
         }
         return Arr::get($key, $rs);
     }
-
-    /**
-     * @return static()
-     * @throws InvalidParamException
-     * @throws \ReflectionException
-     */
-    public static function instance():object {
-        $className = @func_get_arg(0);
-        if(!Str::isAvailable($className)){
-            $className = static::classNameStatic();
-        }
-        if(!class_exists($className)){
-            throw new InvalidParamException("Class not exists");
-        }
-
-        $reflectionObj = new \ReflectionClass($className);
-        $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
-        return $reflectionObj->newInstanceArgs($params);
-    }
 }

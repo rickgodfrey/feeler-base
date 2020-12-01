@@ -7,6 +7,8 @@
 
 namespace Feeler\Base;
 
+use Feeler\Base\Exceptions\InvalidParamException;
+
 class Singleton extends BaseClass {
     protected static $instances = [];
 
@@ -17,14 +19,15 @@ class Singleton extends BaseClass {
 
     /**
      * @return static()
-     * @throws Exceptions\InvalidParamException
      * @throws \ReflectionException
      */
     public static function instance():object {
         $className = static::classNameStatic();
         $classSign = md5($className);
         if(!isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
-            static::$instances[$classSign] = parent::instance($className);
+            $reflectionObj = new \ReflectionClass($className);
+            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
+            static::$instances[$classSign] = $reflectionObj->newInstanceArgs($params);
         }
 
         return static::$instances[$classSign];
