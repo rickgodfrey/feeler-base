@@ -10,18 +10,17 @@ namespace Feeler\Base;
 use Feeler\Base\Exceptions\InvalidDataDomainException;
 
 trait TFactory {
-    protected static $instances;
+    protected static $instances = [];
     protected static $usingInstance;
     protected static $usingInstanceName;
 
-    /**
-     * To Prevent The Singleton Cloning Option For Safety
-     */
-    protected function __clone(){}
+    protected static function classSign($instanceName){
+        return md5($instanceName);
+    }
 
     protected static function recycle($instanceName = null){
         if(!Str::isAvailable($instanceName)){
-            static::$instances = null;
+            static::$instances = [];
         }
         else{
             if(isset(static::$instances[$instanceName])){
@@ -53,11 +52,10 @@ trait TFactory {
      * @param string $instanceName
      * @param callable|null $callback
      * @param bool $force
-     * @return static()
+     * @return static
      * @throws InvalidDataDomainException
      */
     public static function &instance(string $instanceName = "", callable $callback = null, bool $force = false) {
-        // if the initialization params has been changed, the singleton instance will be regenerated
         if($instanceName === ""){
             if(Str::isAvailable(static::$usingInstanceName)){
                 $instanceName = static::$usingInstanceName;

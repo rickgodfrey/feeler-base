@@ -22,7 +22,6 @@ class BaseClass
     const INITIALIZE = "initialize";
 
     protected $dependencies = [];
-    protected static $instances = [];
 
     protected static function constructorName(): string{
         return "__construct";
@@ -304,21 +303,5 @@ class BaseClass
             return null;
         }
         return Arr::get($key, $rs);
-    }
-
-    /**
-     * @return static
-     * @throws \ReflectionException
-     */
-    public static function instance():object {
-        $className = static::classNameStatic();
-        $classSign = md5($className);
-        if(!isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
-            $reflectionObj = new \ReflectionClass($className);
-            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
-            static::$instances[$classSign] = $reflectionObj->newInstanceArgs($params);
-        }
-
-        return static::$instances[$classSign];
     }
 }
