@@ -92,7 +92,7 @@ trait TCommon{
      * @return bool
      */
     protected static function defined(string $constName):bool{
-        return defined(static::class."::{$constName}") ? true : false;
+        return (Str::isAvailable($constName) && $constName = strtoupper($constName) && defined(static::class."::{$constName}")) ? true : false;
     }
 
     /**
@@ -100,7 +100,7 @@ trait TCommon{
      * @return string
      */
     protected static function constName(string $constName):string{
-        return static::defined($constName) ? static::class."::{$constName}" : "";
+        return static::defined($constName) ? static::class."::".strtoupper($constName) : "";
     }
 
     /**
@@ -108,6 +108,6 @@ trait TCommon{
      * @return mixed|null
      */
     protected static function constValue(string $constName){
-        return static::defined($constName) ? constant(static::class."::{$constName}") : null;
+        return (Str::isAvailable($constName) && $constName = strtoupper($constName) && static::defined($constName)) ? constant(static::class."::{$constName}") : null;
     }
 }
