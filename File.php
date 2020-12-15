@@ -80,7 +80,7 @@ class File extends BaseClass{
     /**
      * @param mixed $tempPath
      */
-    protected function setTempPath($tempPath): void
+    protected static function setTempPath($tempPath): void
     {
         self::$tempPath = $tempPath;
     }
