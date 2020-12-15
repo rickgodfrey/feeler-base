@@ -10,9 +10,9 @@ namespace Feeler\Base;
 use Feeler\Base\Exceptions\{InvalidClassException, InvalidDataDomainException};
 
 class Container extends BaseClass{
-    const TYPE_CLASS = "TYPE_CLASS";
-    const TYPE_OBJ = "TYPE_OBJ";
-    const TYPE_CALLBACK = "TYPE_CALLBACK";
+    const TYPE_CLASS = "type_class";
+    const TYPE_OBJ = "type_obj";
+    const TYPE_CALLBACK = "type_callback";
 
     protected $dependenciesMap = [];
 

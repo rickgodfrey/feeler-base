@@ -8,20 +8,20 @@
 namespace Feeler\Base;
 
 class Str extends BaseClass {
-    const CASE_UPPER = "CASE_UPPER";
-    const CASE_LOWER = "CASE_LOWER";
-    const CASE_MIXED = "CASE_MIXED";
+    const CASE_UPPER = "case_upper";
+    const CASE_LOWER = "case_lower";
+    const CASE_MIXED = "case_mixed";
 
-    const IS_LETTER = "IS_LETTER";
-    const IS_NON_LETTER = "IS_NON_LETTER";
+    const IS_LETTER = "is_letter";
+    const IS_NON_LETTER = "is_non_letter";
 
-    const ENCODING_ASCII = "ASCII";
-    const ENCODING_UTF8 = "UTF-8";
-    const ENCODING_UNKNOWN = "ENCODING_UNKNOWN";
+    const ENCODING_ASCII = "ascii";
+    const ENCODING_UTF8 = "utf-8";
+    const ENCODING_UNKNOWN = "encoding_unknown";
 
-    const REPEAT_TIMES_AUTO = "REPEAT_TIMES_AUTO";
+    const REPEAT_TIMES_AUTO = "repeat_times_auto";
 
-    const SUPPORTED_ENCODINGS = ["UTF-8", "ASCII", "UTF-32", "UTF-32BE", "UTF-32LE", "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-7", "UTF7-IMAP", "UTF-8-Mobile", "UCS-4", "UCS-4BE", "UCS-4LE", "UCS-2", "UCS-2BE", "UCS-2LE", "GB18030", "KOI8-R", "KOI8-U", "EUC-CN", "EUC-KR", "EUC-JP", "EUC-TW", "eucJP-win", "SJIS", "SJIS-win", "SJIS-mac", "SJIS-Mobile", "JIS", "JIS-ms", "CP866", "CP932", "CP936", "CP950", "CP51932", "CP50220", "CP50220raw", "CP50221", "CP50222", "ISO-8859-1", "ISO-8859-2", "ISO-8859-3", "ISO-8859-4", "ISO-8859-5", "ISO-8859-6", "ISO-8859-7", "ISO-8859-8", "ISO-8859-9", "ISO-8859-10", "ISO-8859-13", "ISO-8859-14", "ISO-8859-15", "ISO-8859-16", "ISO-2022-KR", "ISO-2022-JP", "ISO-2022-JP-MS", "ISO-2022-JP-MOBILE", "byte2be", "byte2le", "byte4be", "byte4le", "7bit", "8bit", "BASE64", "HTML-ENTITIES", "HZ", "BIG-5", "UHC", "Windows-1251", "Windows-1252", "ArmSCII-8"];
+    const SUPPORTED_ENCODINGS = ["utf-8", "ascii", "utf-32", "utf-32be", "utf-32le", "utf-16", "utf-16be", "utf-16le", "utf-7", "utf7-imap", "utf-8-mobile", "ucs-4", "ucs-4be", "ucs-4le", "ucs-2", "ucs-2be", "ucs-2le", "gb18030", "koi8-r", "koi8-u", "euc-cn", "euc-kr", "euc-jp", "euc-tw", "eucjp-win", "sjis", "sjis-win", "sjis-mac", "sjis-mobile", "jis", "jis-ms", "cp866", "cp932", "cp936", "cp950", "cp51932", "cp50220", "cp50220raw", "cp50221", "cp50222", "iso-8859-1", "iso-8859-2", "iso-8859-3", "iso-8859-4", "iso-8859-5", "iso-8859-6", "iso-8859-7", "iso-8859-8", "iso-8859-9", "iso-8859-10", "iso-8859-13", "iso-8859-14", "iso-8859-15", "iso-8859-16", "iso-2022-kr", "iso-2022-jp", "iso-2022-jp-ms", "iso-2022-jp-mobile", "byte2be", "byte2le", "byte4be", "byte4le", "7bit", "8bit", "base64", "html-entries", "hz", "big-5", "uhc", "windows-1251", "windows-1252", "armscii-8"];
     const CASE_MINUSES = [0, 538976288, 2105376, 8224, 32, 536870944, 536870912, 538968064, 538976256, 2097152, 2105344, 8192];
     const UPPER_LETTERS_DICT = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
     const LOWER_LETTERS_DICT = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];

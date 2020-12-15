@@ -10,18 +10,17 @@ namespace Feeler\Base;
 use Feeler\Base\Exceptions\InvalidDataDomainException;
 
 class File extends BaseClass{
-    const MODE_R = "MODE_R";
-    const MODE_W = "MODE_W";
-    const MODE_RW = "MODE_RW";
+    const MODE_R = "mode_r";
+    const MODE_W = "mode_w";
+    const MODE_RW = "mode_rw";
 
-    const POINTER_HEAD = "POINTER_HEAD";
-    const POINTER_END = "POINTER_END";
+    const POINTER_HEAD = "pointer_head";
+    const POINTER_END = "pointer_end";
 
-    const AM_FILE = "AM_FILE";
-    const AM_URL_FILE = "AM_URL_FILE";
+    const AM_FILE = "am_file";
+    const AM_URL_FILE = "am_url_file";
 
-    const TEMP_PATH = TEMP_PATH;
-
+    protected static $tempPath;
     public $segLength = 524288; //to read and write slice in segments, this set every segment's length
     public $allowUrlFile = true;
 
@@ -34,9 +33,9 @@ class File extends BaseClass{
 
     /**
      * File constructor.
-     * @param $file
-     * @param int $mode
-     * @param int $pointer
+     * @param string $file
+     * @param string $mode
+     * @param string $pointer
      * @param bool $override
      * @throws InvalidDataDomainException
      */
@@ -51,10 +50,26 @@ class File extends BaseClass{
     }
 
     /**
-     * @param $mode
-     * @param int $pointer
+     * @return mixed
+     */
+    public static function getTempPath()
+    {
+        return self::$tempPath;
+    }
+
+    /**
+     * @param mixed $tempPath
+     */
+    public function setTempPath($tempPath): void
+    {
+        self::$tempPath = $tempPath;
+    }
+
+    /**
+     * @param string $mode
+     * @param string $pointer
      * @param bool $override
-     * @return string|null
+     * @return string
      * @throws InvalidDataDomainException
      */
     private function _convertModeParams(string $mode, string $pointer = self::POINTER_HEAD, bool $override = false): string{
@@ -322,7 +337,7 @@ class File extends BaseClass{
     }
 
     public static function tempFile(string $suffix = ""):string {
-        $tempFile = self::TEMP_PATH.sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
+        $tempFile = self::$tempPath.sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
         touch($tempFile);
         return $tempFile;
     }
