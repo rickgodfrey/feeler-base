@@ -18,8 +18,8 @@ class BaseClass
     use TCommon;
 
     const UNKNOWN = "unknown";
-    const INVOKE = "invoke";
-    const INITIALIZE = "initialize";
+    const INVOKE_METHOD = "invoke";
+    const INITIALIZE_METHOD = "initialize";
 
     protected $dependencies = [];
 
@@ -136,7 +136,7 @@ class BaseClass
     }
 
     protected static function invokeMethodName() : string {
-        return static::INVOKE;
+        return static::INVOKE_METHOD;
     }
 
     /**
