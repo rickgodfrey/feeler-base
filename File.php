@@ -18,7 +18,6 @@ class File extends BaseClass{
     const POINTER_END = "pointer_end";
 
     const AM_FILE = "am_file";
-    const AM_URL_FILE = "am_url_file";
 
     const RUNTIME_DIR = "runtime";
 
@@ -159,9 +158,6 @@ class File extends BaseClass{
         if(is_file($file)){
             $this->whatAmI = self::AM_FILE;
         }
-        else if(@get_headers($file, 1)){
-            $this->whatAmI = self::AM_URL_FILE;
-        }
         else{
             $this->state = false;
         }
@@ -178,7 +174,7 @@ class File extends BaseClass{
 
         $this->handle = fopen($file, $modeParam);
 
-        if($this->whatAmI == self::AM_FILE){
+        if($this->whatAmI === self::AM_FILE){
             if($this->lock($lockMode)){
                 $this->fileSize = filesize($this->file);
             }
@@ -186,7 +182,7 @@ class File extends BaseClass{
                 $this->state = false;
             }
         }
-        else if($this->whatAmI == self::AM_URL_FILE){
+        else {
             $this->fileSize = false;
         }
     }
