@@ -8,11 +8,11 @@
 namespace Feeler\Base;
 
 class GlobalAccess extends BaseClass {
-    protected static function varsList() {
+    public static function varsList() {
         return ["GLOBALS" => &$GLOBALS, "_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
     }
 
-    protected static function var(string $varName){
+    public static function var(string $varName){
         return static::arrayAccessStatic($varName, "varsList");
     }
 
