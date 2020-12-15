@@ -20,6 +20,9 @@ class File extends BaseClass{
     const AM_FILE = "am_file";
     const AM_URL_FILE = "am_url_file";
 
+    const RUNTIME_DIR = "runtime";
+
+    protected static $rootPath;
     protected static $tempPath;
     public $segLength = 524288; //to read and write slice in segments, this set every segment's length
     public $allowUrlFile = true;
@@ -52,15 +55,32 @@ class File extends BaseClass{
     /**
      * @return mixed
      */
+    public static function getRootPath()
+    {
+        return self::$rootPath;
+    }
+
+    /**
+     * @param mixed $rootPath
+     */
+    public static function setRootPath($rootPath): void
+    {
+        self::$rootPath = $rootPath;
+        self::setTempPath(self::getRootPath().static::RUNTIME_DIR."/");
+    }
+
+    /**
+     * @return mixed
+     */
     public static function getTempPath()
     {
-        return self::$tempPath;
+        return self::getTempPath();
     }
 
     /**
      * @param mixed $tempPath
      */
-    public function setTempPath($tempPath): void
+    protected function setTempPath($tempPath): void
     {
         self::$tempPath = $tempPath;
     }
@@ -337,7 +357,7 @@ class File extends BaseClass{
     }
 
     public static function tempFile(string $suffix = ""):string {
-        $tempFile = self::$tempPath.sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
+        $tempFile = self::getTempPath().sha1(random_bytes(64)).(Str::isAvailable($suffix) ? $suffix : "");
         touch($tempFile);
         return $tempFile;
     }
@@ -376,10 +396,12 @@ class File extends BaseClass{
          * 		 <? (  ) ?>
          * 		 <script  /script>
          */
-        if(preg_match("/(3c25.*?28.*?29.*?253e)|(3c3f.*?28.*?29.*?3f3e)|(3C534352495054.*?2F5343524950543E)|(3C736372697074.*?2F7363726970743E)/is", $hexCode))
+        if(preg_match("/(3c25.*?28.*?29.*?253e)|(3c3f.*?28.*?29.*?3f3e)|(3C534352495054.*?2F5343524950543E)|(3C736372697074.*?2F7363726970743E)/is", $hexCode)){
             return false;
-        else
+        }
+        else{
             return true;
+        }
     }
 
     public static function getPathInfo($file){
