@@ -18,10 +18,10 @@ class Singleton extends BaseClass {
     private function __clone(){}
 
     /**
-     * @return static
+     * @return static()
      * @throws \ReflectionException
      */
-    public static function instance():self {
+    public static function instance():object {
         $className = static::classNameStatic();
         $classSign = md5($className);
         if(!isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
