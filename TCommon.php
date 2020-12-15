@@ -87,12 +87,20 @@ trait TCommon{
         }
     }
 
-    protected static function defined(string $constName){
+    /**
+     * @param string $constName
+     * @return bool
+     */
+    protected static function defined(string $constName):bool{
         return defined(static::class."::{$constName}") ? true : false;
     }
 
-    protected static function constName(string $constName){
-        return static::defined($constName) ? static::class."::{$constName}" : null;
+    /**
+     * @param string $constName
+     * @return string
+     */
+    protected static function constName(string $constName):string{
+        return static::defined($constName) ? static::class."::{$constName}" : "";
     }
 
     /**
