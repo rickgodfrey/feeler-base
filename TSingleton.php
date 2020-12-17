@@ -7,7 +7,11 @@
 
 namespace Feeler\Base;
 
-class Singleton extends BaseClass {
+use Feeler\Base\Exceptions\InvalidParamException;
+
+trait TSingleton {
+    use TCommon;
+
     protected static $instances = [];
 
     /**

@@ -12,12 +12,12 @@ class GlobalAccess extends BaseClass {
         return ["GLOBALS" => &$GLOBALS, "_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
     }
 
-    public static function var(string $varName){
+    public static function getVar(string $varName){
         return static::arrayAccessStatic($varName, "varsList");
     }
 
     private static function _access(string $varName, $key = null, $value = null){
-        if(!Arr::isAvailable($var = self::var($varName))){
+        if(!Arr::isAvailable($var = self::getVar($varName))){
             return $key === null ? [] : null;
         }
         if($key === null){
