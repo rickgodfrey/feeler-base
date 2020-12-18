@@ -81,19 +81,6 @@ trait TCommon{
         $dict[$key] = $value;
     }
 
-    protected static function isAssoc($value) {
-        return is_array($value) && array_keys($value) !== range(0, count($value) - 1);
-    }
-
-    protected static function isArray($value, $strict = false){
-        if(!$strict){
-            return is_array($value);
-        }
-        else{
-            return is_array($value) && !self::isAssoc($value);
-        }
-    }
-
     /**
      * @param string $constName
      * @return bool

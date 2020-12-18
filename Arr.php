@@ -25,9 +25,17 @@ class Arr extends BaseClass {
         return null;
     }
 
-    public static function isArray($value, $strict = false)
-    {
-        return parent::isArray($value, $strict);
+    protected static function isAssoc($value) :bool {
+        return is_array($value) && array_keys($value) !== range(0, count($value) - 1);
+    }
+
+    protected static function isArray($value, $strict = false) :bool {
+        if(!$strict){
+            return is_array($value);
+        }
+        else{
+            return is_array($value) && !self::isAssoc($value);
+        }
     }
 
     //Array of keys to delete and restore to incrementing key
