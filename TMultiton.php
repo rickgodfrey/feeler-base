@@ -12,8 +12,16 @@ use Feeler\Base\Exceptions\InvalidDataDomainException;
 trait TMultiton  {
     use TFactory;
 
-    public static function &instance(string $instanceName = "", bool $force = false) {
-        $instance = TFactory::instance($instanceName, $force);
+    /**
+     * @param $instance
+     * @param string $instanceName
+     * @param bool $force
+     * @return static()
+     * @throws InvalidDataDomainException
+     * @throws \ReflectionException
+     */
+    public static function &instance($instance, string $instanceName = "", bool $force = false) {
+        $instance = TFactory::instance($instance, $instanceName, $force);
         if(!($instance instanceof static)){
             throw new InvalidDataDomainException("Trying to set an illegal self-instance");
         }

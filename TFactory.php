@@ -36,14 +36,32 @@ trait TFactory  {
         }
     }
 
-    public static function usingInstance():object{
+    /**
+     * @return object
+     */
+    public static function &usingInstance():object{
         return static::$usingInstance;
     }
 
-    public static function setInstance($instance, string $instanceName = "", $force = true){
+    /**
+     * @param $instance
+     * @param string $instanceName
+     * @param bool $force
+     * @return object
+     * @throws InvalidDataDomainException
+     * @throws \ReflectionException
+     */
+    public static function setInstance($instance, string $instanceName = "", $force = true):void{
         if(!Str::isAvailable($instanceName)){
-            throw new InvalidDataDomainException("Trying to set an illegal instance");
+            if($instanceName === ""){
+                $instanceName = static::defaultInstanceName();
+            }
         }
+
+        if(!Str::isAvailable($instanceName)){
+            throw new InvalidDataDomainException("Trying to get an illegal instance");
+        }
+
         if(!Obj::isObject($instance)){
             if(!self::isClosure($instance)){
                 throw new InvalidDataDomainException("Trying to set an illegal instance");
@@ -53,13 +71,20 @@ trait TFactory  {
         if(!Obj::isObject($instance)){
             throw new InvalidDataDomainException("Trying to set an illegal instance");
         }
+
+        if(!isset(static::$instances[self::instanceName($instanceName)]) || !is_object(static::$instances[self::instanceName($instanceName)])){
+            $reflectionObj = new \ReflectionClass(static::classNameStatic());
+            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
+            static::$instances[self::instanceName($instanceName)] = $reflectionObj->newInstanceArgs($params);
+        }
+
         if(!isset(static::$instances[self::instanceName($instanceName)]) || $force){
             static::$instances[self::instanceName($instanceName)] = $instance;
         }
-        static::setUsingInstance($instanceName, $instance);
+        static::setUsingInstance($instance, $instanceName);
     }
 
-    protected static function setUsingInstance(string $instanceName, object &$instance){
+    protected static function setUsingInstance(object &$instance, string $instanceName){
         if(!Str::isAvailable($instanceName) || !is_object($instance) || !isset(static::$instances[self::instanceName($instanceName)])){
             throw new InvalidDataDomainException("Trying to set an illegal instance");
         }
@@ -72,42 +97,15 @@ trait TFactory  {
     }
 
     /**
+     * @param $instance
      * @param string $instanceName
      * @param bool $force
      * @return object
      * @throws InvalidDataDomainException
      * @throws \ReflectionException
      */
-    public static function &instance(string $instanceName = "", bool $force = false) {
-        if(!Str::isAvailable($instanceName)){
-            if($instanceName !== ""){
-                throw new InvalidDataDomainException("Trying to get an illegal instance");
-            }
-
-            if(static::$usingInstance instanceof static){
-                return static::$usingInstance;
-            }
-
-            if(Str::isAvailable(static::$usingInstanceName)){
-                $instanceName = static::$usingInstanceName;
-            }
-            else {
-                $instanceName = static::defaultInstanceName();
-            }
-        }
-
-        if(!Str::isAvailable($instanceName)){
-            throw new InvalidDataDomainException("Trying to set an illegal instance");
-        }
-
-        if(!isset(static::$instances[self::instanceName($instanceName)]) || !is_object(static::$instances[self::instanceName($instanceName)])){
-            $reflectionObj = new \ReflectionClass(static::classNameStatic());
-            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
-            static::$instances[self::instanceName($instanceName)] = $reflectionObj->newInstanceArgs($params);
-        }
-
-        static::setInstance(static::$instances[self::instanceName($instanceName)], $instanceName, $force);
-
-        return static::$instances[self::instanceName($instanceName)];
+    public static function &instance($instance, string $instanceName = "", bool $force = false) {
+        static::setInstance($instance, $instanceName, $force);
+        return static::usingInstance();
     }
 }
