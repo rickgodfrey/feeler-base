@@ -40,7 +40,7 @@ trait TFactory  {
         return static::$usingInstance;
     }
 
-    public static function setInstance(string $instanceName, $instance, $force = true){
+    public static function setInstance($instance, string $instanceName = "", $force = true){
         if(!Str::isAvailable($instanceName)){
             throw new InvalidDataDomainException("Trying to set an illegal instance");
         }
@@ -106,7 +106,7 @@ trait TFactory  {
             static::$instances[self::instanceName($instanceName)] = $reflectionObj->newInstanceArgs($params);
         }
 
-        static::setInstance($instanceName, static::$instances[self::instanceName($instanceName)], $force);
+        static::setInstance(static::$instances[self::instanceName($instanceName)], $instanceName, $force);
 
         return static::$instances[self::instanceName($instanceName)];
     }
