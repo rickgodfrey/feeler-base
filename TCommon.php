@@ -180,4 +180,16 @@ trait TCommon{
         }
         unset($property);
     }
+
+    /**
+     * @throws \ReflectionException
+     */
+    final protected static function instance(){
+        $reflectionObj = new \ReflectionClass(static::classNameStatic());
+        $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
+        /**
+         * @var static()
+         */
+        return $reflectionObj->newInstanceArgs($params);
+    }
 }

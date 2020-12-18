@@ -39,7 +39,7 @@ trait TFactory  {
     /**
      * @return object
      */
-    public static function &usingInstance():object{
+    protected static function &usingInstance():object{
         return static::$usingInstance;
     }
 
@@ -73,9 +73,7 @@ trait TFactory  {
         }
 
         if(!isset(static::$instances[self::instanceName($instanceName)]) || !is_object(static::$instances[self::instanceName($instanceName)])){
-            $reflectionObj = new \ReflectionClass(static::classNameStatic());
-            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
-            static::$instances[self::instanceName($instanceName)] = $reflectionObj->newInstanceArgs($params);
+            static::$instances[self::instanceName($instanceName)] = TCommon::instance();
         }
 
         if(!isset(static::$instances[self::instanceName($instanceName)]) || $force){
