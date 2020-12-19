@@ -51,7 +51,7 @@ trait TFactory  {
      * @throws InvalidDataDomainException
      * @throws \ReflectionException
      */
-    public static function setInstance($instance, string $instanceName = "", $force = true):void{
+    public static function setInstance($instance, string $instanceName = "", $force = true):object{
         if(!Str::isAvailable($instanceName)){
             if($instanceName === ""){
                 $instanceName = static::defaultInstanceName();
@@ -80,6 +80,7 @@ trait TFactory  {
             static::$instances[self::instanceName($instanceName)] = $instance;
         }
         static::setUsingInstance($instance, $instanceName);
+        return $instance;
     }
 
     protected static function setUsingInstance(object &$instance, string $instanceName){
