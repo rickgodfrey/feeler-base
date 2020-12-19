@@ -27,16 +27,12 @@ trait TMultiton  {
             $instance = $reflectionObj->newInstanceArgs($params);
             return $instance;
         }, $instanceName, $force);
-        if(!(static::usingInstance() instanceof static)){
+        if(!(static::instance() instanceof static)){
             throw new InvalidDataDomainException("Trying to set an illegal self-instance");
         }
+        /**
+         * @var static()
+         */
         return static::usingInstance();
-    }
-
-    /**
-     * @return static()
-     */
-    public static function &usingInstance(): object{
-        return TFactory::usingInstance();
     }
 }

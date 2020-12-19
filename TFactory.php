@@ -23,23 +23,10 @@ trait TFactory  {
         return md5(static::classNameStatic()."::{$instanceName}");
     }
 
-    protected static function recycle($instanceName = null){
-        if(!Str::isAvailable($instanceName)){
-            static::$instances = [];
-            static::$usingInstance = null;
-            static::$usingInstanceName = "";
-        }
-        else{
-            if(isset(static::$instances[self::instanceName($instanceName)])){
-                unset(static::$instances[self::instanceName($instanceName)]);
-            }
-        }
-    }
-
     /**
      * @return object
      */
-    public static function &usingInstance():object{
+    protected static function &usingInstance():object{
         return static::$usingInstance;
     }
 
@@ -99,5 +86,18 @@ trait TFactory  {
     public static function &instance($instance, string $instanceName = "", bool $force = false) {
         static::setInstance($instance, $instanceName, $force);
         return static::usingInstance();
+    }
+
+    public static function recycle($instanceName = null){
+        if(!Str::isAvailable($instanceName)){
+            static::$instances = [];
+            static::$usingInstance = null;
+            static::$usingInstanceName = "";
+        }
+        else{
+            if(isset(static::$instances[self::instanceName($instanceName)])){
+                unset(static::$instances[self::instanceName($instanceName)]);
+            }
+        }
     }
 }
