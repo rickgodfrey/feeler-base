@@ -25,11 +25,11 @@ class Arr extends BaseClass {
         return null;
     }
 
-    protected static function isAssoc($value) :bool {
+    public static function isAssoc($value) :bool {
         return is_array($value) && array_keys($value) !== range(0, count($value) - 1);
     }
 
-    protected static function isArray($value, $strict = false) :bool {
+    public static function isArray($value, $strict = false) :bool {
         if(!$strict){
             return is_array($value);
         }
@@ -232,7 +232,7 @@ class Arr extends BaseClass {
      * @return bool
      */
     public static function isAvailable($arr, $key = null, bool $strict = false): bool {
-        $isArray = is_array($arr);
+        $isArray = self::isArray($arr);
         if($isArray === false){
             return false;
         }
@@ -462,7 +462,7 @@ class Arr extends BaseClass {
         $rs = $array;
         foreach($keys as $key){
             if(isset($rs[$key])){
-                $rs = is_string($rs[$key]) ? trim($rs[$key]) : $rs[$key];
+                $rs = Str::isString($rs[$key]) ? trim($rs[$key]) : $rs[$key];
             }
             else{
                 $rs = null;
@@ -542,7 +542,7 @@ class Arr extends BaseClass {
             if(strripos($k, "_array") === (strlen($k) - 6) || (strripos($k, "_list") === (strlen($k) - 5))){
                 $v = (array)$v;
             }
-            else if(is_array($v) && is_string($k) && (strripos($k, "_object") === (strlen($k) - 7) || !preg_match("/^(?:.*(?:es|[^s]s)|(?:es|[^s]s)_[^_]*)$/i", $k))){
+            else if(self::isArray($v) && Str::isString($k) && (strripos($k, "_object") === (strlen($k) - 7) || !preg_match("/^(?:.*(?:es|[^s]s)|(?:es|[^s]s)_[^_]*)$/i", $k))){
                 $v = (object)$v;
             }
 

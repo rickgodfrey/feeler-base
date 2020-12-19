@@ -90,10 +90,10 @@ class Container extends BaseClass{
             throw new InvalidClassException("Non-existent Class");
         }
 
-        if(is_string($dependency) && ($dependency = trim($dependency)) && class_exists($dependency)){
+        if(Str::isString($dependency) && ($dependency = trim($dependency)) && class_exists($dependency)){
             $this->setDependenciesMap($class, $dependency, $params, self::TYPE_CLASS);
         }
-        else if(is_object($dependency)){
+        else if(Obj::isObject($dependency)){
             $this->setDependenciesMap($class, $dependency, $params, self::TYPE_OBJ);
         }
         else if(self::isClosure($dependency)){

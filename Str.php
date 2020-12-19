@@ -31,16 +31,9 @@ class Str extends BaseClass {
     }
 
     public static function isAvailable(&$string) : bool{
-        if(!is_string($string)){
-            return false;
-        }
-
+        if(!self::isString($string)){return false;}
         $string = trim($string);
-
-        if(!$string){
-            return false;
-        }
-
+        if(!$string){return false;}
         return true;
     }
 

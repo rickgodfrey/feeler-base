@@ -145,7 +145,7 @@ class Table extends Arr{
 
         if(isset($params[1])){
             foreach($params as $param){
-                if(is_array($param)){
+                if(Arr::isArray($param)){
                     foreach($param as $val){
                         if(!in_array($val, $array, true)){
                             $array[] = $val;

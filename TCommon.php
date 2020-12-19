@@ -52,7 +52,7 @@ trait TCommon{
     protected static function isClosure($target): bool{
         $callableName = null;
 
-        if(is_string($target) && function_exists($target)){
+        if(Str::isString($target) && function_exists($target)){
             $callableName = $target;
         }
 
@@ -129,7 +129,7 @@ trait TCommon{
         foreach ($reflectionParams as $key => $reflectionParam) {
             $reflectionParamClassObj = $reflectionParam->getClass();
 
-            if (!is_object($reflectionParamClassObj)) {
+            if (!Obj::isObject($reflectionParamClassObj)) {
                 throw new \ReflectionException("The Dependencies Tree of ".__CLASS__." Has Non-object Param");
             }
 
@@ -150,7 +150,7 @@ trait TCommon{
      * @throws \ReflectionException
      */
     protected function selfOverride(object $obj = null, \ReflectionClass $reflectionObj = null): void{
-        if(!is_object($obj)){
+        if(!Obj::isObject($obj)){
             return;
         }
 

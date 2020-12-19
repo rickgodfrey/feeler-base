@@ -486,7 +486,7 @@ class File extends BaseClass{
 
     //get file's type according to start of 2bytes binary data
     public static function getTypeByContent($content){
-        if(!is_string($content) || !$content){
+        if(!Str::isString($content) || !$content){
             return null;
         }
 

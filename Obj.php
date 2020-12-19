@@ -14,7 +14,7 @@ class Obj extends BaseClass {
     const PATTERN_CALLABLE_NAME = "pattern_callable_name";
 
     public static function toArr($obj, $inBranch = false){
-        if(!is_object($obj)){
+        if(!self::isObject($obj)){
             if($inBranch){
                 return $obj;
             }
@@ -26,7 +26,7 @@ class Obj extends BaseClass {
         $arr = (array)$obj;
         unset($obj);
 
-        if(is_array($arr)){
+        if(Arr::isArray($arr)){
             foreach($arr as $key => $val){
                 $arr[$key] = self::toArr($val, true);
             }
@@ -35,7 +35,7 @@ class Obj extends BaseClass {
         return $arr;
     }
 
-    public static function newborn(){
+    public static function newOne(){
         return new \stdClass();
     }
 
@@ -44,7 +44,7 @@ class Obj extends BaseClass {
     }
 
     public static function isAvailable($obj){
-        if(!is_object($obj)){
+        if(!self::isObject($obj)){
             return false;
         }
 
@@ -62,7 +62,7 @@ class Obj extends BaseClass {
      * @throws \ReflectionException
      */
     public static function hasItsOwnMethod($obj, $methodName, &$rObj = null) : bool{
-        if(!is_object($obj)){
+        if(!self::isObject($obj)){
             throw new InvalidDataTypeException("Param 1 is not a object");
         }
 

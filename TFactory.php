@@ -72,7 +72,7 @@ trait TFactory  {
             throw new InvalidDataDomainException("Trying to set an illegal instance");
         }
 
-        if(!isset(static::$instances[self::instanceName($instanceName)]) || !is_object(static::$instances[self::instanceName($instanceName)])){
+        if(!isset(static::$instances[self::instanceName($instanceName)]) || !Obj::isObject(static::$instances[self::instanceName($instanceName)])){
             static::$instances[self::instanceName($instanceName)] = TCommon::instance();
         }
 
@@ -83,7 +83,7 @@ trait TFactory  {
     }
 
     protected static function setUsingInstance(object &$instance, string $instanceName){
-        if(!Str::isAvailable($instanceName) || !is_object($instance) || !isset(static::$instances[self::instanceName($instanceName)])){
+        if(!Str::isAvailable($instanceName) || !Obj::isObject($instance) || !isset(static::$instances[self::instanceName($instanceName)])){
             throw new InvalidDataDomainException("Trying to set an illegal instance");
         }
         static::$usingInstance = &$instance;
