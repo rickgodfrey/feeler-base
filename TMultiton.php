@@ -36,7 +36,7 @@ trait TMultiton  {
     /**
      * @return static()
      */
-    protected static function &usingInstance(): object{
+    public static function &usingInstance(): object{
         return TFactory::usingInstance();
     }
 }

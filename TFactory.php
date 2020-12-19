@@ -39,7 +39,7 @@ trait TFactory  {
     /**
      * @return object
      */
-    protected static function &usingInstance():object{
+    public static function &usingInstance():object{
         return static::$usingInstance;
     }
 
