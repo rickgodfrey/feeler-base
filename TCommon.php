@@ -14,10 +14,6 @@ trait TCommon{
         return "__construct";
     }
 
-    public function constructor(){
-        return method_exists($this, static::constructorName()) ? @call_user_func_array([$this, static::constructorName()], @func_get_args()) : null;
-    }
-
     /**
      * @return string
      */
@@ -179,17 +175,5 @@ trait TCommon{
             $this->setProperty($propertyName, $obj->$propertyName, true);
         }
         unset($property);
-    }
-
-    /**
-     * @throws \ReflectionException
-     */
-    public static function instance(){
-        $reflectionObj = new \ReflectionClass(static::classNameStatic());
-        $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
-        /**
-         * @var static()
-         */
-        return $reflectionObj->newInstanceArgs($params);
     }
 }

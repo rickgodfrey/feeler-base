@@ -47,11 +47,10 @@ trait TFactory  {
      * @param $instance
      * @param string $instanceName
      * @param bool $force
-     * @return object
      * @throws InvalidDataDomainException
      * @throws \ReflectionException
      */
-    public static function setInstance($instance, string $instanceName = "", $force = true):object{
+    public static function setInstance($instance, string $instanceName = "", $force = true):void{
         if(!Str::isAvailable($instanceName)){
             if($instanceName === ""){
                 $instanceName = static::defaultInstanceName();
@@ -72,15 +71,10 @@ trait TFactory  {
             throw new InvalidDataDomainException("Trying to set an illegal instance");
         }
 
-        if(!isset(static::$instances[self::instanceName($instanceName)]) || !Obj::isObject(static::$instances[self::instanceName($instanceName)])){
-            static::$instances[self::instanceName($instanceName)] = TCommon::instance();
-        }
-
         if(!isset(static::$instances[self::instanceName($instanceName)]) || $force){
             static::$instances[self::instanceName($instanceName)] = $instance;
         }
         static::setUsingInstance($instance, $instanceName);
-        return $instance;
     }
 
     protected static function setUsingInstance(object &$instance, string $instanceName){

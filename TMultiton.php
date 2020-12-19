@@ -16,15 +16,27 @@ trait TMultiton  {
      * @param $instance
      * @param string $instanceName
      * @param bool $force
-     * @return static()
+     * @return object
      * @throws InvalidDataDomainException
      * @throws \ReflectionException
      */
     public static function &instance(string $instanceName = "", bool $force = false) {
-        $instance = TFactory::instance(TCommon::instance(), $instanceName, $force);
-        if(!($instance instanceof static)){
+        static::setInstance(function(){
+            $reflectionObj = new \ReflectionClass(static::classNameStatic());
+            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
+            $instance = $reflectionObj->newInstanceArgs($params);
+            return $instance;
+        }, $instanceName, $force);
+        if(!(static::usingInstance() instanceof static)){
             throw new InvalidDataDomainException("Trying to set an illegal self-instance");
         }
-        return $instance;
+        return static::usingInstance();
+    }
+
+    /**
+     * @return static()
+     */
+    protected static function &usingInstance(): object{
+        return TFactory::usingInstance();
     }
 }
