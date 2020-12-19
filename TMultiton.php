@@ -21,8 +21,9 @@ trait TMultiton  {
      * @throws \ReflectionException
      */
     public static function &instance(string $instanceName = "", bool $force = false) {
-        static::setInstance(function(){
-            $reflectionObj = new \ReflectionClass(static::classNameStatic());
+        $className = static::classNameStatic();
+        static::setInstance(function() use($className){
+            $reflectionObj = new \ReflectionClass($className);
             $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
             $instance = $reflectionObj->newInstanceArgs($params);
             return $instance;
