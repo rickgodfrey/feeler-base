@@ -149,7 +149,7 @@ trait TCommon{
      * @throws InvalidDataTypeException
      * @throws \ReflectionException
      */
-    final protected function selfOverride(object $obj = null, \ReflectionClass $reflectionObj = null): void{
+    protected function selfOverride(object $obj = null, \ReflectionClass $reflectionObj = null): void{
         if(!is_object($obj)){
             return;
         }
@@ -184,7 +184,7 @@ trait TCommon{
     /**
      * @throws \ReflectionException
      */
-    final protected static function instance(){
+    protected static function instance(){
         $reflectionObj = new \ReflectionClass(static::classNameStatic());
         $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
         /**
