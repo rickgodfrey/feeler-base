@@ -111,7 +111,7 @@ trait TCommon{
      * @return array
      * @throws \ReflectionException
      */
-    final protected static function getMethodAfferentObjs(\ReflectionClass $reflectionObj, string $methodName = __METHOD__): array {
+    protected static function getMethodAfferentObjs(\ReflectionClass $reflectionObj, string $methodName = __METHOD__): array {
         $objs = [];
 
         if (!$reflectionObj->hasMethod($methodName)) {
