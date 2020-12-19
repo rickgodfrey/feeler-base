@@ -184,7 +184,7 @@ trait TCommon{
     /**
      * @throws \ReflectionException
      */
-    protected static function instance(){
+    public static function instance(){
         $reflectionObj = new \ReflectionClass(static::classNameStatic());
         $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
         /**
