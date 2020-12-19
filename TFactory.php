@@ -48,7 +48,6 @@ trait TFactory  {
      * @param string $instanceName
      * @param bool $force
      * @throws InvalidDataDomainException
-     * @throws \ReflectionException
      */
     public static function setInstance($instance, string $instanceName = "", $force = true):void{
         if(!Str::isAvailable($instanceName)){
