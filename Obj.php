@@ -39,7 +39,7 @@ class Obj extends BaseClass {
         return new \stdClass();
     }
 
-    protected static function isObject($value) :bool {
+    public static function isObject($value) :bool {
         return is_object($value);
     }
 
