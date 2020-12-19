@@ -14,7 +14,7 @@ trait TCommon{
         return "__construct";
     }
 
-    final public function constructor(){
+    public function constructor(){
         return method_exists($this, static::constructorName()) ? @call_user_func_array([$this, static::constructorName()], @func_get_args()) : null;
     }
 
