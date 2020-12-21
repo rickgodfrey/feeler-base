@@ -18,7 +18,12 @@ trait TFactory  {
 
     protected static function instanceName($instanceName):string{
         if(!Str::isAvailable($instanceName)){
-            return "";
+            if($instanceName === ""){
+                $instanceName = static::defaultInstanceName();
+            }
+            if(!Str::isAvailable($instanceName)){
+                return "";
+            }
         }
         return md5(static::classNameStatic()."::{$instanceName}");
     }
@@ -26,7 +31,7 @@ trait TFactory  {
     /**
      * @return object
      */
-    protected static function &usingInstance():object{
+    public static function &usingInstance():object{
         return static::$usingInstance;
     }
 
@@ -36,7 +41,7 @@ trait TFactory  {
      * @param bool $force
      * @throws InvalidDataDomainException
      */
-    public static function setInstance($instance, string $instanceName = "", $force = true):void{
+    public static function &setInstance($instance, string $instanceName = "", $force = false) {
         if(!Str::isAvailable($instanceName)){
             if($instanceName === ""){
                 $instanceName = static::defaultInstanceName();
@@ -47,27 +52,26 @@ trait TFactory  {
             throw new InvalidDataDomainException("Trying to get an illegal instance");
         }
 
-        if(!Obj::isObject($instance)){
-            if(!self::isClosure($instance)){
+        if(!isset(static::$instances[static::instanceName($instanceName)]) || $force){
+            static::setUsingInstance(null, $instanceName);
+            if(static::isClosure($instance)) {
+                call_user_func($instance, $instanceName);
+            }
+            if(!Obj::isObject($instance)){
                 throw new InvalidDataDomainException("Trying to set an illegal instance");
             }
-            $instance = call_user_func($instance);
-        }
-        if(!Obj::isObject($instance)){
-            throw new InvalidDataDomainException("Trying to set an illegal instance");
+            static::$instances[static::instanceName($instanceName)] = $instance;
         }
 
-        if(!isset(static::$instances[self::instanceName($instanceName)]) || $force){
-            static::$instances[self::instanceName($instanceName)] = $instance;
-        }
         static::setUsingInstance($instance, $instanceName);
+        return static::usingInstance();
     }
 
-    protected static function setUsingInstance(object &$instance, string $instanceName){
-        if(!Str::isAvailable($instanceName) || !Obj::isObject($instance) || !isset(static::$instances[self::instanceName($instanceName)])){
+    protected static function setUsingInstance($instance, string $instanceName){
+        if(!Str::isAvailable($instanceName) || (!Obj::isObject($instance) && !is_null($instance))){
             throw new InvalidDataDomainException("Trying to set an illegal instance");
         }
-        static::$usingInstance = &$instance;
+        static::$usingInstance = $instance;
         static::$usingInstanceName = $instanceName;
     }
 
@@ -95,8 +99,8 @@ trait TFactory  {
             static::$usingInstanceName = "";
         }
         else{
-            if(isset(static::$instances[self::instanceName($instanceName)])){
-                unset(static::$instances[self::instanceName($instanceName)]);
+            if(isset(static::$instances[static::instanceName($instanceName)])){
+                unset(static::$instances[static::instanceName($instanceName)]);
             }
         }
     }

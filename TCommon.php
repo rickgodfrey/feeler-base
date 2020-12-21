@@ -39,28 +39,17 @@ trait TCommon{
 
     /**
      * @param $target
-     * @return mixed
+     * @return string
      */
-    protected static function getCallableName($target){
+    protected static function getCallableName($target):string{
         return is_callable($target, false, $callableName) ? $callableName : false;
     }
 
     protected static function isClosure($target): bool{
-        $callableName = null;
-
-        if(Str::isString($target) && function_exists($target)){
-            $callableName = $target;
+        if(!($callableName = static::getCallableName($target)) || strpos(strtolower($callableName), "closure::") !== 0){
+            return false;
         }
-
-        if(!$callableName){
-            $callableName = self::getCallableName($target);
-        }
-
-        if($callableName && stripos($callableName, "Closure::") === 0){
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
