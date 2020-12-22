@@ -326,7 +326,7 @@ class Arr extends BaseClass {
                 $defaultValue = [];
             }
             else if($defaultValue === "{}"){
-                $defaultValue = (new \stdClass());
+                $defaultValue = Obj::newOne();
             }
 
             if (isset($rs[$key])){
