@@ -29,12 +29,12 @@ trait TCommon{
         return static::classNameStatic();
     }
 
-    protected static function getCalledClass(): string{
+    protected static function calledByClass(): string{
         return ($calledClass = get_called_class()) ? $calledClass : "";
     }
 
-    protected static function isCallable($target){
-        return is_callable($target) ? true : false;
+    protected static function isCallable($target):bool{
+        return (Str::isAvailable($target) && is_callable($target)) ? true : false;
     }
 
     /**
@@ -42,11 +42,11 @@ trait TCommon{
      * @return string
      */
     protected static function getCallableName($target):string{
-        return is_callable($target, false, $callableName) ? $callableName : false;
+        return (is_callable($target, false, $callableName) && Str::isAvailable($callableName)) ? $callableName : false;
     }
 
     protected static function isClosure($target): bool{
-        if(!($callableName = static::getCallableName($target)) || strpos(strtolower($callableName), "closure::") !== 0){
+        if(!Obj::isObject($target) || !($target instanceof \Closure)){
             return false;
         }
         return true;

@@ -41,7 +41,7 @@ trait TFactory  {
      * @param bool $force
      * @throws InvalidDataDomainException
      */
-    public static function &setInstance($instance, string $instanceName = "", $force = false) {
+    public static function setInstance($instance, string $instanceName = "", $force = false) :void {
         if(!Str::isAvailable($instanceName)){
             if($instanceName === ""){
                 $instanceName = static::defaultInstanceName();
@@ -53,18 +53,16 @@ trait TFactory  {
         }
 
         if(!isset(static::$instances[static::instanceName($instanceName)]) || $force){
-            static::setUsingInstance(null, $instanceName);
-            if(static::isClosure($instance)) {
-                call_user_func($instance, $instanceName);
+            static::recycle($instanceName);
+            if(self::isClosure($instance)){
+                $instance = call_user_func($instance, $instanceName);
             }
             if(!Obj::isObject($instance)){
                 throw new InvalidDataDomainException("Trying to set an illegal instance");
             }
             static::$instances[static::instanceName($instanceName)] = $instance;
+            static::setUsingInstance($instance, $instanceName);
         }
-
-        static::setUsingInstance($instance, $instanceName);
-        return static::usingInstance();
     }
 
     protected static function setUsingInstance($instance, string $instanceName){
@@ -92,16 +90,19 @@ trait TFactory  {
         return static::usingInstance();
     }
 
-    public static function recycle($instanceName = null){
+    public static function recycle($instanceName = null):void{
         if(!Str::isAvailable($instanceName)){
             static::$instances = [];
             static::$usingInstance = null;
             static::$usingInstanceName = "";
+            return;
         }
-        else{
-            if(isset(static::$instances[static::instanceName($instanceName)])){
-                unset(static::$instances[static::instanceName($instanceName)]);
-            }
+        if($instanceName === static::$usingInstanceName){
+            static::$usingInstance = null;
+            static::$usingInstanceName = "";
+        }
+        if(isset(static::$instances[static::instanceName($instanceName)])){
+            unset(static::$instances[static::instanceName($instanceName)]);
         }
     }
 }

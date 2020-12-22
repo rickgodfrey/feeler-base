@@ -21,11 +21,12 @@ trait TMultiton  {
      * @throws \ReflectionException
      */
     public static function &instance(string $instanceName = "", bool $force = false) {
-        static::setInstance(function($instanceName){
+        static::setInstance(function(){
             $reflectionObj = new \ReflectionClass(static::classNameStatic());
             $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
             $instance = $reflectionObj->newInstanceArgs($params);
-            static::setInstance($instance, $instanceName);
+            static::setInstance($instance);
+            return static::usingInstance();
         }, $instanceName, $force);
         if(!(static::usingInstance() instanceof static)){
             throw new InvalidDataDomainException("Trying to set an illegal self-instance");
