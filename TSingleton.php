@@ -17,7 +17,7 @@ trait TSingleton {
     /**
      * As a safety to prevent the singleton cloning operation
      */
-    private function __clone(){}
+    protected function __clone(){}
 
     /**
      * @return static()
