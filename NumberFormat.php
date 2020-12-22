@@ -8,32 +8,34 @@
 namespace Feeler\Base;
 
 class NumberFormat extends BaseClass {
-    public static function isBinary($string):bool{
-        if(!Str::isAvailable($string)){
+    public static function isBinary($number):bool{
+        if(!Str::isAvailable($number)){
             return false;
         }
-
-        return preg_match("/[01]+/", $string);
+        if(strlen($number) > 4 && strpos($number, " ") !== false){
+            return preg_match("/^(?:[01]{4})+?(?:\s[01]{4})*$/", $number) ? true : false;
+        }
+        else{
+            return preg_match("/^[01]+$/", $number) ? true : false;
+        }
     }
 
-    public static function isOctal($string):bool{
-        if(!Str::isAvailable($string)){
+    public static function isOctal($number):bool{
+        if(!Number::isNumeric($number) || !($number = (string)$number) || strpos($number, "0") !== 0){
             return false;
         }
-
-        return preg_match("/[0-7]+/", $string);
+        return ctype_digit($number);
     }
 
     public static function isDecimal($string):bool{
         return Number::isNumeric($string);
     }
 
-    public static function isHex($string):bool{
-        if(!Str::isAvailable($string)){
+    public static function isHex($number):bool{
+        if(!Number::isNumeric($number) || !($number = (string)$number) || strpos($number, "0") !== 0){
             return false;
         }
-
-        return preg_match("/0[xX][0-9abcdefABCDEF]+/", $string);
+        return ctype_digit($number) ? false : true;
     }
 
     public static function convert($number, int $fromFormat, int $toFormat):string{

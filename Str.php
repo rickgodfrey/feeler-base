@@ -50,32 +50,31 @@ class Str extends BaseClass {
     }
 
     public static function isLetter(string $string): bool{
-        return preg_match("/[a-zA-Z]/", $string);
+        return preg_match("/[a-zA-Z]/", $string) ? true : false;
     }
 
     public static function isLetters(string $string): bool{
-        return preg_match("/[a-zA-Z]+/", $string);
+        return preg_match("/[a-zA-Z]+/", $string) ? true : false;
     }
 
     public static function isUpperLetter(string $string): bool{
-        return preg_match("/[A-Z]/", $string);
+        return preg_match("/[A-Z]/", $string) ? true : false;
     }
 
     public static function isUpperLetters(string $string): bool{
-        return preg_match("/[A-Z]+/", $string);
+        return preg_match("/[A-Z]+/", $string) ? true : false;
     }
 
     public static function isLowerLetter(string $string): bool{
-        return preg_match("/[a-z]/", $string);
+        return preg_match("/[a-z]/", $string) ? true : false;
     }
 
     public static function isLowerLetters(string $string): bool{
-        return preg_match("/[a-z]+/", $string);
+        return preg_match("/[a-z]+/", $string) ? true : false;
     }
 
     public static function detectEncoding(string $string): string{
         $encoding = mb_detect_encoding($string, self::supportedEncodings());
-
         return $encoding ? $encoding : self::ENCODING_UNKNOWN;
     }
 
@@ -83,7 +82,6 @@ class Str extends BaseClass {
         if(!self::isAvailable($string)){
             return false;
         }
-
         return mb_substr($string, $position, 1);
     }
 
@@ -140,15 +138,15 @@ class Str extends BaseClass {
     }
 
     public static function isZhChar(string $string): bool{
-        return preg_match("/[\x{4e00}-\x{9fa5}]/u", $string);
+        return preg_match("/[\x{4e00}-\x{9fa5}]/u", $string) ? true : false;
     }
 
     public static function isZhString(string $string, bool $strict = true): bool{
         if($strict){
-            return preg_match("/^[\x{4e00}-\x{9fa5}]+$/u", $string);
+            return preg_match("/^[\x{4e00}-\x{9fa5}]+$/u", $string) ? true : false;
         }
         else{
-            return preg_match("/[\x{4e00}-\x{9fa5}]+/u", $string);
+            return preg_match("/[\x{4e00}-\x{9fa5}]+/u", $string) ? true : false;
         }
     }
 
