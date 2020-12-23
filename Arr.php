@@ -456,7 +456,7 @@ class Arr extends BaseClass {
     }
 
     public static function get($key, $array){
-        if(!($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY)) || !Arr::isAvailable($array)){
+        if(!self::isAvailable($array) || !($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY))){
             return null;
         }
         $rs = $array;

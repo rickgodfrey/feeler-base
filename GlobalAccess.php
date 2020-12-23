@@ -8,8 +8,13 @@
 namespace Feeler\Base;
 
 class GlobalAccess extends BaseClass {
+    protected static $varsList;
+
     public static function varsList() {
-        return ["GLOBALS" => &$GLOBALS, "_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
+        if(!self::$varsList){
+            self::$varsList = ["GLOBALS" => &$GLOBALS, "_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
+        }
+        return self::$varsList;
     }
 
     public static function getVar(string $varName){
