@@ -471,7 +471,7 @@ class Arr extends BaseClass {
     }
 
     public static function set($key, $value, array &$array, $counter = 0):bool{
-        if(!($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY))){
+        if(!($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY)) || !Number::isUnsignedInt($counter)){
             return false;
         }
         $keysCount = count($keys);
