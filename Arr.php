@@ -470,7 +470,7 @@ class Arr extends BaseClass {
         return $rs;
     }
 
-    public static function set($key, $value, array &$array, $counter = 0){
+    public static function set($key, $value, array &$array, $counter = 0):bool{
         if(!($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY))){
             return false;
         }
@@ -482,6 +482,7 @@ class Arr extends BaseClass {
             else if(isset($array[$key])){
                 $array[$key] = $value;
             }
+            return true;
         }
         foreach($keys as $key){
             if(!isset($array[$key])){
