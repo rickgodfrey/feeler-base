@@ -7,22 +7,19 @@
 
 namespace Feeler\Base;
 
+use Feeler\Base\Exceptions\UnexpectedValueException;
+
 class GlobalAccess extends BaseClass {
-    protected static $varsList;
-
-    public static function varsList() {
-        if(!self::$varsList){
-            self::$varsList = ["GLOBALS" => &$GLOBALS, "_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
+    public static function &getVar(string $varName){
+        $availableVarsList = ["GLOBALS" => &$GLOBALS, "_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
+        if(isset($availableVarsList[$varName])){
+            return $availableVarsList[$varName];
         }
-        return self::$varsList;
-    }
-
-    public static function getVar(string $varName){
-        return static::arrayAccessStatic($varName, "varsList");
+        throw new UnexpectedValueException("Try to access an illegal global variable");
     }
 
     private static function _access(string $varName, $key = null, $value = null){
-        if(!Arr::isAvailable($var = self::getVar($varName))){
+        if(!Arr::isAvailable($var = &self::getVar($varName))){
             return $key === null ? [] : null;
         }
         if($key === null){
