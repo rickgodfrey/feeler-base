@@ -19,17 +19,22 @@ class GlobalAccess extends BaseClass {
     }
 
     private static function _access(string $varName, $key = null, $value = null){
-        if(!Arr::isAvailable($var = &self::getVar($varName))){
+        if(!Arr::isAvailable(($var = &self::getVar($varName)))){
             return $key === null ? [] : null;
         }
         if($key === null){
             return $var;
         }
+        if($value !== null){
+            $rs = Arr::set($key, $value, $var);
+            return $rs ? true : false;
+        }
         if($rs = Arr::get($key, $var)){
             return $rs;
         }
-        $rs = Arr::set($key, $value, $var);
-        return $value === null ? null : $rs;
+        else{
+            return null;
+        }
     }
 
     public static function globals($key = null, $value = null){
