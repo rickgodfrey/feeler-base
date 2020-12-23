@@ -432,23 +432,21 @@ class Arr extends BaseClass {
         return $vals;
     }
 
-    public static function explode(string $delimiter, $string, int $limit = -1): array{
+    public static function explode(string $delimiter, $string, int $limit = -1){
         if(!Str::isAvailable($string)){
-            return [null];
+            return false;
         }
-
-        if(Number::isUnsignedInt($limit) && $limit > 1){
-            $array = explode($delimiter, $string, $limit);
+        if(!Number::isUnsignedInt($limit) && $limit !== -1){
+            return false;
         }
-        else{
-            $array = explode($delimiter, $string);
+        if($limit === -1){
+            $limit = null;
         }
-
-        return $array;
+        return explode($delimiter, $string, $limit);
     }
 
     public static function implode(string $delimiter, array $array){
-        return call_user_func("implode", $delimiter, $array);
+        return implode($delimiter, $array);
     }
 
     public static function insert($value, int $position, array &$array): array{
@@ -459,7 +457,7 @@ class Arr extends BaseClass {
         if(!self::isAvailable($array) || !($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY))){
             return null;
         }
-        $rs = $array;
+        $rs = &$array;
         foreach($keys as $key){
             if(isset($rs[$key])){
                 $rs = Str::isString($rs[$key]) ? trim($rs[$key]) : $rs[$key];
@@ -472,35 +470,32 @@ class Arr extends BaseClass {
         return $rs;
     }
 
-    public static function set($key, $value, array &$array){
+    public static function set($key, $value, array &$array, $counter = 0){
         if(!($keys = Obj::parsePattern($key, Obj::PATTERN_ARRAY))){
             return false;
         }
-        $rs = $array;
         $keysCount = count($keys);
-        $i = 0;
+        if($counter >= $keysCount){
+            if($value === null){
+                unset($array[$key]);
+            }
+            else if(isset($array[$key])){
+                $array[$key] = $value;
+            }
+        }
         foreach($keys as $key){
-            $i++;
-            if(!isset($rs[$key])){
+            if(!isset($array[$key])){
                 if($value === null){
                     break;
                 }
                 else{
-                    if(!isset($rs[$key])){
-                        $rs[$key] = [];
+                    if(!isset($array[$key])){
+                        $array[$key] = [];
                     }
                 }
             }
-            self::set($key, $rs[$key], $rs);
-        }
-        if($i === $keysCount){
-            if($value === null){
-                unset($array[$key]);
-            }
-            else if(isset($rs[$key])){
-                $rs[$key] = $value;
-                $array = $rs;
-            }
+            $counter++;
+            self::set($key, $value, $array, $counter);
         }
         return true;
     }

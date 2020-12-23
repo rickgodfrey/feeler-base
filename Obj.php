@@ -132,7 +132,10 @@ class Obj extends BaseClass {
                 break;
 
             case self::PATTERN_ARRAY:
-                $rs = explode(".", $exp);
+                $rs = Arr::explode(".", $exp);
+                if(!$rs){
+                    return null;
+                }
                 break;
 
             default:
