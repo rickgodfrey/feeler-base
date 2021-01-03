@@ -8,6 +8,8 @@
 namespace Feeler\Base;
 
 use Feeler\Base\Exceptions\InvalidDataDomainException;
+use Feeler\Base\Exceptions\InvalidValueException;
+use Feeler\Base\Exceptions\UnexpectedValueException;
 
 class File extends BaseClass{
     const MODE_R = "mode_r";
@@ -18,37 +20,59 @@ class File extends BaseClass{
     const POINTER_END = "pointer_end";
 
     const AM_FILE = "am_file";
-
     const RUNTIME_DIR = "runtime";
+
+    const CAPACITY_UNIT_BYTE = "";
+    const CAPACITY_UNIT_KB = "kb";
+    const CAPACITY_UNIT_MB = "mb";
+    const CAPACITY_UNIT_GB = "gb";
+    const CAPACITY_UNIT_TB = "tb";
+    const CAPACITY_UNIT_LB = "lb";
 
     protected static $rootPath;
     protected static $tempPath;
     public $segLength = 524288; //to read and write slice in segments, this set every segment's length
-    public $allowUrlFile = true;
 
     protected $whatAmI;
     protected $state = true;
     protected $position = 0;
     protected $handle;
     protected $fileSize;
-    protected $file;
+    protected $fileLocation;
 
     /**
      * File constructor.
-     * @param string $file
+     * @param string $fileLocation
      * @param string $mode
      * @param string $pointer
      * @param bool $override
      * @throws InvalidDataDomainException
+     * @throws InvalidValueException
      */
-    public function __construct(string $file, string $mode = self::MODE_R, string $pointer = self::POINTER_HEAD, bool $override = false){
-        $this->init($file, $mode, $pointer, $override);
+    public function __construct(string $fileLocation, string $mode = self::MODE_R, string $pointer = self::POINTER_HEAD, bool $override = false){
+        $this->init($fileLocation, $mode, $pointer, $override);
     }
 
     public function __destruct(){
         if(is_resource($this->handle)){
             fclose($this->handle);
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileSize()
+    {
+        return $this->fileSize;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileLocation()
+    {
+        return $this->fileLocation;
     }
 
     /**
@@ -131,15 +155,12 @@ class File extends BaseClass{
         return $modeParam;
     }
 
-    public function setSegLength($length): bool{
-        $length = self::parseCapacityPattern($length);
-
+    public function setSegLength(int $length): bool{
+        $length = self::parseCapacityFormat($length);
         if(!$length){
             return false;
         }
-
         $this->segLength = $length;
-
         return true;
     }
 
@@ -148,32 +169,25 @@ class File extends BaseClass{
     }
 
     /**
-     * @param $file
-     * @param $mode
-     * @param $pointer
-     * @param $override
+     * @param string $fileLocation
+     * @param string $mode
+     * @param string $pointer
+     * @param bool $override
      * @throws InvalidDataDomainException
+     * @throws InvalidValueException
      */
-    public function init(string $file, string $mode, string $pointer, bool $override): void{
-        if(is_file($file)){
-            $this->whatAmI = self::AM_FILE;
-        }
-        else{
-            $this->state = false;
+    public function init(string $fileLocation, string $mode, string $pointer, bool $override): void{
+        if(!is_file($fileLocation)){
+            throw new InvalidValueException("Try to initialize an invalid file");
         }
 
-        $this->file = $file;
-
+        $this->fileLocation = self::getFileLocation($fileLocation);
         $lockMode = LOCK_SH;
-
         $modeParam = $this->_convertModeParams($mode, $pointer, $override);
-
         if($modeParam != "r"){
             $lockMode = LOCK_EX;
         }
-
-        $this->handle = fopen($file, $modeParam);
-
+        $this->handle = fopen($fileLocation, $modeParam);
         if($this->whatAmI === self::AM_FILE){
             if($this->lock($lockMode)){
                 $this->fileSize = filesize($this->file);
@@ -187,7 +201,7 @@ class File extends BaseClass{
         }
     }
 
-    public function getData(int $length = -1, int $position = null){
+    public function getData(int $length = -1, int $position = null):string{
         if($position === null){
             $position = 0;
         }
@@ -202,7 +216,7 @@ class File extends BaseClass{
 
         $originalPosition = $this->position;
         $this->seek($position);
-        $data = null;
+        $data = false;
 
         while($dataSize = (strlen($data)) < $length){
             if(($remain = $length - $dataSize) < $this->segLength){
@@ -218,7 +232,7 @@ class File extends BaseClass{
         return $data;
     }
 
-    public function getDataCallback(callable $callback, int $position = 0, int $length = -1){
+    public function getDataCallback(callable $callback, int $position = 0, int $length = -1):bool{
         if(!$this->state || !is_int($position) || $position < 0 || !is_callable($callback)){
             return false;
         }
@@ -254,7 +268,7 @@ class File extends BaseClass{
         return true;
     }
 
-    public function seek($position = 0){
+    public function seek($position = 0):bool{
         if($position === null){
             $position = 0;
         }
@@ -272,7 +286,7 @@ class File extends BaseClass{
         return true;
     }
 
-    public function write($data, $length = -1){
+    public function write($data, $length = -1):int{
         if(!$this->state || !$data){
             return false;
         }
@@ -296,30 +310,31 @@ class File extends BaseClass{
         return flock($this->handle, LOCK_UN);
     }
 
-    public static function create($file){
-        return fopen($file, "w") !== false ? true : false;
+    public static function create($fileLocation):bool{
+        return fopen($fileLocation, "w") !== false ? true : false;
     }
 
     /**
-     * @param $file
+     * @param $fileLocation
      * @param $content
      * @param int $length
      * @return bool
      * @throws InvalidDataDomainException
+     * @throws InvalidValueException
      */
-    public static function saveAs($file, $content, $length = -1){
-        $fileObj = new self($file, self::MODE_W, self::POINTER_HEAD, true);
+    public static function saveAs($fileLocation, $content, $length = -1):bool{
+        $fileObj = new static($fileLocation, self::MODE_W, self::POINTER_HEAD, true);
         $fileObj->write($content, $length);
 
-        return is_file($file) ? true : false;
+        return is_file($fileLocation) ? true : false;
     }
 
     //make new dirs, will create all unexist dirs on the path
-    public static function mkdir($path, $chmod = 0755){
+    public static function mkdir($path, $chmod = 0755):bool{
         return is_dir($path) || mkdir($path, $chmod, true);
     }
 
-    public static function rm($target, $recursive = false){
+    public static function rm($target, $recursive = false):bool{
         if(!file_exists($target)){
             return false;
         }
@@ -368,14 +383,14 @@ class File extends BaseClass{
         return $rs;
     }
 
-    public static function rmdir($dir){
+    public static function rmdir($dir):bool{
         return self::rm($dir, true);
     }
 
     //read the first and last 512byte data and convert to hex then check it whether have trojans signature code or not
-    public static function checkHex($file){
-        $handle = fopen($file, "rb");
-        $fileSize = filesize($file);
+    public static function checkHex($fileLocation):bool{
+        $handle = fopen($fileLocation, "rb");
+        $fileSize = filesize($fileLocation);
         fseek($handle, 0);
 
         if($fileSize > 512){
@@ -400,48 +415,51 @@ class File extends BaseClass{
         }
     }
 
-    public static function getPathInfo($file){
-        return pathinfo($file);
+    public static function getPathInfo($fileLocation, string $key = null){
+        if(!Arr::isArray(($pathInfo = pathinfo($fileLocation)))){
+            return false;
+        }
+        if($key === null){
+            return $pathInfo;
+        }
+        return (Str::isAvailable($key) && isset($pathInfo[$key])) ? $pathInfo[$key] : false;
     }
 
     //get the extension of the file
-    public static function getExt($fileName){
-        if(is_file($fileName)){
-            $fileInfo = pathinfo($fileName);
-            return isset($fileInfo["extension"]) ? $fileInfo["extension"] : null;
+    public static function getExt($fileLocation):string{
+        if(is_file($fileLocation)){
+            return self::getPathInfo($fileLocation, "extension");
         }
         else{
-            return strtolower(substr(strrchr($fileName, "."), 1));
+            return strtolower(substr(strrchr($fileLocation, "."), 1));
         }
     }
 
-    public static function getName($fileName){
-        if((!$pathInfo = pathinfo($fileName))){
-            return null;
-        }
-        return $pathInfo["filename"];
+    public static function getName($fileLocation):string{
+        return self::getPathInfo($fileLocation, "filename");
     }
 
-    public static function getFullName($file){
-        if((!$pathInfo = pathinfo($file))){
-            return null;
-        }
-        return $pathInfo["basename"];
+    public static function getFullName($fileLocation):string{
+        return self::getPathInfo($fileLocation, "basename");
     }
 
-    public static function getPath($file){
-        if((!$pathInfo = pathinfo($file))){
-            return null;
+    public static function getPath($fileLocation):string{
+        if(!($path = self::getPathInfo($fileLocation, "dirname"))){
+            return false;
         }
-        return "{$pathInfo["dirname"]}/";
+        return "{$path}/";
+    }
+
+    public static function getFileLocation($fileLocation):string{
+        return self::getPath($fileLocation).self::getFullName($fileLocation);
     }
 
     //get file size
-    public static function getSize($file){
-        return is_file($file) ? filesize($file) : null;
+    public static function getFileSize($fileLocation):int{
+        return is_file($fileLocation) ? filesize($fileLocation) : false;
     }
 
-    public static function getTypesList(){
+    public static function getTypesList():array{
         return [
             "255216" => ["jpeg"],
             "13780" => ["png"],
@@ -456,92 +474,80 @@ class File extends BaseClass{
     }
 
     //get file's type according to start of 2bytes binary data
-    public static function getType($file){
-        if(!is_file($file)){
-            return null;
+    public static function getType($fileLocation){
+        if(!is_file($fileLocation)){
+            return false;
         }
 
-        $handle = fopen($file, "rb");
+        $handle = fopen($fileLocation, "rb");
         if(!$handle){
-            return null;
+            return false;
         }
         $bin = fread($handle, 2);
         fclose($handle);
 
-        if($bin){
-            $strs = unpack("C2str", $bin);
+        if(!$bin){
+            return false;
+        }
 
-            $typeCode = $strs["str1"].$strs["str2"];
-            $types = self::getTypesList();
+        $strs = unpack("C2str", $bin);
 
-            foreach($types as $key => $type){
-                if((string)$key === $typeCode){
-                    return $type;
-                }
+        $typeCode = $strs["str1"].$strs["str2"];
+        $types = self::getTypesList();
+
+        foreach($types as $key => $type){
+            if((string)$key === $typeCode){
+                return $type;
             }
         }
 
-        return null;
+        return false;
     }
 
     //get file's type according to start of 2bytes binary data
     public static function getTypeByContent($content){
         if(!Str::isString($content) || !$content){
-            return null;
+            return false;
         }
 
         $bin = substr($content, 0, 2);
 
-        if($bin){
-            $strs = unpack("C2str", $bin);
+        if(!$bin){
+            return false;
+        }
 
-            $typeCode = $strs["str1"].$strs["str2"];
-            $types = self::getTypesList();
+        $strs = unpack("C2str", $bin);
 
-            foreach($types as $key => $type){
-                if((string)$key === $typeCode){
-                    return $type;
-                }
+        $typeCode = $strs["str1"].$strs["str2"];
+        $types = self::getTypesList();
+
+        foreach($types as $key => $type){
+            if((string)$key === $typeCode){
+                return $type;
             }
         }
 
-        return null;
+        return false;
     }
 
-    public static function exists(string $file){
-        return is_file($file);
+    public static function exists(string $fileLocation):bool{
+        return is_file($fileLocation);
     }
 
-    public static function pathExists(string $file){
-        return file_exists($file);
+    public static function pathExists(string $fileLocation):bool{
+        return file_exists($fileLocation);
     }
 
-    public static function dirExists(string $file){
-        return is_dir($file);
+    public static function dirExists(string $fileLocation):bool{
+        return is_dir($fileLocation);
     }
 
-    public static function validateCapacityPattern($length){
-        if(Number::isPosiInteric($length) || $length == 0){
-            return true;
-        }
-
+    public static function parseCapacityFormat(string $length, string $convertToUnit = self::CAPACITY_UNIT_BYTE): string{
         if(!Str::isAvailable($length)){
             return false;
         }
 
-        if(!preg_match("/((?:0|(?:[1-9][0-9]*)))([k|m|g|t|kb|mb|gb|tb|byte])?/i", $length)){
-            return false;
-        }
-
-        return true;
-    }
-
-    public static function parseCapacityPattern(string $length): string{
-        if(!Str::isAvailable($length)){
-            return false;
-        }
-
-        if(!preg_match("/((?:0|(?:[1-9][0-9]*)))([k|m|g|t|kb|mb|gb|tb|byte])?/i", $length, $matches)){
+        if(!preg_match("/((?:0|(?:[1-9][0-9]*)))([k|m|g|t|l|kb|mb|gb|tb|lb])?/i", $length, $matches)){
             return false;
         }
 
@@ -552,30 +558,60 @@ class File extends BaseClass{
             return $capacityNumber;
         }
 
+        $capacityNumber = gmp_init($capacityNumber);
+
         switch($capacityUnit){
             case "k":
             case "kb":
-                return (string)($capacityNumber * 1024);
-
+                $capacityNumber = $capacityNumber * 1024;
+                break;
             case "m":
             case "mb":
-                return (string)($capacityNumber * 1048576);
-
+                $capacityNumber = $capacityNumber * 1048576;
+                break;
             case "g":
             case "gb":
-                return (string)($capacityNumber * 1073741824);
-
+                $capacityNumber = $capacityNumber * 1073741824;
+                break;
             case "t":
             case "tb":
-                return (string)($capacityNumber * 1099511627776);
+                $capacityNumber = $capacityNumber * 1099511627776;
+                break;
+            case "l":
+            case "lb":
+                $capacityNumber = $capacityNumber * 1125899906842624;
+                break;
         }
+
+        switch($convertToUnit){
+            case self::CAPACITY_UNIT_BYTE:
+                break;
+            case self::CAPACITY_UNIT_KB:
+                $capacityNumber = $capacityNumber / 1024;
+                break;
+            case self::CAPACITY_UNIT_MB:
+                $capacityNumber = $capacityNumber / 1048576;
+                break;
+            case self::CAPACITY_UNIT_GB:
+                $capacityNumber = $capacityNumber / 1073741824;
+                break;
+            case self::CAPACITY_UNIT_TB:
+                $capacityNumber = $capacityNumber / 1099511627776;
+                break;
+            case self::CAPACITY_UNIT_LB:
+                $capacityNumber = $capacityNumber / 1125899906842624;
+                break;
+            default:
+                throw new UnexpectedValueException();
+        }
+
+        return $capacityNumber.$convertToUnit;
     }
 
-    public static function mv($oldPath, $newPath){
+    public static function mv($oldPath, $newPath):bool{
         if(!file_exists($oldPath)){
             return false;
         }
-
         return rename($oldPath, $newPath);
     }
 }

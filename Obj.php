@@ -95,7 +95,7 @@ class Obj extends BaseClass {
     /**
      * @param $exp
      * @param string $mode
-     * @return false|mixed|string|string[]|null
+     * @return array|mixed|string|null
      */
     public static function parsePattern($exp, $mode = self::PATTERN_CALLABLE_NAME){
         if(!Str::isAvailable($exp) || !preg_match("/^([a-zA-Z_][a-zA-Z_0-9]+)(\.[a-zA-Z_][a-zA-Z_0-9]+)*$/", $exp, $matches)){
@@ -119,7 +119,7 @@ class Obj extends BaseClass {
                 }
                 else{
                     $namespace = Arr::slice($matches, 0, $matchesCount - 2);
-                    $namespace = Arr::implode("\\", $namespace);
+                    $namespace = Arr::join("\\", $namespace);
                     $className = $namespace."\\".$matches[$matchesCount - 1];
                     $methodName = $matches[$matchesCount];
                 }
@@ -132,7 +132,7 @@ class Obj extends BaseClass {
                 break;
 
             case self::PATTERN_ARRAY:
-                $rs = Arr::explode(".", $exp);
+                $rs = Str::join(".", $exp);
                 if(!$rs){
                     return null;
                 }

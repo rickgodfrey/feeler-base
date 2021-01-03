@@ -277,11 +277,9 @@ class Str extends BaseClass {
 
         if($strLen == 2){
             $leftPlace = 0;
-            $rightPlace = 1;
         }
         else{
             $leftPlace = ceil($showLen / 2);
-            $rightPlace = $showLen - $leftPlace;
         }
 
         $stringParts = [
@@ -388,5 +386,20 @@ class Str extends BaseClass {
         unset($chars);
 
         return $array;
+    }
+
+    public static function join(string $delimiter, string $string, int $limit = -1):array{
+        if(!Str::isAvailable($string) || !Str::isAvailable($delimiter) || (!Number::isUnsignedInt($limit) && $limit !== -1)){
+            return [];
+        }
+        if($limit === -1){
+            $limit = null;
+        }
+        return explode($delimiter, $string, $limit);
+    }
+
+    public static function replace(string $find, string $replacement, string $string, bool $ignoreCase = false):int{
+        ($ignoreCase and str_ireplace($find, $replacement, $string, $count)) or str_replace($find, $replacement, $string, $count);
+        return $count;
     }
 }

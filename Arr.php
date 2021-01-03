@@ -432,20 +432,7 @@ class Arr extends BaseClass {
         return $vals;
     }
 
-    public static function explode(string $delimiter, $string, int $limit = -1){
-        if(!Str::isAvailable($string)){
-            return false;
-        }
-        if(!Number::isUnsignedInt($limit) && $limit !== -1){
-            return false;
-        }
-        if($limit === -1){
-            $limit = null;
-        }
-        return explode($delimiter, $string, $limit);
-    }
-
-    public static function implode(string $delimiter, array $array){
+    public static function join(string $delimiter, array $array){
         return implode($delimiter, $array);
     }
 
@@ -506,16 +493,16 @@ class Arr extends BaseClass {
     }
 
     /**
-     * @param string $file
+     * @param File $file
      * @return array
      * @throws InvalidDataDomainException
      */
-    public static function getFromFile(string $file): array{
-        if(!File::exists($file)){
+    public static function getFromFile(File $file): array{
+        if(!File::exists($file->fileLocation())){
             throw new InvalidDataDomainException("File is not exists");
         }
 
-        $array = include($file);
+        $array = include($file->fileLocation());
 
         if(!self::isArray($array)){
             throw new InvalidDataDomainException("Not a Available array file");

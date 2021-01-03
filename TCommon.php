@@ -14,6 +14,10 @@ trait TCommon{
         return "__construct";
     }
 
+    private static function _dependencyClassFlagMethodName():string{
+        return "dependencyClassFlagMethod3b4b649f5b4319e348ddd092f5527efc";
+    }
+
     /**
      * @return string
      */
@@ -114,8 +118,8 @@ trait TCommon{
         foreach ($reflectionParams as $key => $reflectionParam) {
             $reflectionParamClassObj = $reflectionParam->getClass();
 
-            if (!Obj::isObject($reflectionParamClassObj)) {
-                throw new \ReflectionException("The Dependencies Tree of ".__CLASS__." Has Non-object Param");
+            if (!Obj::isObject($reflectionParamClassObj) || !$reflectionParamClassObj->hasMethod(self::_dependencyClassFlagMethodName())) {
+                throw new \ReflectionException("Illegal class: ".__CLASS__." appear in the dependencies tree");
             }
 
             $reflectionParamClassName = $reflectionParamClassObj->getName();
