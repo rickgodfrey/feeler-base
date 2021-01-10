@@ -7,24 +7,15 @@
 
 namespace Feeler\Base\Math\RPN;
 
+use Feeler\Base\Singleton;
+
 /**
  * Calculator class acts as singleton
  */
-class Calculator {
+class Expression extends Singleton {
     private $stack;
     private $input;
     private $validator;
-
-    private static $instance = null;
-
-    public static function getInstance(): self
-    {
-        if (static::$instance === null) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
-    }
 
     /**
      * Constructing and injecting dependencies
@@ -54,12 +45,10 @@ class Calculator {
      * @throws Exceptions\InvalidLastSignException
      * @throws Exceptions\OperatorNotSupportedException
      */
-    public function executeExpression(string $expression, bool $asBigNumber = false)
-    {
+    public function execute(string $expression, bool $asBigNumber = false) {
         $input = $this->input->explode($expression);
 
-        if ( !$this->validator->validateArray($input) ||
-            !$this->validator->validateLastSign(end($input)) ){
+        if (!$this->validator->validateArray($input) || !$this->validator->validateLastSign(end($input))){
             return null;
         }
 
@@ -121,7 +110,7 @@ class Calculator {
         }
 
         if($asBigNumber){
-            $result = gmp_strval($asBigNumber);
+            $result = gmp_strval($result);
         }
 
         $this->stack->push($result);
