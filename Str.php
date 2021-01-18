@@ -389,13 +389,13 @@ class Str extends BaseClass {
     }
 
     public static function join(string $delimiter, string $string, int $limit = -1):array{
-        if(!Str::isAvailable($string) || !Str::isAvailable($delimiter) || (!Number::isUnsignedInt($limit) && $limit !== -1)){
+        if(!Str::isAvailable($string) || !Str::isString($delimiter) || (!Number::isUnsignedInt($limit) && $limit !== -1)){
             return [];
         }
-        if($limit === -1){
-            $limit = null;
+        if($delimiter === ""){
+            return str_split($string);
         }
-        return explode($delimiter, $string, $limit);
+        return $limit === -1 ? explode($delimiter, $string) : explode($delimiter, $string, $limit);
     }
 
     public static function replace(string $find, string $replacement, string $string, bool $ignoreCase = false):int{

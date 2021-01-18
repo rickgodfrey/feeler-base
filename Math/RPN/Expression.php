@@ -81,39 +81,59 @@ class Expression extends Singleton {
             return null;
         }
 
+        $firstOperand = $this->stack->pop();
+        $secondOperand = $this->stack->pop();
+
         if($asBigNumber){
-            $firstOperand = gmp_init((string)$this->stack->pop());
-            $secondOperand = gmp_init((string)$this->stack->pop());
+            switch ($operator) {
+                case '+':
+                    $result = bcadd($secondOperand, $firstOperand);
+                    break;
+                case '-':
+                    $result = bcsub($secondOperand, $firstOperand);
+                    break;
+                case '*':
+                    $result = bcmul($secondOperand, $firstOperand);
+                    break;
+                case '/':
+                    if ($this->validator->operandCanDivide($firstOperand)){
+                        $result = bcdiv($secondOperand, $firstOperand);
+                    }
+                    else{
+                        $result = null;
+                    }
+                    break;
+                default:
+                    $result = null;
+            }
         }
         else{
-            $firstOperand = $this->stack->pop();
-            $secondOperand = $this->stack->pop();
+            switch ($operator) {
+                case '+':
+                    $result = $secondOperand + $firstOperand;
+                    break;
+                case '-':
+                    $result = $secondOperand - $firstOperand;
+                    break;
+                case '*':
+                    $result = $secondOperand * $firstOperand;
+                    break;
+                case '/':
+                    if ($this->validator->operandCanDivide($firstOperand)){
+                        $result = $secondOperand / $firstOperand;
+                    }
+                    else{
+                        $result = null;
+                    }
+                    break;
+                default:
+                    $result = null;
+            }
         }
 
-        switch ($operator) {
-            case '+':
-                $result = $secondOperand + $firstOperand;
-                break;
-            case '-':
-                $result = $secondOperand - $firstOperand;
-                break;
-            case '*':
-                $result = $secondOperand * $firstOperand;
-                break;
-            case '/':
-                if ($this->validator->operandCanDivide($firstOperand)){
-                    $result = $secondOperand / $firstOperand;
-                }
-                break;
-            default:
-                return null;
+        if($result !== null){
+            $this->stack->push($result);
         }
-
-        if($asBigNumber){
-            $result = gmp_strval($result);
-        }
-
-        $this->stack->push($result);
 
         return $result;
     }

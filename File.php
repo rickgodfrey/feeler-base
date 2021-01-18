@@ -558,28 +558,26 @@ class File extends BaseClass{
             return $capacityNumber;
         }
 
-        $capacityNumber = gmp_init($capacityNumber);
-
         switch($capacityUnit){
             case "k":
             case "kb":
-                $capacityNumber = $capacityNumber * 1024;
+                $capacityNumber = bcmul($capacityNumber, 1024);
                 break;
             case "m":
             case "mb":
-                $capacityNumber = $capacityNumber * 1048576;
+                $capacityNumber = bcmul($capacityNumber, 1048576);
                 break;
             case "g":
             case "gb":
-                $capacityNumber = $capacityNumber * 1073741824;
+                $capacityNumber = bcmul($capacityNumber, 1073741824);
                 break;
             case "t":
             case "tb":
-                $capacityNumber = $capacityNumber * 1099511627776;
+                $capacityNumber = bcmul($capacityNumber, 1099511627776);
                 break;
             case "l":
             case "lb":
-                $capacityNumber = $capacityNumber * 1125899906842624;
+                $capacityNumber = bcmul($capacityNumber, 1125899906842624);
                 break;
         }
 
@@ -587,19 +585,19 @@ class File extends BaseClass{
             case self::CAPACITY_UNIT_BYTE:
                 break;
             case self::CAPACITY_UNIT_KB:
-                $capacityNumber = $capacityNumber / 1024;
+                $capacityNumber = bcdiv($capacityNumber, 1024);
                 break;
             case self::CAPACITY_UNIT_MB:
-                $capacityNumber = $capacityNumber / 1048576;
+                $capacityNumber = bcdiv($capacityNumber, 1048576);
                 break;
             case self::CAPACITY_UNIT_GB:
-                $capacityNumber = $capacityNumber / 1073741824;
+                $capacityNumber = bcdiv($capacityNumber, 1073741824);
                 break;
             case self::CAPACITY_UNIT_TB:
-                $capacityNumber = $capacityNumber / 1099511627776;
+                $capacityNumber = bcdiv($capacityNumber, 1099511627776);
                 break;
             case self::CAPACITY_UNIT_LB:
-                $capacityNumber = $capacityNumber / 1125899906842624;
+                $capacityNumber = bcdiv($capacityNumber, 1125899906842624);
                 break;
             default:
                 throw new UnexpectedValueException();
