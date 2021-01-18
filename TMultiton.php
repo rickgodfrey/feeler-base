@@ -16,11 +16,11 @@ trait TMultiton  {
      * @param $instance
      * @param string $instanceName
      * @param bool $force
-     * @return object
+     * @return static()
      * @throws InvalidDataDomainException
      * @throws \ReflectionException
      */
-    public static function &instance(string $instanceName = "", bool $force = false) {
+    public static function &instance(string $instanceName = "", bool $force = false):self {
         static::setInstance(function(){
             $reflectionObj = new \ReflectionClass(static::classNameStatic());
             $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
@@ -31,9 +31,6 @@ trait TMultiton  {
         if(!(static::usingInstance() instanceof static)){
             throw new InvalidDataDomainException("Trying to set an illegal self-instance");
         }
-        /**
-         * @var static()
-         */
         return static::usingInstance();
     }
 }

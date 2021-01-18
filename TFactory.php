@@ -29,7 +29,7 @@ trait TFactory  {
     }
 
     /**
-     * @return object
+     * @return static()
      */
     public static function &usingInstance():object{
         return static::$usingInstance;
