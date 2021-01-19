@@ -28,7 +28,7 @@ trait TSingleton {
         $classSign = md5($className);
         if(!isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
             $reflectionObj = new \ReflectionClass($className);
-            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
+            $params = @func_get_args();
             static::$instances[$classSign] = $reflectionObj->newInstanceArgs($params);
         }
 

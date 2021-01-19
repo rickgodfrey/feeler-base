@@ -14,10 +14,6 @@ trait TCommon{
         return "__construct";
     }
 
-    private static function _dependencyClassFlagMethodName():string{
-        return "dependencyClassFlagMethod3b4b649f5b4319e348ddd092f5527efc";
-    }
-
     /**
      * @return string
      */
@@ -92,44 +88,6 @@ trait TCommon{
      */
     protected static function constValue(string $constName){
         return (Str::isAvailable($constName) && ($constName = strtoupper($constName)) && static::defined($constName)) ? constant(static::class."::{$constName}") : null;
-    }
-
-    /**
-     * @param $reflectionObj
-     * @param string $methodName
-     * @return array
-     * @throws \ReflectionException
-     */
-    protected static function getMethodAfferentObjs(\ReflectionClass $reflectionObj, string $methodName = __METHOD__): array {
-        $objs = [];
-
-        if (!$reflectionObj->hasMethod($methodName)) {
-            return $objs;
-        }
-
-        $reflectionMethodObj = $reflectionObj->getMethod($methodName);
-        $reflectionParams = $reflectionMethodObj->getParameters();
-
-        $reflectionParamsCount = count($reflectionParams);
-        if($reflectionParamsCount == 0) {
-            return $objs;
-        }
-
-        foreach ($reflectionParams as $key => $reflectionParam) {
-            $reflectionParamClassObj = $reflectionParam->getClass();
-
-            if (!Obj::isObject($reflectionParamClassObj) || !$reflectionParamClassObj->hasMethod(self::_dependencyClassFlagMethodName())) {
-                throw new \ReflectionException("Illegal class: ".__CLASS__." appear in the dependencies tree");
-            }
-
-            $reflectionParamClassName = $reflectionParamClassObj->getName();
-
-            $reflectionConstructionObj = new \ReflectionClass(static::constructorName());
-            $reflectionParamClassParams = static::getMethodAfferentObjs($reflectionConstructionObj, $reflectionParamClassName);
-            $objs[] = (new \ReflectionClass($reflectionParamClassObj->getName()))->newInstanceArgs($reflectionParamClassParams);
-        }
-
-        return $objs;
     }
 
     /**

@@ -20,10 +20,9 @@ trait TMultiton  {
      * @throws InvalidDataDomainException
      * @throws \ReflectionException
      */
-    public static function &instance(string $instanceName = "", bool $force = false):self {
-        static::setInstance(function(){
+    public static function &instance(string $instanceName = "", array $params = [], bool $force = false):self {
+        static::setInstance(function()use($params){
             $reflectionObj = new \ReflectionClass(static::classNameStatic());
-            $params = static::getMethodAfferentObjs($reflectionObj, static::constructorName());
             $instance = $reflectionObj->newInstanceArgs($params);
             static::setInstance($instance);
             return static::usingInstance();
