@@ -20,18 +20,18 @@ trait TSingleton {
     protected function __clone(){}
 
     /**
+     * @param array $params
+     * @param bool $force
      * @return static()
      * @throws \ReflectionException
      */
-    public static function instance():object {
+    public static function instance(array $params = [], bool $force = false):object {
         $className = static::classNameStatic();
         $classSign = md5($className);
-        if(!isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
+        if($force || !isset(static::$instances[$classSign]) || !(static::$instances[$classSign] instanceof $className)) {
             $reflectionObj = new \ReflectionClass($className);
-            $params = @func_get_args();
             static::$instances[$classSign] = $reflectionObj->newInstanceArgs($params);
         }
-
         return static::$instances[$classSign];
     }
 }
