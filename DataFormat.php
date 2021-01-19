@@ -9,6 +9,7 @@ class DataFormat extends BaseClass {
             $temp = unpack("H*", $val);
             $val = base_convert($temp[1], 16, 2);
         }
+        unset($val);
         return Arr::join($delimiter, $array);
     }
 
