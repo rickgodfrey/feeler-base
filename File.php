@@ -20,6 +20,8 @@ class File extends BaseClass{
     const POINTER_END = "pointer_end";
 
     const AM_FILE = "am_file";
+    const AM_DIR = "am_dir";
+    const AM_VOID = "am_void";
     const RUNTIME_DIR = "runtime";
 
     const CAPACITY_UNIT_BYTE = "";
@@ -34,7 +36,7 @@ class File extends BaseClass{
     public $segLength = 524288; //to read and write slice in segments, this set every segment's length
 
     protected $whatAmI;
-    protected $state = true;
+    protected $state = false;
     protected $position = 0;
     protected $handle;
     protected $fileSize;
@@ -177,8 +179,14 @@ class File extends BaseClass{
      * @throws InvalidValueException
      */
     public function init(string $fileLocation, string $mode, string $pointer, bool $override): void{
-        if(!is_file($fileLocation)){
-            throw new InvalidValueException("Try to initialize an invalid file");
+        if(is_file($fileLocation)){
+            $this->whatAmI = self::AM_FILE;
+        }
+        else if(is_dir($fileLocation)){
+            $this->whatAmI = self::AM_DIR;
+        }
+        else{
+            $this->whatAmI = self::AM_VOID;
         }
 
         $this->fileLocation = self::getFileLocation($fileLocation);
@@ -187,13 +195,12 @@ class File extends BaseClass{
         if($modeParam != "r"){
             $lockMode = LOCK_EX;
         }
-        $this->handle = fopen($fileLocation, $modeParam);
+
         if($this->whatAmI === self::AM_FILE){
+            $this->handle = fopen($fileLocation, $modeParam);
             if($this->lock($lockMode)){
+                $this->state = true;
                 $this->fileSize = filesize($this->file);
-            }
-            else{
-                $this->state = false;
             }
         }
         else {

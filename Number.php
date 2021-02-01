@@ -210,13 +210,13 @@ class Number extends BaseClass {
         return $number;
     }
 
-    public static function decimalFormat($number, $decimalPlaceLen = 2, $round = true, $fixedDecimalPlace = false, $showThousandsSep = false){
+    public static function decimalFormat($number, $decimalPlaceLen = 2, $round = true, $fixedDecimalPlace = false, $showThousandsSep = false):string{
         if(!Number::isNumeric($number) || $number == 0 || !Number::isInt($decimalPlaceLen) || $decimalPlaceLen < 0){
             if($fixedDecimalPlace && Number::isPosiInteric($decimalPlaceLen)){
                 return "0.".str_repeat("0", $decimalPlaceLen);
             }
             else{
-                return 0;
+                return "0";
             }
         }
 
@@ -232,7 +232,7 @@ class Number extends BaseClass {
         }
         else{
             if($decimalPlaceLen == 0){
-                $number = floor($number);
+                $number = floor((float)$number);
             }
             else{
                 $digit = $decimalPlaceLen + 1;
@@ -261,11 +261,8 @@ class Number extends BaseClass {
                 $number = $number.".".str_repeat("0", $decimalPlaceLen);
             }
         }
-        else{
-            $number = (float)$number;
-        }
 
-        return $number;
+        return (string)$number;
     }
 
     public static function decimalPlaceLength($number):int{
