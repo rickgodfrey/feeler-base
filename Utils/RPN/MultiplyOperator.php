@@ -4,7 +4,7 @@ namespace Feeler\Base\Utils\RPN;
 
 class MultiplyOperator extends Operator
 {
-    public function priority()
+    public function priority():int
     {
         return 3;
     }

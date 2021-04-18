@@ -4,7 +4,7 @@ namespace Feeler\Base\Utils\RPN;
 
 class MinusOperator extends Operator
 {
-    public function priority()
+    public function priority():int
     {
         return 2;
     }

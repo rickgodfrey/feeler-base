@@ -12,7 +12,7 @@ abstract class Operator extends Token
         parent::__construct($this->type, $this->value);
     }
 
-    abstract public function priority();
+    abstract public function priority():int;
 
     abstract public function associativity();
 

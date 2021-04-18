@@ -4,7 +4,7 @@ namespace Feeler\Base\Utils\RPN;
 
 class TgFunction extends RPN_Func
 {
-    public function numOfArgs()
+    public function numOfArgs():int
     {
         return 1;
     }

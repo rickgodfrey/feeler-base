@@ -13,5 +13,5 @@ abstract class RPN_Func extends Token
     }
 
     abstract public function execute($arg);
-    abstract public function numOfArgs();
+    abstract public function numOfArgs():int;
 }

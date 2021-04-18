@@ -8,7 +8,6 @@
 namespace Feeler\Base\Math;
 
 use Feeler\Base\Singleton;
-use Feeler\Base\Utils\RPN\Number;
 use Feeler\Base\Utils\RPN\Stack;
 use Feeler\Base\Utils\RPN\Queue;
 use Feeler\Base\Utils\RPN\Tokenizer;
@@ -16,6 +15,7 @@ use Feeler\Base\Utils\RPN\RPN_Func;
 use Feeler\Base\Utils\RPN\Coma;
 use Feeler\Base\Utils\RPN\L_Bracket;
 use Feeler\Base\Utils\RPN\R_Bracket;
+use Feeler\Base\Utils\RPN\Operand;
 use Feeler\Base\Utils\RPN\Operator;
 use Feeler\Base\Utils\RPN\Bracket;
 
@@ -23,11 +23,20 @@ use Feeler\Base\Utils\RPN\Bracket;
 class Calculator extends Singleton
 {
     protected $expression;
+    /**
+     * @var Stack
+     */
     protected $stack;
+    /**
+     * @var Queue
+     */
     protected $rpnNotation;
+    /**
+     * @var Tokenizer
+     */
     protected $tokenizer;
 
-    public function calc(string $expression, bool $asBigNumber = false)
+    public function calc(string $expression):string
     {
         $this->expression = preg_replace("/\\s+/i", "$1", $expression);
         $this->expression = strtr($this->expression, "{}[]", "()()");
@@ -58,19 +67,19 @@ class Calculator extends Singleton
         $this->tokenizer->registerObject("function", "ctg", "ctg");
         $this->tokenizer->registerObject("function", "max", "max");
 
-        $this->convertToRpn();
+        $this->_convertToRpn();
         return $this->_evaluate();
     }
 
     /**
      * @link http://en.wikipedia.org/wiki/Shunting-yard_algorithm
      */
-    private function convertToRpn()
+    private function _convertToRpn()
     {
         $this->tokenizer->tokenize();
 
         foreach ($this->tokenizer as $token) {
-            if ($token instanceof Number) {
+            if ($token instanceof Operand) {
                 $this->rpnNotation->enqueue($token);
             }
             else if ($token instanceof RPN_Func) {
@@ -131,14 +140,15 @@ class Calculator extends Singleton
         }
     }
 
-    private function _evaluate()
+    private function _evaluate():string
     {
         $tempStack = new Stack();
 
         while ($token = $this->rpnNotation->dequeue()) {
-            if ($token instanceof Number) {
+            if ($token instanceof Operand) {
                 $tempStack->push($token);
-            } else if (($token instanceof Operator) || ($token instanceof RPN_Func)) {
+            }
+            else if (($token instanceof Operator) || ($token instanceof RPN_Func)) {
                 /**
                  * @var $token Operator|RPN_Func
                  */
@@ -155,6 +165,6 @@ class Calculator extends Singleton
                 $tempStack->push($token->execute(array_reverse($arg)));
             }
         }
-        return $tempStack->pop()->value;
+        return (string)$tempStack->pop()->value;
     }
 }
