@@ -333,10 +333,10 @@ class File extends BaseClass{
         $fileObj = new static($fileLocation, self::MODE_W, self::POINTER_HEAD, true);
         $fileObj->write($content, $length);
 
-        return is_file($fileLocation) ? true : false;
+        return is_file($fileLocation);
     }
 
-    //make new dirs, will create all unexist dirs on the path
+    //make new dirs, will create all not exist dirs on the path
     public static function mkdir($path, $chmod = 0755):bool{
         return is_dir($path) || mkdir($path, $chmod, true);
     }

@@ -5,13 +5,9 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Base;
+namespace Feeler\Base\Math;
 
-class Webview extends View{
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-
+class MathConst {
+    const PI = 3.1415926535898;
+    const E = 2.718281828459;
 }

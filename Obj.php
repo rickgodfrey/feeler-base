@@ -132,7 +132,7 @@ class Obj extends BaseClass {
                 break;
 
             case self::PATTERN_ARRAY:
-                $rs = Str::join(".", $exp);
+                $rs = Str::split(".", $exp);
                 if(!$rs){
                     return null;
                 }

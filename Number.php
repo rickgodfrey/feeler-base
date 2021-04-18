@@ -277,6 +277,10 @@ class Number extends BaseClass {
         return strlen($number[1]);
     }
 
+    public static function reserveAccuracy($number, int $decimalPlaceLength = 2):string{
+        return self::decimalFormat($number, $decimalPlaceLength, false);
+    }
+
     public static function minimum(){
         $params = @func_get_args();
         return call_user_func_array("min", $params);

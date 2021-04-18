@@ -388,7 +388,7 @@ class Str extends BaseClass {
         return $array;
     }
 
-    public static function join(string $delimiter, string $string, int $limit = -1):array{
+    public static function split(string $delimiter, string $string, int $limit = -1):array{
         if(!Str::isAvailable($string) || !Str::isString($delimiter) || (!Number::isUnsignedInt($limit) && $limit !== -1)){
             return [];
         }

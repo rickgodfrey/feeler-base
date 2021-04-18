@@ -18,7 +18,7 @@ class Xml{
             return [];
         }
 
-        $xmlObj = self::isSimpleXmlLoadString($xml, "SimpleXMLElement", LIBXML_NOCDATA);
+        $xmlObj = self::isSimpleXmlLoadString($xml, LIBXML_NOCDATA);
 
         if (!($xmlObj instanceof \SimpleXMLElement)){
             return [];
@@ -40,11 +40,12 @@ class Xml{
      * @param bool $is_prefix
      * @return bool|\SimpleXMLElement
      */
-    public static function isSimpleXmlLoadString($string, $className = "SimpleXMLElement", $options = 0, $ns = "", $is_prefix = false) {
+    public static function isSimpleXmlLoadString($string, $options = 0, $ns = "", $is_prefix = false) {
         if (preg_match("/(\<\!DOCTYPE|\<\!ENTITY)/i", $string)) {
             return false;
         }
 
+        $className = "SimpleXMLElement";
         libxml_disable_entity_loader(true);
         return simplexml_load_string($string, $className, $options, $ns, $is_prefix);
     }
