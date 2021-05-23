@@ -78,23 +78,18 @@ class Str extends BaseClass {
         return $encoding ? $encoding : self::ENCODING_UNKNOWN;
     }
 
-    public static function getChar(string $string, int $position = 0): string{
-        if(!self::isAvailable($string)){
-            return false;
-        }
-        return mb_substr($string, $position, 1);
-    }
-
     public static function slice(string $string, int $position = 0, int $length = -1): string{
-        if(!self::isAvailable($string) || $length < -1 || $length === 0){
-            return false;
+        if(!self::isAvailable($string) || (!Number::isUnsignedInt($length) && $length !== -1)){
+            return "";
         }
-
         if($length === -1){
             $length = null;
         }
-
         return mb_substr($string, $position, $length);
+    }
+
+    public static function getChar(string $string, int $position = 0): string{
+        return self::slice($string, $position, 1);
     }
 
     public static function getFirstChar(string $string): string{
@@ -388,31 +383,30 @@ class Str extends BaseClass {
         return $array;
     }
 
-    public static function splitToArrayByUnitLength(string $string, int $unitLength = 1, int $limit = -1):array{
-        if(!Str::isAvailable($string) || !Number::isUnsignedInt($unitLength) || (!Number::isUnsignedInt($limit) && $limit !== -1)){
+    public static function splitToArrayByUnitLength(string $string, int $unitLength = 1, int $unitsLimit = -1):array{
+        if(!Str::isAvailable($string) || !Number::isUnsignedInt($unitLength) || (!Number::isUnsignedInt($unitsLimit) && $unitsLimit !== -1)){
             return [];
         }
-        if($limit !== -1){
-            $string = mb_substr($string, 0, $limit);
-        }
-        return str_split($string, $unitLength);
+        $array = str_split($string, $unitLength);
+        return $unitsLimit === -1 ? $array : Arr::slice($array, 0, $unitsLimit, false);
     }
 
-    public static function splitToArrayByDelimiter(string $string, string $delimiter, int $limit = -1):array{
-        if(!Str::isAvailable($string) || !Str::isString($delimiter) || (!Number::isUnsignedInt($limit) && $limit !== -1)){
+    public static function splitToArrayByDelimiter(string $string, string $delimiter, int $unitsLimit = -1):array{
+        if(!Str::isAvailable($string) || !Str::isString($delimiter) || (!Number::isUnsignedInt($unitsLimit) && $unitsLimit !== -1)){
             return [];
-        }
-        if($limit !== -1){
-            $string = mb_substr($string, 0, $limit);
         }
         if($delimiter === ""){
-            return str_split($string);
+            $array = str_split($string);
+            $array = $unitsLimit === -1 ? $array : Arr::slice($array, 0, $unitsLimit, false);
         }
-        return explode($delimiter, $string);
+        else{
+            $array = $unitsLimit === -1 ? explode($delimiter, $string) : explode($delimiter, $string, $unitsLimit);
+        }
+        return $array;
     }
 
-    public static function split(string $string, int $unitLength = 1, string $delimiter = " ", int $limit = -1):string{
-        return Arr::joinToString(self::splitToArray($string, $unitLength, $limit), $delimiter);
+    public static function split(string $string, int $unitLength = 1, string $delimiter = " ", int $unitsLimit = -1):string{
+        return Arr::joinToString(self::splitToArrayByUnitLength($string, $unitLength, $unitsLimit), $delimiter);
     }
 
     public static function replace(string $find, string $replacement, string $string, bool $ignoreCase = false):int{
