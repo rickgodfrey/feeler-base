@@ -388,14 +388,31 @@ class Str extends BaseClass {
         return $array;
     }
 
-    public static function split(string $delimiter, string $string, int $limit = -1):array{
+    public static function splitToArrayByUnitLength(string $string, int $unitLength = 1, int $limit = -1):array{
+        if(!Str::isAvailable($string) || !Number::isUnsignedInt($unitLength) || (!Number::isUnsignedInt($limit) && $limit !== -1)){
+            return [];
+        }
+        if($limit !== -1){
+            $string = mb_substr($string, 0, $limit);
+        }
+        return str_split($string, $unitLength);
+    }
+
+    public static function splitToArrayByDelimiter(string $string, string $delimiter, int $limit = -1):array{
         if(!Str::isAvailable($string) || !Str::isString($delimiter) || (!Number::isUnsignedInt($limit) && $limit !== -1)){
             return [];
+        }
+        if($limit !== -1){
+            $string = mb_substr($string, 0, $limit);
         }
         if($delimiter === ""){
             return str_split($string);
         }
-        return $limit === -1 ? explode($delimiter, $string) : explode($delimiter, $string, $limit);
+        return explode($delimiter, $string);
+    }
+
+    public static function split(string $string, int $unitLength = 1, string $delimiter = " ", int $limit = -1):string{
+        return Arr::joinToString(self::splitToArray($string, $unitLength, $limit), $delimiter);
     }
 
     public static function replace(string $find, string $replacement, string $string, bool $ignoreCase = false):int{

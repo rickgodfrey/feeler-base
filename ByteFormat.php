@@ -10,7 +10,7 @@ class ByteFormat extends BaseClass {
             $val = base_convert($temp[1], 16, 2);
         }
         unset($val);
-        return Arr::join(" ", $array);
+        return Arr::joinToString($array, " ");
     }
 
     public static function convertStringToHex(string $string): string{
@@ -20,26 +20,26 @@ class ByteFormat extends BaseClass {
             $val = pack("H", $temp[1]);
         }
         unset($val);
-        return Arr::join(" ", $array);
+        return Arr::joinToString($array, " ");
     }
 
     public static function convertBinaryToString(string $string): string{
-        $array = Str::split(" ", $string);
+        $array = Str::splitToArrayByDelimiter($string, " ");
         foreach($array as &$val){
             $val = base_convert($val, 2, 16);
             $val = pack("H".strlen($val), $val);
         }
         unset($val);
-        return Arr::join("", $array);
+        return Arr::joinToString($array);
     }
 
     public static function convertHexToString(string $string): string{
-        $array = Str::split(" ", $string);
+        $array = Str::splitToArrayByDelimiter($string, " ");
         foreach($array as &$val){
             $val = unpack("H*", $val);
         }
         unset($val);
-        return Arr::join("", $array);
+        return Arr::joinToString($array);
     }
 
     public static function convertBinaryToHex(string $string): string{

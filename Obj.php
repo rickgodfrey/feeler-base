@@ -119,7 +119,7 @@ class Obj extends BaseClass {
                 }
                 else{
                     $namespace = Arr::slice($matches, 0, $matchesCount - 2);
-                    $namespace = Arr::join("\\", $namespace);
+                    $namespace = Arr::joinToString($namespace, "\\");
                     $className = $namespace."\\".$matches[$matchesCount - 1];
                     $methodName = $matches[$matchesCount];
                 }
@@ -132,7 +132,7 @@ class Obj extends BaseClass {
                 break;
 
             case self::PATTERN_ARRAY:
-                $rs = Str::split(".", $exp);
+                $rs = Str::splitToArrayByDelimiter($exp, ".");
                 if(!$rs){
                     return null;
                 }

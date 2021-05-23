@@ -432,7 +432,7 @@ class Arr extends BaseClass {
         return $vals;
     }
 
-    public static function join(string $delimiter, array $array){
+    public static function joinToString(array $array, string $delimiter = ""){
         return implode($delimiter, $array);
     }
 
