@@ -72,4 +72,19 @@ class GlobalAccess extends BaseClass {
     public static function env($key = null, $value = null){
         return self::_access("_ENV", $key, $value);
     }
+
+    public static function defined(string $constName):bool{
+        if(!Str::isAvailable($constName)){
+            return false;
+        }
+        return defined($constName);
+    }
+
+    public static function define(string $constName, string $constValue = "", bool $force = false):bool{
+        if(!Str::isAvailable($constName)){
+            return false;
+        }
+        ($__ENV = getenv($constName)) and (define($constName, $__ENV));
+        return ((defined($constName) && !$force) or define($constName, trim($constValue)));
+    }
 }
