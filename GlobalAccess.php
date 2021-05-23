@@ -80,11 +80,11 @@ class GlobalAccess extends BaseClass {
         return defined($constName);
     }
 
-    public static function define(string $constName, string $constValue = "", bool $force = false):bool{
+    public static function define(string $constName, $constValue, bool $force = false):bool{
         if(!Str::isAvailable($constName)){
             return false;
         }
         ($__ENV = getenv($constName)) and (define($constName, $__ENV));
-        return ((defined($constName) && !$force) or define($constName, trim($constValue)));
+        return ((defined($constName) && !$force) or define($constName, ($constValue = Str::isAvailable($constValue) ? $constValue : $constValue)));
     }
 }
