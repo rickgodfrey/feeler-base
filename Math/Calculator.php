@@ -47,25 +47,25 @@ class Calculator extends Singleton
         $this->rpnNotation = new Queue();
         $this->tokenizer = new Tokenizer($this->expression);
 
-        $this->tokenizer->registerObject(null, "operand", "[\\d.]+");
-        $this->tokenizer->registerObject(null, "l_bracket", "\(");
-        $this->tokenizer->registerObject(null, "r_bracket", "\)");
-        $this->tokenizer->registerObject(null, "coma", "\,");
+        $this->tokenizer->registerObject(null, "Operand", "[\\d.]+");
+        $this->tokenizer->registerObject(null, "L_Bracket", "\(");
+        $this->tokenizer->registerObject(null, "R_Bracket", "\)");
+        $this->tokenizer->registerObject(null, "Coma", "\,");
 
-        $this->tokenizer->registerObject("operator", "minus", "\-");
-        $this->tokenizer->registerObject("operator", "plus", "\+");
-        $this->tokenizer->registerObject("operator", "divide", "\/");
-        $this->tokenizer->registerObject("operator", "multiply", "\*");
-        $this->tokenizer->registerObject("operator", "power", "\^");
+        $this->tokenizer->registerObject("Operator", "Minus", "\-");
+        $this->tokenizer->registerObject("Operator", "Plus", "\+");
+        $this->tokenizer->registerObject("Operator", "Divide", "\/");
+        $this->tokenizer->registerObject("Operator", "Multiply", "\*");
+        $this->tokenizer->registerObject("Operator", "Power", "\^");
 
-        $this->tokenizer->registerObject("constant", "pi", "PI");
-        $this->tokenizer->registerObject("constant", "e", "E");
+        $this->tokenizer->registerObject("Constant", "PI", "pi");
+        $this->tokenizer->registerObject("Constant", "E", "e");
 
-        $this->tokenizer->registerObject("function", "sin", "sin");
-        $this->tokenizer->registerObject("function", "cos", "cos");
-        $this->tokenizer->registerObject("function", "tg", "tg");
-        $this->tokenizer->registerObject("function", "ctg", "ctg");
-        $this->tokenizer->registerObject("function", "max", "max");
+        $this->tokenizer->registerObject("Function", "Sin", "sin");
+        $this->tokenizer->registerObject("Function", "Cos", "cos");
+        $this->tokenizer->registerObject("Function", "Tg", "tg");
+        $this->tokenizer->registerObject("Function", "Ctg", "ctg");
+        $this->tokenizer->registerObject("Function", "Max", "max");
 
         $this->_convertToRpn();
         return $this->_evaluate();

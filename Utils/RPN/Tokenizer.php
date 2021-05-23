@@ -4,54 +4,54 @@ namespace Feeler\Base\Utils\RPN;
 
 class Tokenizer implements \Iterator
 {
-    private $expression;
-    private $registeredTokens = [];
-    private $tokenObjs = [];
-    private $iPointer = 0;
+    private $_expression;
+    private $_registeredTokens = [];
+    private $_tokenObjs = [];
+    private $_iPointer = 0;
+    private $_domain = "\\Feeler\\Base\\Utils\\RPN\\";
 
     public function __construct($expr)
     {
-        $this->expression = $expr;
-        $this->expression = preg_replace("/\\s+/i", "$1", $this->expression);
-        $this->expression = strtr($this->expression, "{}[]", "()()");
-        if (empty($this->expression)) {
+        $this->_expression = $expr;
+        $this->_expression = preg_replace("/\\s+/i", "$1", $this->_expression);
+        $this->_expression = strtr($this->_expression, "{}[]", "()()");
+        if (empty($this->_expression)) {
             throw new \Exception("Expression to tokenize is empty");
         }
     }
 
     private function tokenFactory($token, $value)
     {
-        if (!isset($this->registeredTokens[$token["type"]])) {
+        if (!isset($this->_registeredTokens[$token["type"]])) {
             throw new \Exception("Undefined token type '{$token["type"]}'");
         }
-        $className = $token["type"].$token["classSuffix"];
+        $className = $this->_domain.$token["type"].$token["classSuffix"];
         $obj = new $className($value);
         return $obj;
     }
 
     public function tokenize()
     {
-        while (strlen($this->expression) > 0) {
+        while (strlen($this->_expression) > 0) {
             $isMatch = false;
-            foreach ($this->registeredTokens as $token) {
+            foreach ($this->_registeredTokens as $token) {
                 $regexp = "/^({$token["regexp"]})/";
-
-                if (!$isMatch && preg_match($regexp, $this->expression, $matches)) {
+                if (!$isMatch && preg_match($regexp, $this->_expression, $matches)) {
                     $isMatch = true;
-                    $this->tokenObjs[] = $tokenObj = $this->tokenFactory($token, $matches[1]);
-                    $this->expression = substr($this->expression, strlen($matches[1]));
+                    $this->_tokenObjs[] = $tokenObj = $this->tokenFactory($token, $matches[1]);
+                    $this->_expression = substr($this->_expression, strlen($matches[1]));
                     break;
                 }
             }
             if (!$isMatch) {
-                throw new \Exception("Unrecognized token: '{$this->expression}'");
+                throw new \Exception("Unrecognized token: '{$this->_expression}'");
             }
         }
     }
 
     public function registerObject($classSuffix, $type, $regexp)
     {
-        $this->registeredTokens[$type] = [
+        $this->_registeredTokens[$type] = [
             "regexp" => $regexp,
             "type" => $type,
             "classSuffix" => $classSuffix,
@@ -60,26 +60,26 @@ class Tokenizer implements \Iterator
 
     public function current()
     {
-        return $this->tokenObjs[$this->iPointer];
+        return $this->_tokenObjs[$this->_iPointer];
     }
 
     public function key()
     {
-        return $this->tokenObjs[$this->iPointer]->type;
+        return $this->_tokenObjs[$this->_iPointer]->type;
     }
 
     public function next()
     {
-        $this->iPointer++;
+        $this->_iPointer++;
     }
 
     public function rewind()
     {
-        $this->iPointer = 0;
+        $this->_iPointer = 0;
     }
 
     public function valid()
     {
-        return ($this->iPointer < sizeof($this->tokenObjs));
+        return ($this->_iPointer < sizeof($this->_tokenObjs));
     }
 }
