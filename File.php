@@ -33,14 +33,19 @@ class File extends BaseClass{
 
     protected static $rootPath;
     protected static $tempPath;
-    public $segLength = 524288; //to read and write slice in segments, this set every segment's length
-
+    protected $segLength = 524288; //To read and write file-data in segments, this sets every segment's length
     protected $whatAmI;
     protected $state = false;
     protected $position = 0;
     protected $handle;
-    protected $fileSize;
+
+    protected $fileName;
+    protected $fileExt;
     protected $fileLocation;
+    protected $fileDir;
+    protected $fileSrc;
+    protected $fileSize;
+    protected $fileMd5Sign;
 
     /**
      * File constructor.
@@ -59,22 +64,6 @@ class File extends BaseClass{
         if(is_resource($this->handle)){
             fclose($this->handle);
         }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function fileSize()
-    {
-        return $this->fileSize;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function fileLocation()
-    {
-        return $this->fileLocation;
     }
 
     /**
@@ -108,6 +97,70 @@ class File extends BaseClass{
     protected static function setTempPath($tempPath): void
     {
         self::$tempPath = $tempPath;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileName()
+    {
+        return $this->fileName ? $this->fileName : ($this->fileName = self::getFullName($this->fileLocation));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileExt()
+    {
+        return $this->fileExt ? $this->fileExt : ($this->fileExt = self::getExt($this->fileLocation));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileLocation()
+    {
+        return $this->fileLocation;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileDir()
+    {
+        return $this->fileDir ? $this->fileDir : ($this->fileDir = self::getDir($this->fileLocation));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileSize()
+    {
+        return $this->fileSize ? $this->fileSize : ($this->fileSize = self::getFileSize($this->fileLocation));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileSrc()
+    {
+        return $this->fileSrc;
+    }
+
+    /**
+     * @param mixed $fileSrc
+     */
+    public function setFileSrc($fileSrc): void
+    {
+        $this->fileSrc = $fileSrc;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fileMd5Sign()
+    {
+        return $this->fileMd5Sign ? $this->fileMd5Sign : ($this->fileMd5Sign = @md5_file($this->fileLocation));
     }
 
     /**
@@ -189,13 +242,13 @@ class File extends BaseClass{
             $this->whatAmI = self::AM_VOID;
         }
 
-        $this->fileLocation = self::getFileLocation($fileLocation);
         $lockMode = LOCK_SH;
         $modeParam = $this->_convertModeParams($mode, $pointer, $override);
         if($modeParam != "r"){
             $lockMode = LOCK_EX;
         }
 
+        $this->fileLocation = self::getFileLocation($fileLocation);
         if($this->whatAmI === self::AM_FILE){
             $this->handle = fopen($fileLocation, $modeParam);
             if($this->lock($lockMode)){
@@ -206,6 +259,9 @@ class File extends BaseClass{
         else {
             $this->fileSize = false;
         }
+        $this->fileName = self::getFullName($fileLocation);
+        $this->fileExt = self::getExt($fileLocation);
+        $this->fileDir = self::getDir($fileLocation);
     }
 
     public function getData(int $length = -1, int $position = null):string{
@@ -317,6 +373,14 @@ class File extends BaseClass{
         return flock($this->handle, LOCK_UN);
     }
 
+    public function mvTo(string $newPath){
+        return self::mv($this->fileLocation, $newPath);
+    }
+
+    public static function mv(string $oldPath, string $newPath):bool{
+        return Str::isAvailable($oldPath) && Str::isAvailable($newPath) && file_exists($oldPath) ? rename($oldPath, $newPath) : false;
+    }
+
     public static function create($fileLocation):bool{
         return fopen($fileLocation, "w") !== false ? true : false;
     }
@@ -345,32 +409,22 @@ class File extends BaseClass{
         if(!file_exists($target)){
             return false;
         }
-
-        if($recursive){
-            if(is_dir($target)){
-                $handle = opendir($target);
-                while($subTarget = readdir($handle)){
-                    if($subTarget !== "." && $subTarget !== ".."){
-                        $position = "{$target}/{$subTarget}";
-                        if(is_dir($position)){
-                            self::rm($position);
-                        }
-                        else{
-                            @unlink($position);
-                        }
-                    }
-                }
-                closedir($handle);
-                if(rmdir($target)){
-                    return true;
+        if($recursive && is_dir($target)){
+            $handle = opendir($target);
+            while($subTarget = readdir($handle)){
+                if($subTarget !== "." && $subTarget !== ".."){
+                    $position = "{$target}/{$subTarget}";
+                    is_dir($position) ? self::rm($position) : @unlink($position);
                 }
             }
+            closedir($handle);
+            if(rmdir($target)){
+                return true;
+            }
         }
-
         if(is_file($target)){
             return @unlink($target);
         }
-
         return false;
     }
 
@@ -455,6 +509,14 @@ class File extends BaseClass{
             return false;
         }
         return "{$path}/";
+    }
+
+    public static function getDir($fileLocation):string{
+        if(!($path = self::getPath($fileLocation))){
+            return false;
+        }
+        $path = Str::splitToArrayByDelimiter($path, "/");
+        return (($count = count($path)) >= 2 && isset($path[($count - 2)])) ? $path[($count - 2)] : false;
     }
 
     public static function getFileLocation($fileLocation):string{
@@ -611,12 +673,5 @@ class File extends BaseClass{
         }
 
         return $capacityNumber.$convertToUnit;
-    }
-
-    public static function mv($oldPath, $newPath):bool{
-        if(!file_exists($oldPath)){
-            return false;
-        }
-        return rename($oldPath, $newPath);
     }
 }

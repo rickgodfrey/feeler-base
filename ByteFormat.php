@@ -17,7 +17,7 @@ class ByteFormat extends BaseClass {
         $array = preg_split("/(?<!^)(?!$)/u", $string);
         foreach($array as &$val){
             $temp = unpack("H*", $val);
-            $val = pack("H", $temp[1]);
+            $val = $temp[1];
         }
         unset($val);
         return Arr::joinToString($array, " ");
