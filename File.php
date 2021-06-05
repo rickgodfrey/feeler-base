@@ -10,6 +10,7 @@ namespace Feeler\Base;
 use Feeler\Base\Exceptions\InvalidDataDomainException;
 use Feeler\Base\Exceptions\InvalidValueException;
 use Feeler\Base\Exceptions\UnexpectedValueException;
+use Feeler\Base\Math\Utils\BasicOperation;
 
 class File extends BaseClass{
     const MODE_R = "mode_r";
@@ -630,40 +631,41 @@ class File extends BaseClass{
         switch($capacityUnit){
             case "k":
             case "kb":
-                $capacityNumber = bcmul($capacityNumber, 1024);
+                $number2 = 1024;
                 break;
             case "m":
             case "mb":
-                $capacityNumber = bcmul($capacityNumber, 1048576);
+                $number2 = 1048576;
                 break;
             case "g":
             case "gb":
-                $capacityNumber = bcmul($capacityNumber, 1073741824);
+                $number2 = 1073741824;
                 break;
             case "t":
             case "tb":
-                $capacityNumber = bcmul($capacityNumber, 1099511627776);
+                $number2 = 1099511627776;
                 break;
             case "l":
             case "lb":
-                $capacityNumber = bcmul($capacityNumber, 1125899906842624);
+                $number2 = 1125899906842624;
                 break;
         }
+        $capacityNumber = BasicOperation::multiply($capacityNumber, $number2, 0, true);
 
         switch($convertToUnit){
             case self::CAPACITY_UNIT_BYTE:
                 break;
             case self::CAPACITY_UNIT_KB:
-                $capacityNumber = bcdiv($capacityNumber, 1024);
+                $number2 = 1024;
                 break;
             case self::CAPACITY_UNIT_MB:
-                $capacityNumber = bcdiv($capacityNumber, 1048576);
+                $number2 = 1048576;
                 break;
             case self::CAPACITY_UNIT_GB:
-                $capacityNumber = bcdiv($capacityNumber, 1073741824);
+                $number2 = 1073741824;
                 break;
             case self::CAPACITY_UNIT_TB:
-                $capacityNumber = bcdiv($capacityNumber, 1099511627776);
+                $number2 = 1099511627776;
                 break;
             case self::CAPACITY_UNIT_LB:
                 $capacityNumber = bcdiv($capacityNumber, 1125899906842624);
@@ -671,6 +673,7 @@ class File extends BaseClass{
             default:
                 throw new UnexpectedValueException();
         }
+        $capacityNumber = BasicOperation::divide($capacityNumber, $number2, 2, true);
 
         return $capacityNumber.$convertToUnit;
     }
