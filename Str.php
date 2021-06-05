@@ -7,6 +7,8 @@
 
 namespace Feeler\Base;
 
+use Feeler\Base\Math\Calculator;
+
 class Str extends BaseClass {
     const CASE_UPPER = "case_upper";
     const CASE_LOWER = "case_lower";
@@ -88,12 +90,18 @@ class Str extends BaseClass {
         return mb_substr($string, $position, $length);
     }
 
-    public static function getChar(string $string, int $position = 0): string{
+    public static function getChar(string $string, int $position = 1): string{
+        if($position === 0){
+            return "";
+        }
+        if($position > 0){
+            $position = $position - 1;
+        }
         return self::slice($string, $position, 1);
     }
 
     public static function getFirstChar(string $string): string{
-        return self::getChar($string, 0);
+        return self::getChar($string);
     }
 
     public static function getLastChar(string $string): string{
@@ -387,8 +395,18 @@ class Str extends BaseClass {
         if(!Str::isAvailable($string) || !Number::isUnsignedInt($unitLength) || (!Number::isUnsignedInt($unitsLimit) && $unitsLimit !== -1)){
             return [];
         }
-        $array = str_split($string, $unitLength);
-        return $unitsLimit === -1 ? $array : Arr::slice($array, 0, $unitsLimit, false);
+        if($unitsLimit === -1){
+            $array = str_split($string, $unitLength);
+        }
+        else{
+            $array = [];
+            $unitsCount = ceil(mb_strlen($string) / $unitLength);
+            for($i = 0; $i < $unitsCount; $i++){
+                $array[] = mb_substr($string, ($i * $unitLength), $unitLength);
+            }
+        }
+
+        return $array;
     }
 
     public static function splitToArrayByDelimiter(string $string, string $delimiter, int $unitsLimit = -1):array{
@@ -396,8 +414,7 @@ class Str extends BaseClass {
             return [];
         }
         if($delimiter === ""){
-            $array = str_split($string);
-            $array = $unitsLimit === -1 ? $array : Arr::slice($array, 0, $unitsLimit, false);
+            $array = self::splitToArrayByUnitLength($string, 1, $unitsLimit);
         }
         else{
             $array = $unitsLimit === -1 ? explode($delimiter, $string) : explode($delimiter, $string, $unitsLimit);

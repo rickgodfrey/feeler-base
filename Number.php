@@ -7,9 +7,206 @@
 
 namespace Feeler\Base;
 
+use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Math\Utils\BasicOperation;
+
 class Number extends BaseClass {
-    public static function intMaximum(){
+    const MSG_INITIALIZATION_FAILED = "Trying to initialize an illegal number";
+    const MSG_ILLEGAL_OPERATION = "Illegal number causes operation failed";
+    const MSG_DIVISOR_ZERO = "Illegal divisor zero";
+    const MSG_ILLEGAL_OPERATOR = "Illegal operator";
+    const MSG_UNKNOWN_OPERATION = "Asking for an unknown operation";
+
+    protected $number = "";
+    protected $isFloat = false;
+    protected $intPlace;
+    protected $floatPlace;
+    protected $scale = MathConst::DEFAULT_SCALE;
+    protected $asBigNumber = false;
+    protected $lastCalcStateCleared = true;
+    protected $lastOperator;
+    protected $lastOperandObj;
+
+    /**
+     * @return int
+     */
+    public function getScale(): int
+    {
+        return $this->scale;
+    }
+
+    /**
+     * @param int $scale
+     */
+    public function setScale(int $scale): void
+    {
+        $this->scale = $scale;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastOperator()
+    {
+        return $this->lastOperator;
+    }
+
+    /**
+     * @param string $lastOperator
+     * @throws \Exception
+     */
+    public function setLastOperator(): void
+    {
+        switch(__METHOD__){
+            case "plus":
+                $lastOperator = "+";
+                break;
+            case "minus":
+                $lastOperator = "-";
+                break;
+            case "multiply":
+                $lastOperator = "*";
+                break;
+            case "divide":
+                $lastOperator = "/";
+                break;
+            default:
+                throw new \Exception(self::MSG_ILLEGAL_OPERATOR);
+        }
+        $this->lastOperator = $lastOperator;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastOperand()
+    {
+        return $this->lastOperand;
+    }
+
+    /**
+     * @param Number $lastOperandObj
+     */
+    public function setLastOperandObj(self $lastOperandObj): void
+    {
+        $this->lastOperandObj = $lastOperandObj;
+    }
+
+    protected function setCalcRunningState(bool $state = true):void{
+        $this->lastCalcStateCleared = $state ? false : true;
+    }
+
+    protected function pushOperation(self $numberObj):void{
+        if(!($numberObj instanceof static)){
+            throw new \Exception(self::MSG_ILLEGAL_OPERATION);
+        }
+        $this->executeLastOperation();
+        $this->setCalcRunningState();
+        $this->setLastOperator();
+        $this->setLastOperandObj($numberObj);
+    }
+
+    public function __construct(string $number)
+    {
+        if(!Str::isAvailable($number) || !self::isNumeric($number)){
+            throw new \Exception(self::MSG_INITIALIZATION_FAILED);
+        }
+        $this->number = $number;
+        if(self::isFloaric($number)){
+            $this->isFloat = true;
+            $number = Str::splitToArrayByDelimiter($number, ".", 2);
+            $this->intPlace = $number[0];
+            $this->floatPlace = $number[1];
+        }
+        else{
+            $this->intPlace = $number;
+            $this->floatPlace = 0;
+        }
+    }
+
+    protected function executeLastOperation():void{
+        if($this->lastCalcStateCleared){
+            return;
+        }
+        switch($this->getLastOperator()){
+            case "+":
+                $this->number = BasicOperation::plus($this->number, $this->lastOperandObj->number, $this->scale, $this->asBigNumber);
+                break;
+            case "-":
+                $this->number = BasicOperation::minus($this->number, $this->lastOperandObj->number, $this->scale, $this->asBigNumber);
+                break;
+            case "*":
+                $this->number = BasicOperation::multiply($this->number, $this->lastOperandObj->number, $this->scale, $this->asBigNumber);
+                break;
+            case "/":
+                $this->number = BasicOperation::divide($this->number, $this->lastOperandObj->number, $this->scale, $this->asBigNumber);
+                break;
+            default:
+                throw new \Exception(self::MSG_UNKNOWN_OPERATION);
+        }
+        $this->setCalcRunningState(false);
+    }
+
+    public function plus(object $numberObj):self{
+        if(!($numberObj instanceof static)){
+            throw new \Exception(self::MSG_ILLEGAL_OPERATION);
+        }
+        $this->pushOperation($numberObj);
+        return $this;
+    }
+
+    public function minus(object $numberObj):self{
+        if(!($numberObj instanceof static)){
+            throw new \Exception(self::MSG_ILLEGAL_OPERATION);
+        }
+        $this->pushOperation($numberObj);
+        return $this;
+    }
+
+    public function multiply(object $numberObj):self{
+        if(!($numberObj instanceof static)){
+            throw new \Exception(self::MSG_ILLEGAL_OPERATION);
+        }
+        $this->pushOperation($numberObj);
+        return $this;
+    }
+
+    public function divide(object $numberObj):self{
+        if(!($numberObj instanceof static)){
+            throw new \Exception(self::MSG_ILLEGAL_OPERATION);
+        }
+        $this->pushOperation($numberObj);
+        return $this;
+    }
+
+    public function formatDecimal(int $decimalPlaceLen = MathConst::DEFAULT_SCALE, bool $round = true, bool $fixedDecimalPlace = false, bool $showThousandsSep = false):self{
+        $this->number = self::decimalFormat($this->number, $decimalPlaceLen, $round, $fixedDecimalPlace, $showThousandsSep);
+        return $this;
+    }
+
+    public function rs():string{
+        return $this->number;
+    }
+
+    public static function autoCorrectType($number){
+        if(!self::isNumeric($number)){
+            throw new \Exception(self::MSG_ILLEGAL_OPERATION);
+        }
+        if(self::isInteric($number)){
+            $number = (int)$number;
+        }
+        else{
+            $number = (float)$number;
+        }
+        return $number;
+    }
+
+    public static function intMax(){
         return (int)9223372036854775807;
+    }
+
+    public static function isOverFlow():bool{
+
     }
 
     public static function isNumber($number){
@@ -113,7 +310,7 @@ class Number extends BaseClass {
     }
 
     public static function isNumeric($number){
-        return is_numeric($number) ? true : (Str::isAvailable($number) ? is_numeric($number) : false);
+        return is_numeric($number);
     }
 
     public static function isMinusNumeric($number){
@@ -210,7 +407,7 @@ class Number extends BaseClass {
         return $number;
     }
 
-    public static function decimalFormat($number, $decimalPlaceLen = 2, $round = true, $fixedDecimalPlace = false, $showThousandsSep = false):string{
+    public static function decimalFormat($number, int $decimalPlaceLen = MathConst::DEFAULT_SCALE, bool $round = true, bool $fixedDecimalPlace = false, bool $showThousandsSep = false):string{
         if(!Number::isNumeric($number) || $number == 0 || !Number::isInt($decimalPlaceLen) || $decimalPlaceLen < 0){
             if($fixedDecimalPlace && Number::isPosiInteric($decimalPlaceLen)){
                 return "0.".str_repeat("0", $decimalPlaceLen);
@@ -220,13 +417,7 @@ class Number extends BaseClass {
             }
         }
 
-        if($showThousandsSep){
-            $thousandsSep = ",";
-        }
-        else{
-            $thousandsSep = "";
-        }
-
+        $thousandsSep = $showThousandsSep ? "," : "";
         if($round){
             $number = sprintf("%.{$decimalPlaceLen}f", number_format($number, $decimalPlaceLen, ".", $thousandsSep));
         }
@@ -238,7 +429,7 @@ class Number extends BaseClass {
                 $digit = $decimalPlaceLen + 1;
                 $number = sprintf("%.{$digit}f", number_format($number, $digit, ".", $thousandsSep));
                 if(Number::isFloaric($number)){
-                    $numberParts = explode(".", $number);
+                    $numberParts = Str::splitToArrayByDelimiter((string)$number, ".", 2);
                     $decimalLen = strlen($numberParts[1]);
                     if($decimalLen > $decimalPlaceLen){
                         $numberParts[1] = substr($numberParts[1], 0, ($decimalLen - ($decimalLen - $decimalPlaceLen)));
@@ -250,7 +441,6 @@ class Number extends BaseClass {
 
         if($fixedDecimalPlace && Number::isPosiInteric($decimalPlaceLen)){
             $numberParts = explode(".", (string)$number, 2);
-
             if(isset($numberParts[1])){
                 if(($len = strlen($numberParts[1])) < $decimalPlaceLen){
                     $difference = $decimalPlaceLen - $len;
@@ -281,13 +471,17 @@ class Number extends BaseClass {
         return self::decimalFormat($number, $decimalPlaceLength, false);
     }
 
-    public static function minimum(){
+    public static function min(){
         $params = @func_get_args();
         return call_user_func_array("min", $params);
     }
 
-    public static function maximum(){
+    public static function max(){
         $params = @func_get_args();
         return call_user_func_array("max", $params);
+    }
+
+    public static function randomInt($min, $max){
+        return random_int((int)$min, (int)$max);
     }
 }

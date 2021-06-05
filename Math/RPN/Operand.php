@@ -1,6 +1,8 @@
 <?php
 
-namespace Feeler\Base\Utils\RPN;
+namespace Feeler\Base\Math\RPN;
+
+use Feeler\Base\Number;
 
 class Operand extends Token
 {
@@ -14,6 +16,9 @@ class Operand extends Token
 
     private function _normalize($value)
     {
-        return floatval($value);
+        if(!Number::isNumeric($value)){
+            throw new \Exception("Illegal operand produced");
+        }
+        return $this->asBigNumber ? (string)$value : Number::autoCorrectType($value);
     }
 }

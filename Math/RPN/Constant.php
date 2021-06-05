@@ -1,6 +1,6 @@
 <?php
 
-namespace Feeler\Base\Utils\RPN;
+namespace Feeler\Base\Math\RPN;
 
 abstract class Constant extends Operand
 {
@@ -14,6 +14,6 @@ abstract class Constant extends Operand
 
     public function execute()
     {
-        return new Operand($this->value);
+        return new Operand($this->formatDecimal($this->value));
     }
 }

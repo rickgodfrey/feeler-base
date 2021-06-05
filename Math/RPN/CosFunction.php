@@ -1,6 +1,6 @@
 <?php
 
-namespace Feeler\Base\Utils\RPN;
+namespace Feeler\Base\Math\RPN;
 
 class CosFunction extends RPN_Func
 {
@@ -9,8 +9,8 @@ class CosFunction extends RPN_Func
         return 1;
     }
 
-    public function execute($arg)
+    public function execute($param)
     {
-        return new Operand(cos($arg[0]->value));
+        return new Operand(cos($param[0]->value));
     }
 }

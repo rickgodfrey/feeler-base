@@ -1,6 +1,6 @@
 <?php
 
-namespace Feeler\Base\Utils\RPN;
+namespace Feeler\Base\Math\RPN;
 
 class L_Bracket extends Bracket
 {

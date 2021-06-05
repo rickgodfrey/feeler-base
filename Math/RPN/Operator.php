@@ -1,6 +1,6 @@
 <?php
 
-namespace Feeler\Base\Utils\RPN;
+namespace Feeler\Base\Math\RPN;
 
 abstract class Operator extends Token
 {
@@ -16,7 +16,7 @@ abstract class Operator extends Token
 
     abstract public function associativity();
 
-    abstract public function execute($arg);
+    abstract public function execute($param);
 
     public function numOfArgs()
     {

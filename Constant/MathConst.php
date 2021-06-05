@@ -5,9 +5,10 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Base\Math;
+namespace Feeler\Base\Constant;
 
 class MathConst {
-    const PI = 3.1415926535898;
-    const E = 2.718281828459;
+    const DEFAULT_SCALE = 2;
+    const PI = 3.1415926535897;
+    const E = 2.7182818284590;
 }

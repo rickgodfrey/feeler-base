@@ -1,6 +1,6 @@
 <?php
 
-namespace Feeler\Base\Utils\RPN;
+namespace Feeler\Base\Math\RPN;
 
 class PowerOperator extends Operator
 {
@@ -14,8 +14,9 @@ class PowerOperator extends Operator
         return "right";
     }
 
-    public function execute($arg)
+    public function execute($param)
     {
-        return new Operand(pow($arg[0]->value, $arg[1]->value));
+        $rs = pow($param[0]->value, $param[1]->value);
+        return new Operand($rs);
     }
 }

@@ -7,17 +7,20 @@
 
 namespace Feeler\Base\Math;
 
+use Feeler\Base\BigNumber;
+use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Number;
 use Feeler\Base\Singleton;
-use Feeler\Base\Utils\RPN\Stack;
-use Feeler\Base\Utils\RPN\Queue;
-use Feeler\Base\Utils\RPN\Tokenizer;
-use Feeler\Base\Utils\RPN\RPN_Func;
-use Feeler\Base\Utils\RPN\Coma;
-use Feeler\Base\Utils\RPN\L_Bracket;
-use Feeler\Base\Utils\RPN\R_Bracket;
-use Feeler\Base\Utils\RPN\Operand;
-use Feeler\Base\Utils\RPN\Operator;
-use Feeler\Base\Utils\RPN\Bracket;
+use Feeler\Base\Math\RPN\Stack;
+use Feeler\Base\Math\RPN\Queue;
+use Feeler\Base\Math\RPN\Tokenizer;
+use Feeler\Base\Math\RPN\RPN_Func;
+use Feeler\Base\Math\RPN\Coma;
+use Feeler\Base\Math\RPN\L_Bracket;
+use Feeler\Base\Math\RPN\R_Bracket;
+use Feeler\Base\Math\RPN\Operand;
+use Feeler\Base\Math\RPN\Operator;
+use Feeler\Base\Math\RPN\Bracket;
 
 
 class Calculator extends Singleton
@@ -35,9 +38,77 @@ class Calculator extends Singleton
      * @var Tokenizer
      */
     protected $tokenizer;
+    protected $tempStack;
+    protected $asBigNumber = false;
+    protected $scale = MathConst::DEFAULT_SCALE;
+    protected $round = true;
+    protected $fixedDecimalPlace = false;
+    protected $showThousandsSep = false;
 
-    public function calc(string $expression):string
+    /**
+     * @param bool $asBigNumber
+     * @return $this
+     */
+    public function setAsBigNumber(bool $asBigNumber): self
     {
+        $this->asBigNumber = $asBigNumber;
+        return $this;
+    }
+
+    /**
+     * @param int $scale
+     * @return $this
+     */
+    public function setScale(int $scale): self
+    {
+        $this->scale = $scale;
+        return $this;
+    }
+
+    /**
+     * @param bool $round
+     * @return $this
+     */
+    public function setRound(bool $round): self
+    {
+        $this->round = $round;
+        return $this;
+    }
+
+    /**
+     * @param bool $fixedDecimalPlace
+     * @return $this
+     */
+    public function setFixedDecimalPlace(bool $fixedDecimalPlace): self
+    {
+        $this->fixedDecimalPlace = $fixedDecimalPlace;
+        return $this;
+    }
+
+    /**
+     * @param bool $showThousandsSep
+     * @return $this
+     */
+    public function setShowThousandsSep(bool $showThousandsSep): self
+    {
+        $this->showThousandsSep = $showThousandsSep;
+        return $this;
+    }
+
+    public function formatDecimal($rs){
+        if(!Number::isNumeric($rs)){
+            throw new \Exception("Illegal result produced");
+        }
+        if($this->asBigNumber){
+            $rs = BigNumber::decimalFormat($rs, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
+        }
+        else{
+            $rs = Number::decimalFormat($rs, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
+        }
+        return $rs;
+    }
+
+    public function calc(string $expression):string{
         $this->expression = preg_replace("/\\s+/i", "$1", $expression);
         $this->expression = strtr($this->expression, "{}[]", "()()");
         if (empty($this->expression)) {
@@ -46,6 +117,12 @@ class Calculator extends Singleton
         $this->stack = new Stack();
         $this->rpnNotation = new Queue();
         $this->tokenizer = new Tokenizer($this->expression);
+
+        $this->tokenizer->setScale($this->scale);
+        $this->tokenizer->setRound($this->round);
+        $this->tokenizer->setFixedDecimalPlace($this->fixedDecimalPlace);
+        $this->tokenizer->setShowThousandsSep($this->showThousandsSep);
+        $this->tokenizer->setAsBigNumber($this->asBigNumber);
 
         $this->tokenizer->registerObject(null, "Operand", "[\\d.]+");
         $this->tokenizer->registerObject(null, "L_Bracket", "\(");
@@ -67,14 +144,14 @@ class Calculator extends Singleton
         $this->tokenizer->registerObject("Function", "Ctg", "ctg");
         $this->tokenizer->registerObject("Function", "Max", "max");
 
-        $this->_convertToRpn();
-        return $this->_evaluate();
+        $this->_convertToRpn()->_evaluate();
+        return $this->formatDecimal($this->_rs());
     }
 
     /**
      * @link http://en.wikipedia.org/wiki/Shunting-yard_algorithm
      */
-    private function _convertToRpn()
+    private function _convertToRpn():self
     {
         $this->tokenizer->tokenize();
 
@@ -138,33 +215,42 @@ class Calculator extends Singleton
 
             $this->rpnNotation->enqueue($operator);
         }
+
+        return $this;
     }
 
-    private function _evaluate():string
+    private function _evaluate():self
     {
-        $tempStack = new Stack();
+        $this->tempStack = new Stack();
 
         while ($token = $this->rpnNotation->dequeue()) {
             if ($token instanceof Operand) {
-                $tempStack->push($token);
+                $this->tempStack->push($token);
             }
             else if (($token instanceof Operator) || ($token instanceof RPN_Func)) {
                 /**
                  * @var $token Operator|RPN_Func
                  */
-                if ($tempStack->count() < $token->numOfArgs()) {
+                if ($this->tempStack->count() < $token->numOfArgs()) {
                     throw new \Exception(
                         sprintf(
                             "Required %d arguments, %d given.",
                             $token->numOfArgs(),
-                            $tempStack->count()
+                            $this->tempStack->count()
                         )
                     );
                 }
-                $arg = $tempStack->popMultiple($token->numOfArgs());
-                $tempStack->push($token->execute(array_reverse($arg)));
+                $param = $this->tempStack->popMultiple($token->numOfArgs());
+                $this->tempStack->push($token->execute(array_reverse($param)));
             }
         }
-        return (string)$tempStack->pop()->value;
+
+        return $this;
+    }
+
+    private function _rs():string{
+        $rs = ($this->tempStack instanceof Stack) ? (string)$this->tempStack->pop()->value : "";
+        unset($this->tempStack);
+        return $rs;
     }
 }
