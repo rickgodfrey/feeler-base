@@ -39,6 +39,7 @@ class Calculator extends Singleton
      */
     protected $tokenizer;
     protected $tempStack;
+    protected $rs;
     protected $asBigNumber = false;
     protected $scale = MathConst::DEFAULT_SCALE;
     protected $round = true;
@@ -95,17 +96,17 @@ class Calculator extends Singleton
         return $this;
     }
 
-    public function formatDecimal($rs){
-        if(!Number::isNumeric($rs)){
+    protected function formatDecimal(){
+        if(!Number::isNumeric($this->rs)){
             throw new \Exception("Illegal result produced");
         }
         if($this->asBigNumber){
-            $rs = BigNumber::decimalFormat($rs, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
+            $this->rs = BigNumber::decimalFormat($this->rs, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
         }
         else{
-            $rs = Number::decimalFormat($rs, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
+            $this->rs = Number::decimalFormat($this->rs, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
         }
-        return $rs;
+        return $this;
     }
 
     public function calc(string $expression):string{
@@ -144,14 +145,14 @@ class Calculator extends Singleton
         $this->tokenizer->registerObject("Function", "Ctg", "ctg");
         $this->tokenizer->registerObject("Function", "Max", "max");
 
-        $this->_convertToRpn()->_evaluate();
-        return $this->formatDecimal($this->_rs());
+        $this->convertToRpn()->evaluate()->rs()->formatDecimal();
+        return $this->rs;
     }
 
     /**
      * @link http://en.wikipedia.org/wiki/Shunting-yard_algorithm
      */
-    private function _convertToRpn():self
+    protected function convertToRpn():self
     {
         $this->tokenizer->tokenize();
 
@@ -219,7 +220,7 @@ class Calculator extends Singleton
         return $this;
     }
 
-    private function _evaluate():self
+    protected function evaluate():self
     {
         $this->tempStack = new Stack();
 
@@ -244,13 +245,13 @@ class Calculator extends Singleton
                 $this->tempStack->push($token->execute(array_reverse($param)));
             }
         }
-
         return $this;
     }
 
-    private function _rs():string{
+    protected function rs():self{
         $rs = ($this->tempStack instanceof Stack) ? (string)$this->tempStack->pop()->value : "";
         unset($this->tempStack);
-        return $rs;
+        $this->rs = $rs;
+        return $this;
     }
 }
