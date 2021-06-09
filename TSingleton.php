@@ -7,8 +7,6 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Exceptions\InvalidParamException;
-
 trait TSingleton {
     use TCommon;
 

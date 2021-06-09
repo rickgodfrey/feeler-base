@@ -49,7 +49,7 @@ class Calculator extends Singleton
      * @param bool $asBigNumber
      * @return $this
      */
-    public function setAsBigNumber(bool $asBigNumber): self
+    public function setAsBigNumber(bool $asBigNumber = true): self
     {
         $this->asBigNumber = $asBigNumber;
         return $this;
@@ -69,7 +69,7 @@ class Calculator extends Singleton
      * @param bool $round
      * @return $this
      */
-    public function setRound(bool $round): self
+    public function setRound(bool $round = true): self
     {
         $this->round = $round;
         return $this;
@@ -79,7 +79,7 @@ class Calculator extends Singleton
      * @param bool $fixedDecimalPlace
      * @return $this
      */
-    public function setFixedDecimalPlace(bool $fixedDecimalPlace): self
+    public function setFixedDecimalPlace(bool $fixedDecimalPlace = true): self
     {
         $this->fixedDecimalPlace = $fixedDecimalPlace;
         return $this;
@@ -89,7 +89,7 @@ class Calculator extends Singleton
      * @param bool $showThousandsSep
      * @return $this
      */
-    public function setShowThousandsSep(bool $showThousandsSep): self
+    public function setShowThousandsSep(bool $showThousandsSep = true): self
     {
         $this->showThousandsSep = $showThousandsSep;
         return $this;
@@ -124,10 +124,10 @@ class Calculator extends Singleton
         $this->tokenizer->setShowThousandsSep($this->showThousandsSep);
         $this->tokenizer->setAsBigNumber($this->asBigNumber);
 
-        $this->tokenizer->registerObject(null, "Operand", "[\\d.]+");
-        $this->tokenizer->registerObject(null, "L_Bracket", "\(");
-        $this->tokenizer->registerObject(null, "R_Bracket", "\)");
-        $this->tokenizer->registerObject(null, "Coma", "\,");
+        $this->tokenizer->registerObject("", "Operand", "[\\d.]+");
+        $this->tokenizer->registerObject("", "L_Bracket", "\(");
+        $this->tokenizer->registerObject("", "R_Bracket", "\)");
+        $this->tokenizer->registerObject("", "Coma", "\,");
 
         $this->tokenizer->registerObject("Operator", "Minus", "\-");
         $this->tokenizer->registerObject("Operator", "Plus", "\+");
