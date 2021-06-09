@@ -482,6 +482,6 @@ class Number extends BaseClass {
     }
 
     public static function randomInt($min, $max){
-        return random_int((int)$min, (int)$max);
+        return BasicOperation::randomInt($min, $max);
     }
 }

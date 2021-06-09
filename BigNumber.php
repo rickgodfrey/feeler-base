@@ -9,6 +9,7 @@ namespace Feeler\Base;
 
 use Feeler\Base\Constant\MathConst;
 use Feeler\Base\Math\Utils\BasicBigCalculation;
+use Feeler\Base\Math\Utils\BasicOperation;
 
 class BigNumber extends Number {
     protected $asBigNumber = true;
@@ -31,7 +32,7 @@ class BigNumber extends Number {
         $thousandsSep = $showThousandsSep ? "," : "";
         $numberPlaces = Str::splitToArrayByDelimiter($number, ".");
         $numberIntPlace = $numberPlaces[0];
-        $numberDecimalPlace = $numberPlaces[1];
+        $numberDecimalPlace = isset($numberPlaces[1]) ? $numberPlaces[1] : "";
         $numberDecimalPlace = preg_replace("/^([0-9]+[1-9])?0+$/", "$1", $numberDecimalPlace);
         if($numberDecimalPlace){
             $numberIsFloat = true;
@@ -78,6 +79,6 @@ class BigNumber extends Number {
     }
 
     public static function randomInt($min, $max){
-        return random_int((int)$min, (int)$max);
+        return BasicOperation::randomInt($min, $max, true);
     }
 }

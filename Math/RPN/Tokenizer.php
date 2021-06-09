@@ -89,7 +89,7 @@ class Tokenizer implements \Iterator
                 $regexp = "/^({$token["regexp"]})/";
                 if (!$isMatched && preg_match($regexp, $this->_expression, $matches)) {
                     $isMatched = true;
-                    $this->_tokenObjs[] = $tokenObj = $this->tokenFactory($token, $matches[1]);
+                    $this->_tokenObjs[] = $this->tokenFactory($token, $matches[1]);
                     $this->_expression = substr($this->_expression, strlen($matches[1]));
                     break;
                 }
