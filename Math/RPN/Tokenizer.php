@@ -4,7 +4,7 @@ namespace Feeler\Base\Math\RPN;
 
 class Tokenizer implements \Iterator
 {
-    const RPN_DOMAIN = "\\Feeler\\Base\\Utils\\RPN\\";
+    const RPN_DOMAIN = "\\Feeler\\Base\\Math\\RPN\\";
 
     private $_expression;
     private $_registeredTokens = [];
