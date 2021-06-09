@@ -33,8 +33,4 @@ class BasicOperation extends BaseClass {
         }
         return BasicGmp::instance()->randomInt((string)$min, (string)$max);
     }
-
-    public static function isOverFlow($number):bool{
-        return BasicBigNumber::isOverFlow($number);
-    }
 }

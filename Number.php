@@ -8,6 +8,7 @@
 namespace Feeler\Base;
 
 use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Math\Utils\BasicBigNumber;
 use Feeler\Base\Math\Utils\BasicOperation;
 
 class Number extends BaseClass {
@@ -205,8 +206,8 @@ class Number extends BaseClass {
         return (int)9223372036854775807;
     }
 
-    public static function isOverFlow():bool{
-
+    public static function isOverFlow($number):bool{
+        return BasicBigNumber::isOverFlow($number);
     }
 
     public static function isNumber($number){
