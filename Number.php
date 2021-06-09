@@ -203,7 +203,7 @@ class Number extends BaseClass {
     }
 
     public static function intMax(){
-        return (int)9223372036854775807;
+        return 9223372036854775807;
     }
 
     public static function isOverFlow($number):bool{
