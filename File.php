@@ -668,7 +668,7 @@ class File extends BaseClass{
                 $number2 = 1099511627776;
                 break;
             case self::CAPACITY_UNIT_LB:
-                $capacityNumber = bcdiv($capacityNumber, 1125899906842624);
+                $capacityNumber = 1125899906842624;
                 break;
             default:
                 throw new UnexpectedValueException();
