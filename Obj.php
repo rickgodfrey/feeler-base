@@ -50,7 +50,7 @@ class Obj extends BaseClass {
 
         $obj = self::toArr($obj);
 
-        return empty($obj) ? false : true;
+        return empty($obj);
     }
 
     /**
@@ -89,7 +89,7 @@ class Obj extends BaseClass {
             return false;
         }
 
-        return ($methodReflectionObj->class === $rObj->getName()) ? true : false;
+        return ($methodReflectionObj->class === $rObj->getName());
     }
 
     /**
