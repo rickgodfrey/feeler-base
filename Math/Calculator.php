@@ -8,7 +8,7 @@
 namespace Feeler\Base\Math;
 
 use Feeler\Base\BigNumber;
-use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Math\MathConst;
 use Feeler\Base\Number;
 use Feeler\Base\Singleton;
 use Feeler\Base\Math\RPN\Stack;

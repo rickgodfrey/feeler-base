@@ -7,7 +7,7 @@
 
 namespace Feeler\Base\Math\Utils;
 
-use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Math\MathConst;
 use Feeler\Base\Number;
 
 class BasicCalculation implements IBasicOperation {

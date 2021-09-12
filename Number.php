@@ -7,7 +7,7 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Math\MathConst;
 use Feeler\Base\Math\Utils\BasicBigNumber;
 use Feeler\Base\Math\Utils\BasicOperation;
 

@@ -2,7 +2,7 @@
 
 namespace Feeler\Base\Math\RPN;
 
-use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Math\MathConst;
 
 class CtgFunction extends RPN_Func
 {

@@ -8,7 +8,7 @@
 namespace Feeler\Base\Math\Utils;
 
 use Feeler\Base\BaseClass;
-use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Math\MathConst;
 
 class BasicOperation extends BaseClass {
     public static function plus($number1, $number2, int $scale = MathConst::DEFAULT_SCALE, bool $asBigNumber = false){

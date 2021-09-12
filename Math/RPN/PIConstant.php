@@ -2,7 +2,7 @@
 
 namespace Feeler\Base\Math\RPN;
 
-use Feeler\Base\Constant\MathConst;
+use Feeler\Base\Math\MathConst;
 use Feeler\Base\Number;
 
 class PIConstant extends Constant

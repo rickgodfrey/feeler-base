@@ -5,7 +5,7 @@
  * @license http://www.feeler.top/license/
  */
 
-namespace Feeler\Base\Constant;
+namespace Feeler\Base\Math;
 
 class MathConst {
     const DEFAULT_SCALE = 2;
