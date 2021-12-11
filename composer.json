@@ -12,7 +12,8 @@
         "ext-mbstring": "*",
         "ext-curl": "*",
         "ext-json": "*",
-        "ext-bcmath": "*"
+        "ext-bcmath": "*",
+        "ext-gmp": "*"
     },
     "license": "MIT",
     "authors": [
