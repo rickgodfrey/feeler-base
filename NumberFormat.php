@@ -35,7 +35,7 @@ class NumberFormat extends BaseClass {
         if(!Number::isNumeric($number) || !($number = (string)$number) || strpos($number, "0") !== 0){
             return false;
         }
-        return ctype_digit($number) ? false : true;
+        return !ctype_digit($number);
     }
 
     public static function convert($number, int $fromFormat, int $toFormat):string{
