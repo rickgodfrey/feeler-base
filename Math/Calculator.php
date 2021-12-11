@@ -9,6 +9,7 @@ namespace Feeler\Base\Math;
 
 use Feeler\Base\BigNumber;
 use Feeler\Base\Math\MathConst;
+use Feeler\Base\Math\Utils\BasicCalculation;
 use Feeler\Base\Number;
 use Feeler\Base\Singleton;
 use Feeler\Base\Math\RPN\Stack;
@@ -253,5 +254,9 @@ class Calculator extends Singleton
         unset($this->tempStack);
         $this->rs = $rs;
         return $this;
+    }
+
+    public static function maxDivisor(int $number1, int $number2):int{
+        return BasicCalculation::maxDivisor($number1, $number2);
     }
 }

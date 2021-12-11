@@ -57,4 +57,15 @@ class BasicCalculation implements IBasicOperation {
         $number = number_format($number, $scale, ".", "");
         return $number;
     }
+
+    public static function maxDivisor(int $number1, int $number2) :int{
+        if($number2 == 0)
+        {
+            return $number1;
+        }
+        else
+        {
+            return self::maxDivisor($number2, ($number1 % $number2));
+        }
+    }
 }
