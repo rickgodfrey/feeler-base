@@ -33,4 +33,8 @@ class BasicOperation extends BaseClass {
         }
         return BasicGmp::instance()->randomInt((string)$min, (string)$max);
     }
+
+    public static function maxDivisor($number1, $number2, bool $asBigNumber = false):string{
+        return $asBigNumber ? BasicBigCalculation::maxDivisor($number1, $number2) : BasicCalculation::maxDivisor($number1, $number2);
+    }
 }

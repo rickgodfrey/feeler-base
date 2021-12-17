@@ -58,10 +58,10 @@ class BasicCalculation implements IBasicOperation {
         return $number;
     }
 
-    public static function maxDivisor(int $number1, int $number2) :int{
+    public static function maxDivisor(int $number1, int $number2) :string{
         if($number2 == 0)
         {
-            return $number1;
+            return (string)$number1;
         }
         else
         {

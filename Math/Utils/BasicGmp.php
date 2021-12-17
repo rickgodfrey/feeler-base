@@ -16,9 +16,21 @@ class BasicGmp extends Singleton {
         Extension::checkAvailability("gmp");
     }
 
-    public function randomInt(string $min, string $max){
+    public static function init($number):\GMP{
+        return ($number instanceof \GMP) ? $number : gmp_init($number);
+    }
+
+    public function randomInt(string $min, string $max):string{
         $min = gmp_init($min);
         $max = gmp_init($max);
         return gmp_strval(gmp_random_range($min, $max));
+    }
+
+    public static function isGmpObj($var):bool{
+        return ($var instanceof \GMP);
+    }
+
+    public static function convertGmpObjToNumber($obj){
+        return (self::isGmpObj($obj)) ? gmp_strval($obj) : $obj;
     }
 }
