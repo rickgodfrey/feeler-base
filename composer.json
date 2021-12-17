@@ -13,7 +13,7 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-bcmath": "*",
-        "gmp": "*"
+        "ext-gmp": "*"
     },
     "license": "MIT",
     "authors": [
