@@ -7,11 +7,13 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Exceptions\{InvalidClassException,
+use Feeler\Base\Exceptions\{
+    InvalidClassException,
     InvalidMethodException,
     InvalidDataTypeException,
     InvalidParamException,
-    InvalidPropertyException};
+    InvalidPropertyException
+};
 
 class BaseClass
 {
