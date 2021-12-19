@@ -8,8 +8,7 @@
 namespace Feeler\Base\Math;
 
 use Feeler\Base\BigNumber;
-use Feeler\Base\Math\MathConst;
-use Feeler\Base\Math\Utils\BasicCalculation;
+use Feeler\Base\Math\Utils\BasicOperation;
 use Feeler\Base\Number;
 use Feeler\Base\Singleton;
 use Feeler\Base\Math\RPN\Stack;
@@ -199,7 +198,7 @@ class Calculator extends Singleton
                     }
                 }
 
-                if ($this->stack->top() instanceof RPN_Func) {
+                if (!$this->stack->isEmpty() && ($this->stack->top() instanceof RPN_Func)) {
                     $this->rpnNotation->enqueue($this->stack->pop());
                 }
 
@@ -256,7 +255,7 @@ class Calculator extends Singleton
         return $this;
     }
 
-    public static function maxDivisor(int $number1, int $number2):int{
-        return BasicCalculation::maxDivisor($number1, $number2);
+    public static function maxDivisor(int $number1, int $number2, bool $asBigNumber = false):int{
+        return BasicOperation::maxDivisor($number1, $number2, $asBigNumber);
     }
 }
