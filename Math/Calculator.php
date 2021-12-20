@@ -254,8 +254,4 @@ class Calculator extends Singleton
         $this->rs = $rs;
         return $this;
     }
-
-    public static function maxDivisor(int $number1, int $number2, bool $asBigNumber = false):int{
-        return BasicOperation::maxDivisor($number1, $number2, $asBigNumber);
-    }
 }

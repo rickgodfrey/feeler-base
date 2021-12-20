@@ -15,21 +15,21 @@ class BasicBigCalculation implements IBasicOperation {
         if(!Number::isNumeric($number1) || !Number::isNumeric($number2)){
             throw new \Exception(Number::MSG_INITIALIZATION_FAILED);
         }
-        return bcadd((string)$number1, (string)$number2, (int)$scale);
+        return Number::convertScientificToNumber(bcadd((string)$number1, (string)$number2, (int)$scale));
     }
 
     public static function minus($number1, $number2, int $scale = MathConst::DEFAULT_SCALE):string{
         if(!Number::isNumeric($number1) || !Number::isNumeric($number2)){
             throw new \Exception(Number::MSG_INITIALIZATION_FAILED);
         }
-        return bcsub((string)$number1, (string)$number2, (int)$scale);
+        return Number::convertScientificToNumber(bcsub((string)$number1, (string)$number2, (int)$scale));
     }
 
     public static function multiply($number1, $number2, int $scale = MathConst::DEFAULT_SCALE):string{
         if(!Number::isNumeric($number1) || !Number::isNumeric($number2)){
             throw new \Exception(Number::MSG_INITIALIZATION_FAILED);
         }
-        return bcmul((string)$number1, (string)$number2, (int)$scale);
+        return Number::convertScientificToNumber(bcmul((string)$number1, (string)$number2, (int)$scale));
     }
 
     public static function divide($number1, $number2, int $scale = MathConst::DEFAULT_SCALE):string{
@@ -39,7 +39,7 @@ class BasicBigCalculation implements IBasicOperation {
         if($number2 == 0){
             throw new \Exception(Number::MSG_DIVISOR_ZERO);
         }
-        return bcdiv((string)$number1, (string)$number2, (int)$scale);
+        return Number::convertScientificToNumber(bcdiv((string)$number1, (string)$number2, (int)$scale));
     }
 
     public static function decimalFormat($number, int $decimalPlaceLen = MathConst::DEFAULT_SCALE){
@@ -69,6 +69,6 @@ class BasicBigCalculation implements IBasicOperation {
 
         $number = BasicGmp::convertGmpObjToNumber($number);
 
-        return $number;
+        return Number::convertScientificToNumber($number);
     }
 }

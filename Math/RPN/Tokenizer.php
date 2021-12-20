@@ -2,6 +2,8 @@
 
 namespace Feeler\Base\Math\RPN;
 
+use Feeler\Base\Obj;
+
 class Tokenizer implements \Iterator
 {
     const RPN_DOMAIN = "\\Feeler\\Base\\Math\\RPN\\";
@@ -78,6 +80,9 @@ class Tokenizer implements \Iterator
         call_user_func([$obj, "setFixedDecimalPlace"], $this->_fixedDecimalPlace);
         call_user_func([$obj, "setShowThousandsSep"], $this->_showThousandsSep);
         call_user_func([$obj, "setAsBigNumber"], $this->_asBigNumber);
+        if(method_exists($obj, "normalize")){
+            call_user_func([$obj, "normalize"]);
+        }
         return $obj;
     }
 

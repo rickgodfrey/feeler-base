@@ -189,16 +189,50 @@ class Number extends BaseClass {
         return $this->number;
     }
 
-    public static function autoCorrectType($number){
+    public static function isScientificNumber($number){
+        if(!self::isNumeric($number)){
+            return false;
+        }
+
+        if(!preg_match("/^[0-9]+\.[0-9]+[eE]([+-])[1-9][0-9]*$/", $number)){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function convertScientificToNumber($number):string{
+        if(!self::isNumeric($number)){
+            return "0";
+        }
+
+        if(!self::isScientificNumber($number)){
+            return $number;
+        }
+
+        $number = explode("e", strtolower($number), 2);
+        return bcmul($number[0], bcpow(10, $number[1]));
+    }
+
+    public static function autoCorrectType($number, bool $asBigNumber = false){
+        $number = self::convertScientificToNumber($number);
+
         if(!self::isNumeric($number)){
             throw new \Exception(self::MSG_ILLEGAL_OPERATION);
         }
-        if(self::isInteric($number)){
-            $number = (int)$number;
+        
+        if(!$asBigNumber){
+            if(self::isInteric($number)){
+                $number = (int)$number;
+            }
+            else if(self::isFloaric($number)){
+                $number = (float)$number;
+            }
         }
         else{
-            $number = (float)$number;
+            $number = (string)$number;
         }
+
         return $number;
     }
 
@@ -222,6 +256,8 @@ class Number extends BaseClass {
         if(!self::isNumeric($number)){
             return false;
         }
+
+        $number = self::convertScientificToNumber($number);
 
         if(strpos((string)$number, ".") !== false){
             return false;

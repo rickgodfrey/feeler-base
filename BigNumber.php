@@ -20,6 +20,7 @@ class BigNumber extends Number {
     }
 
     public static function decimalFormat($number, int $decimalPlaceLen = MathConst::DEFAULT_SCALE, bool $round = true, bool $fixedDecimalPlace = false, bool $showThousandsSep = false):string{
+        $number = self::convertScientificToNumber($number);
         if(!Number::isNumeric($number) || $number == 0 || $decimalPlaceLen < 0){
             if($fixedDecimalPlace && Number::isPosiInteric($decimalPlaceLen)){
                 return "0.".str_repeat("0", $decimalPlaceLen);

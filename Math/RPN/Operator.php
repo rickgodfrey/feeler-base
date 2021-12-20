@@ -6,10 +6,7 @@ abstract class Operator extends Token
 {
     public function __construct($value)
     {
-        $this->type = "operator";
-        $this->value = $value;
-
-        parent::__construct($this->type, $this->value);
+        parent::__construct("operator", $value);
     }
 
     abstract public function priority():int;
