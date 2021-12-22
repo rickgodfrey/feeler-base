@@ -8,6 +8,7 @@
 namespace Feeler\Base\Math\Utils;
 
 use Feeler\Base\Extension;
+use Feeler\Base\Number;
 use Feeler\Base\Singleton;
 
 class BasicGmp extends Singleton {
@@ -16,18 +17,38 @@ class BasicGmp extends Singleton {
         Extension::checkAvailability("gmp");
     }
 
-    public static function init($number):\GMP{
-        return ($number instanceof \GMP) ? $number : gmp_init($number);
+    public static function isGmpObj($number):bool{
+        return ($number instanceof \GMP);
+    }
+
+    public static function plus($number1, $number2):string{
+        $number1 = gmp_init($number1);
+        $number2 = gmp_init($number2);
+        return gmp_strval($number1 + $number2);
+    }
+
+    public static function sub($number1, $number2):string{
+        $number1 = gmp_init($number1);
+        $number2 = gmp_init($number2);
+        return gmp_strval($number1 - $number2);
+    }
+
+    public static function multiply($number1, $number2):string{
+        $number1 = gmp_init($number1);
+        $number2 = gmp_init($number2);
+        return gmp_strval($number1 * $number2);
+    }
+
+    public static function divide($number1, $number2):string{
+        $number1 = gmp_init($number1);
+        $number2 = gmp_init($number2);
+        return gmp_strval($number1 / $number2);
     }
 
     public function randomInt(string $min, string $max):string{
         $min = gmp_init($min);
         $max = gmp_init($max);
         return gmp_strval(gmp_random_range($min, $max));
-    }
-
-    public static function isGmpObj($var):bool{
-        return ($var instanceof \GMP);
     }
 
     public static function convertGmpObjToNumber($obj){

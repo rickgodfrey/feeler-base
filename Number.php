@@ -211,12 +211,10 @@ class Number extends BaseClass {
         }
 
         $number = explode("e", strtolower($number), 2);
-        return bcmul($number[0], bcpow(10, $number[1]));
+        return isset($number[1]) ? bcmul($number[0], bcpow(10, $number[1])) : "0";
     }
 
     public static function autoCorrectType($number, bool $asBigNumber = false){
-        $number = self::convertScientificToNumber($number);
-
         if(!self::isNumeric($number)){
             throw new \Exception(self::MSG_ILLEGAL_OPERATION);
         }
@@ -256,8 +254,6 @@ class Number extends BaseClass {
         if(!self::isNumeric($number)){
             return false;
         }
-
-        $number = self::convertScientificToNumber($number);
 
         if(strpos((string)$number, ".") !== false){
             return false;
@@ -346,7 +342,8 @@ class Number extends BaseClass {
         return true;
     }
 
-    public static function isNumeric($number){
+    public static function isNumeric(&$number){
+        $number = self::convertScientificToNumber($number);
         return is_numeric($number);
     }
 
