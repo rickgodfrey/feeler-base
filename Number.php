@@ -190,7 +190,7 @@ class Number extends BaseClass {
     }
 
     public static function isScientificNumber($number){
-        if(!self::isNumeric($number)){
+        if(!is_numeric($number)){
             return false;
         }
 
@@ -202,7 +202,7 @@ class Number extends BaseClass {
     }
 
     public static function convertScientificToNumber($number):string{
-        if(!self::isNumeric($number)){
+        if(!is_numeric($number)){
             return "0";
         }
 
