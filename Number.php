@@ -201,9 +201,9 @@ class Number extends BaseClass {
         return true;
     }
 
-    public static function convertScientificToNumber($number):string{
+    public static function convertScientificToNumber($number){
         if(!is_numeric($number)){
-            return "0";
+            return $number;
         }
 
         if(!self::isScientificNumber($number)){
@@ -211,14 +211,14 @@ class Number extends BaseClass {
         }
 
         $number = explode("e", strtolower($number), 2);
-        return isset($number[1]) ? bcmul($number[0], bcpow(10, $number[1])) : "0";
+        return bcmul($number[0], bcpow(10, $number[1]));
     }
 
     public static function autoCorrectType($number, bool $asBigNumber = false){
         if(!self::isNumeric($number)){
             throw new \Exception(self::MSG_ILLEGAL_OPERATION);
         }
-        
+
         if(!$asBigNumber){
             if(self::isInteric($number)){
                 $number = (int)$number;
