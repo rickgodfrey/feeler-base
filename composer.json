@@ -8,7 +8,7 @@
         "feeler", "base", "feeler-base"
     ],
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.4",
         "ext-mbstring": "*",
         "ext-curl": "*",
         "ext-json": "*",
@@ -18,8 +18,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "rickguo",
-            "email": "rickguo@feeler.top"
+            "name": "Rick Guo",
+            "email": "rickguo@feeler.cc"
         }
     ],
     "autoload": {

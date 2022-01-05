@@ -7,8 +7,6 @@
 
 namespace Feeler\Base;
 
-use Feeler\Base\Math\Calculator;
-
 class Str extends BaseClass {
     const CASE_UPPER = "case_upper";
     const CASE_LOWER = "case_lower";
