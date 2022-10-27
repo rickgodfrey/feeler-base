@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.feeler.top/
+ * @link https://www.feeler.cc/
  * @copyright Copyright (c) 2019 Rick Guo
- * @license http://www.feeler.top/license/
+ * @license https://www.feeler.cc/license/
  */
 
 namespace Feeler\Base;
@@ -11,7 +11,7 @@ use Feeler\Base\Exceptions\UnexpectedValueException;
 
 class GlobalAccess extends BaseClass {
     public static function &getVar(string $varName){
-        $availableVarsList = ["GLOBALS" => &$GLOBALS, "_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
+        $availableVarsList = ["_SERVER" => &$_SERVER, "_GET" => &$_GET, "_POST" => &$_POST, "_FILES" => &$_FILES, "_COOKIE" => &$_COOKIE, "_SESSION" => &$_SESSION, "_REQUEST" => &$_REQUEST, "_ENV" => &$_ENV];
         if(isset($availableVarsList[$varName])){
             return $availableVarsList[$varName];
         }
@@ -35,10 +35,6 @@ class GlobalAccess extends BaseClass {
         else{
             return null;
         }
-    }
-
-    public static function globals($key = null, $value = null){
-        return self::_access("GLOBALS", $key, $value);
     }
 
     public static function server($key = null, $value = null){

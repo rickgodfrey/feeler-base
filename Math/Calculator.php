@@ -1,13 +1,14 @@
 <?php
 /**
- * @link http://www.feeler.top/
+ * @link https://www.feeler.cc/
  * @copyright Copyright (c) 2019 Rick Guo
- * @license http://www.feeler.top/license/
+ * @license https://www.feeler.cc/license/
  */
 
 namespace Feeler\Base\Math;
 
 use Feeler\Base\BigNumber;
+use Feeler\Base\Math\RPN\Token;
 use Feeler\Base\Math\Utils\BasicOperation;
 use Feeler\Base\Number;
 use Feeler\Base\Singleton;
@@ -96,19 +97,6 @@ class Calculator extends Singleton
         return $this;
     }
 
-    protected function formatDecimal(){
-        if(!Number::isNumeric($this->rs)){
-            throw new \Exception("Illegal result produced");
-        }
-        if($this->asBigNumber){
-            $this->rs = BigNumber::decimalFormat($this->rs, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
-        }
-        else{
-            $this->rs = Number::decimalFormat($this->rs, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
-        }
-        return $this;
-    }
-
     public function calc(string $expression):string{
         $this->expression = preg_replace("/\\s+/i", "$1", $expression);
         $this->expression = strtr($this->expression, "{}[]", "()()");
@@ -150,7 +138,16 @@ class Calculator extends Singleton
     }
 
     /**
-     * @link http://en.wikipedia.org/wiki/Shunting-yard_algorithm
+     * @return $this
+     * @throws \Exception
+     */
+    protected function formatDecimal(){
+        $this->rs = Token::instance()->formatDecimal($this->rs);
+        return $this;
+    }
+
+    /**
+     * @link https://en.wikipedia.org/wiki/Shunting-yard_algorithm
      */
     protected function convertToRpn():self
     {

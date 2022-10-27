@@ -5,8 +5,9 @@ namespace Feeler\Base\Math\RPN;
 use Feeler\Base\BigNumber;
 use Feeler\Base\Math\MathConst;
 use Feeler\Base\Number;
+use Feeler\Base\Singleton;
 
-class Token
+class Token extends Singleton
 {
     public $type;
     public $value;
@@ -16,6 +17,17 @@ class Token
     protected $fixedDecimalPlace = false;
     protected $showThousandsSep = false;
     protected $asBigNumber = false;
+
+    public function __construct($type, $value)
+    {
+        $this->type = $type;
+        $this->value = $value;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->value;
+    }
 
     /**
      * @param int $scale
@@ -57,14 +69,16 @@ class Token
         $this->asBigNumber = $asBigNumber;
     }
 
-    public function __construct($type, $value)
-    {
-        $this->type = $type;
-        $this->value = $value;
-    }
-
-    public function __toString()
-    {
-        return (string)$this->value;
+    public function formatDecimal(int|float|string $number){
+        if(!Number::isNumeric($number)){
+            throw new \Exception("Illegal result produced");
+        }
+        if($this->asBigNumber){
+            $number = BigNumber::decimalFormat($number, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
+        }
+        else{
+            $number = Number::decimalFormat($number, $this->scale, $this->round, $this->fixedDecimalPlace, $this->showThousandsSep);
+        }
+        return $number;
     }
 }

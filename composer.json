@@ -8,7 +8,7 @@
         "feeler", "base", "feeler-base"
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.1",
         "ext-mbstring": "*",
         "ext-curl": "*",
         "ext-json": "*",
