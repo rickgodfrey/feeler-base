@@ -617,7 +617,7 @@ class File extends Multiton{
             return false;
         }
 
-        if(!preg_match("/((?:0|(?:[1-9][0-9]*)))([k|m|g|t|l|kb|mb|gb|tb|lb])?/i", $length, $matches)){
+        if(!preg_match("/(0|[1-9][0-9]*)(k|m|g|t|p|kb|mb|gb|tb|pb)?/i", $length, $matches)){
             return false;
         }
 
@@ -645,8 +645,8 @@ class File extends Multiton{
             case "tb":
                 $number2 = 1099511627776;
                 break;
-            case "l":
-            case "lb":
+            case "p":
+            case "pb":
                 $number2 = 1125899906842624;
                 break;
         }

@@ -12,6 +12,7 @@
         "ext-mbstring": "*",
         "ext-curl": "*",
         "ext-json": "*",
+        "ext-ctype": "*",
         "ext-bcmath": "*",
         "ext-gmp": "*"
     },
