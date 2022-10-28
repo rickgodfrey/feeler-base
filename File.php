@@ -12,7 +12,7 @@ use Feeler\Base\Exceptions\InvalidValueException;
 use Feeler\Base\Exceptions\UnexpectedValueException;
 use Feeler\Base\Math\Utils\BasicOperation;
 
-class File extends BaseClass{
+class File extends Multiton{
     const MODE_R = "mode_r";
     const MODE_W = "mode_w";
     const MODE_RW = "mode_rw";
@@ -32,21 +32,21 @@ class File extends BaseClass{
     const CAPACITY_UNIT_TB = "tb";
     const CAPACITY_UNIT_LB = "lb";
 
-    protected static $rootPath;
-    protected static $tempPath;
-    protected $segLength = 524288; //To read and write file-data in segments, this sets every segment's length
-    protected $whatAmI;
-    protected $state = false;
-    protected $position = 0;
-    protected $handle;
+    protected static string $rootPath;
+    protected static string $tempPath;
+    protected string|int $segLength = 524288; //To read and write file-data in segments, this sets every segment's length
+    protected string $whatAmI;
+    protected bool $state = false;
+    protected int $position = 0;
+    protected mixed $handle;
 
-    protected $fileName;
-    protected $fileExt;
-    protected $fileLocation;
-    protected $fileDir;
-    protected $fileSrc;
-    protected $fileSize;
-    protected $fileMd5Sign;
+    protected string $fileName;
+    protected string $fileExt;
+    protected string $fileLocation;
+    protected string $fileDir;
+    protected string $fileSrc;
+    protected int $fileSize;
+    protected string $fileMd5Sign;
 
     /**
      * File constructor.
@@ -265,7 +265,7 @@ class File extends BaseClass{
         $this->fileDir = self::getDir($fileLocation);
     }
 
-    public function getData(int $length = -1, int $position = null):string{
+    public function getContent(int $length = -1, int $position = null):string{
         if($position === null){
             $position = 0;
         }
@@ -296,7 +296,7 @@ class File extends BaseClass{
         return $data;
     }
 
-    public function getDataCallback(callable $callback, int $position = 0, int $length = -1):bool{
+    public function getContentCallback(callable $callback, int $position = 0, int $length = -1):bool{
         if(!$this->state || !is_int($position) || $position < 0 || !is_callable($callback)){
             return false;
         }

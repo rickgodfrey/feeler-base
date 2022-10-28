@@ -10,8 +10,10 @@ namespace Feeler\Base;
 use Feeler\Base\Math\MathConst;
 use Feeler\Base\Math\Utils\BasicBigNumber;
 use Feeler\Base\Math\Utils\BasicOperation;
+use Exception;
 
 class Number extends BaseClass {
+    const SIGNED_INT_MAX = 9223372036854775807;
     const MSG_INITIALIZATION_FAILED = "Trying to initialize an illegal number";
     const MSG_ILLEGAL_OPERATION = "Illegal number causes operation failed";
     const MSG_DIVISOR_ZERO = "Illegal divisor zero";
@@ -47,33 +49,20 @@ class Number extends BaseClass {
     /**
      * @return mixed
      */
-    public function getLastOperator()
+    public function getLastOperator():string
     {
         return $this->lastOperator;
     }
 
-    /**
-     * @param string $lastOperator
-     * @throws \Exception
-     */
     public function setLastOperator(): void
     {
-        switch(__METHOD__){
-            case "plus":
-                $lastOperator = "+";
-                break;
-            case "minus":
-                $lastOperator = "-";
-                break;
-            case "multiply":
-                $lastOperator = "*";
-                break;
-            case "divide":
-                $lastOperator = "/";
-                break;
-            default:
-                throw new \Exception(self::MSG_ILLEGAL_OPERATOR);
-        }
+        $lastOperator = match (__METHOD__) {
+            "plus" => "+",
+            "minus" => "-",
+            "multiply" => "*",
+            "divide" => "/",
+            default => throw new Exception(self::MSG_ILLEGAL_OPERATOR),
+        };
         $this->lastOperator = $lastOperator;
     }
 
@@ -235,7 +224,7 @@ class Number extends BaseClass {
     }
 
     public static function intMax(){
-        return 9223372036854775807;
+        return self::SIGNED_INT_MAX;
     }
 
     public static function isOverFlow($number):bool{
